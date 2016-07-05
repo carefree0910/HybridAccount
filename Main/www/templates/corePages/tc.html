@@ -1,0 +1,36 @@
+<ion-view view-title="事件查询">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+<!--
+        <div class="card">
+            <h1 class="title">Debug Card</h1>
+            <p>Records Length: {{records.length}}</p>
+            <ion-list>
+                <ion-item ng-repeat="rec in records">
+                    <h1 class="title">{{rec.event}}</h1>
+                    <p>{{rec.type}}：{{rec.amount}} * {{rec.points}}</p>
+                    <p>{{rec.done_times}}</p>
+                </ion-item>
+            </ion-list>
+        </div>
+-->
+        <div class="row">
+            <ion-radio class="col center" ng-model="filtText" value="task">任务</ion-radio>
+            <ion-radio class="col center" ng-model="filtText" value="desire">欲望</ion-radio>
+        </div>
+        <ion-list show-delete="showAllDelete">
+            <ion-item ng-repeat="rec in records | filter: {type: filtText}" href="#/app/tc/{{rec.id}}">
+                <h1 class="title">{{rec.event}}</h1>
+                <p>{{textType(rec.type)}}：{{rec.points}}</p>
+                <p>{{doneType(rec.type)}}次数：{{rec.amount}}</p>
+                <p>更新时间：{{date(rec)}} {{time(rec)}}</p>
+                <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.type, rec.id)"> </ion-delete-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> 删除</span></ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

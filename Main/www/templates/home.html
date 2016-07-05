@@ -1,0 +1,56 @@
+<ion-view cache-view="false" view-title="主页">
+    <ion-content>
+        <div class="card">
+            <div class="item item-divider">
+                财务管理综述
+            </div>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label inline-title">记账次数</span>
+                    <span class="inline-content">{{mLength()}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label inline-title">支出金额</span>
+                    <span class="inline-content">{{output()}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label inline-title">收入金额</span>
+                    <span class="inline-content">{{income()}}</span>
+                </label>
+            </div>
+        </div>
+        <div class="card">
+            <div class="item item-divider">
+                事件管理综述
+            </div>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label inline-title">任务个数</span>
+                    <span class="inline-content">{{ttLength()}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label inline-title">欲望个数</span>
+                    <span class="inline-content">{{tdLength()}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label inline-title">剩余点数</span>
+                    <span class="inline-content">{{points()}}</span>
+                </label>
+            </div>
+        </div>
+        <div class="card">
+            <div class="item item-divider">
+                记账者信息
+            </div>
+            <div class="list list-inset">
+                <label class="item item-avatar">
+                    <img ng-src={{localInfo.icon}}>
+                    <p class="title">用户名</p>
+                    <p class="content">{{localInfo.username}}</p>
+                    <p class="title">年收入</p> 
+                    <p class="content">{{localInfo.income}}</p>
+                </label>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

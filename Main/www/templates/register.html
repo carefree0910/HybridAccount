@@ -1,0 +1,19 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">～(￣▽￣～)</h1>
+        <button class="button button-light" ng-click="closeRegister()">返回</button>
+    </ion-header-bar>
+    <ion-content>
+        <form ng-submit="doRegister()">
+            <div class="list">
+                <label class="item item-input"> <span class="input-label">用户名</span>
+                    <input type="text" ng-model="registration.username"> </label>
+                <label class="item item-input"> <span class="input-label">密码</span>
+                    <input type="password" ng-model="registration.password"> </label>
+                <label class="item">
+                    <button class="button button-block button-positive" type="submit">注册</button>
+                </label>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

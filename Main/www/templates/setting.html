@@ -1,0 +1,37 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">设置</h1>
+        <div class="buttons">
+            <button class="button button-light" ng-click="closeSetting()">返回</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <form ng-submit="doSetting()">
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label bold">头像</span>
+                    <img class="padding" ng-src="{{localInfo.icon}}">
+                </label>
+                <div class="multi_buttons button-bar">
+                    <button class="button button-block button-balanced" type="button" ng-click="takePicture()">
+                        <i class="icon ion-camera"> 照相</i>
+                    </button>
+                    <button class="button button-block button-calm" type="button" ng-click="getPicture()">
+                        <i class="icon ion-images"> 图库</i>
+                    </button>
+                </div>
+                <label class="item item-input">
+                    <span class="input-label bold">用户名</span>
+                    <input type="text" ng-model="localInfo.username">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">年收入</span>
+                    <input type="text" ng-model="localInfo.income">
+                </label>
+                <label class="item">
+                    <button class="button button-block button-positive" type="submit">设置终了</button>
+                </label>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

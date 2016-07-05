@@ -1,0 +1,31 @@
+<ion-view view-title="编辑记录">
+    <ion-content>
+        <div class="card">
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label bold">日期</span>
+                    <input type="date" ng-model="record.date" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">时间</span>
+                    <input type="time" ng-model="record.date" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">事件</span>
+                    <input type="text" ng-model="record.event" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{textType(record.type)}}</span>
+                    <input type="text" ng-model="record.unit_price" />
+                </label>
+                <label class="item item-input" ng-show="{{record.type === 'output'}}">
+                    <span class="input-label bold">数量</span>
+                    <input type="text" ng-model="record.amount" />
+                </label>
+                <label class="item">
+                    <button class="button button-block button-calm" ng-click="finishEdit()">修改</button>
+                </label>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,21 @@
+<ion-view view-title="{{taskType + '详情'}}">
+    <ion-content>
+        <div class="card">
+            <div class="list list-inset">
+                <label class="item item-input"> <span class="input-label bold">事件</span>
+                    <input type="text" ng-model="record.event" /> </label>
+                <label class="item item-input"> <span class="input-label bold">{{textType}}</span>
+                    <input type="text" ng-model="record.points" /> </label>
+                <label class="item item-input"> <span class="input-label bold">{{doneType}}</span>
+                    <input type="text" ng-model="record.amount" /> </label>
+                <label class="item">
+                    <button class="button button-block button-calm" ng-click="finishEdit()">修改</button>
+                </label>
+                <div class="multi_buttons button-bar">
+                    <button class="button button-block" ng-class="[btn_class]" ng-click="finishDone()"><i class="icon ion-checkmark"></i> {{doneText}}</button>
+                    <button class="button button-block button-positive" ng-click="finishArchive()"><i class="icon ion-archive"></i> 归档{{taskType}}</button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

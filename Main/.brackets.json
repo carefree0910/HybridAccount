@@ -1,0 +1,11 @@
+{
+    "jscodehints.detectedExclusions": [
+        "D:/Compute/Web/Work/Account/www/js/controllers.js",
+        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-camera/www/Camera.js",
+        "D:/Compute/Web/Work/Blend Account/Main/www/js/controllers.js",
+        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-device/www/device.js",
+        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-image-picker/www/imagepicker.js",
+        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-statusbar/www/statusbar.js"
+    ]
+}

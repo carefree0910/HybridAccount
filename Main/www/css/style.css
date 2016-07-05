@@ -1,0 +1,53 @@
+.popover {
+    height: auto !important;
+}
+
+.popover ion-header-bar {
+    position: relative;
+}
+
+.popover ion-content {
+    top: 0;
+    position: relative;
+}
+
+.popover-inner-content {
+    width: 100%;
+    padding: 5px 20px;
+}
+
+.inline-title {
+    font-weight: bold;
+    width: 12em;
+}
+
+.inline-content {
+    width: 6em;
+    text-align: right;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.content {
+    width: 16em;
+    text-align: right;
+}
+
+.multi_buttons {
+    padding: 1.2em;
+}
+
+.center {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.placehold {
+    text-align: center;
+}

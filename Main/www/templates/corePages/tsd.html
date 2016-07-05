@@ -1,0 +1,16 @@
+<ion-view view-title="{{taskType + '详情'}}">
+    <ion-content>
+        <div class="card">
+            <div class="list list-inset">
+                <label class="item item-input"> <span class="input-label bold">事件</span> <span type="text">{{record.event}}</span> </label>
+                <label class="item item-input"> <span class="input-label bold">{{textType}}</span> <span type="text">{{record.points}}</span> </label>
+                <label class="item item-input"> <span class="input-label bold">{{doneType}}次数</span> <span type="text">{{record.amount}}</span> </label>
+                <label class="item item-input"></label>
+                <ion-list ng-show="{{record.done_times.length != 0}}">
+                    <label class="item item-input"><span class="input-label bold">{{doneType}}时间</span></label>
+                    <ion-item ng-repeat="milli in record.done_times"> {{showDateAndTime(milli)}} </ion-item>
+                </ion-list>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

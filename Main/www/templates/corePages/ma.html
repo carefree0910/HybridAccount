@@ -1,0 +1,18 @@
+<ion-view view-title="增添财务记录">
+    <ion-content>
+        <form ng-repeat="form in forms" class="card" ng-submit="doAdd(form.type)">
+            <div class="item title">
+                {{form.title}}
+            </div>
+            <div ng-repeat="content in form.contents" , class="list list-inset">
+                <label class="item item-input item-text-wrap">
+                    <span class="input-label">{{content.title}}</span>
+                    <input type="text" ng-model="content.body">
+                </label>
+            </div>
+            <div class="item">
+                <button class="button button-block button-positive" type="submit">{{form.button}}</button>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>
