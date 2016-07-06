@@ -2,8 +2,8 @@
 
 angular.module('Account.services', ['ngResource'])
 
-.constant("baseURL", "https://10.2.75.150:3443/")
-// .constant("baseURL", "https://localhost:3443/")
+// .constant("baseURL", "https://(your ip here):3443/")
+.constant("baseURL", "https://localhost:3443/")
 
 .factory('$localStorage', function($window) {
     return {
