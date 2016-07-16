@@ -9,7 +9,7 @@ Ionic + Mongoose
   
   2）在 ./MongoDB 下执行 mongod --dbpath-data
   
-  3）在 ./Server 下执行 npm install
+  3）在 ./Server 下执行 npm install 和 npm start
   
   4）在 ./Main 下执行 ionic platform add android 和 ionic build android
   
