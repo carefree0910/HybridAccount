@@ -1,0 +1,24 @@
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mte.a}}">
+    <ion-content>
+        <div class="card">
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label bold">{{textType(record.type)}}</span>
+                    <input type="text" ng-model="record.unit_price" />
+                </label>
+                <label class="item item-input" ng-show="{{record.type === 'output'}}">
+                    <span class="input-label bold">{{lang(localInfo.lang).mte.b}}</span>
+                    <input type="text" ng-model="record.amount" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mte.c}}</span>
+                    <input type="text" ng-model="record.event" />
+                </label>
+                <div class="multi_buttons button-bar">
+                    <button class="button button-block button-calm" ng-click="finishEdit()">{{lang(localInfo.lang).mte.d}}</button>
+                    <button class="button button-block button-positive" ng-click="loadTemplate()">{{lang(localInfo.lang).mte.e}}</button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

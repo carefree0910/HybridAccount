@@ -27,7 +27,27 @@ var tRecSchema = new Schema({
     date: String,
     milli: Number,
     done_times: [Number]
-})
+});
+
+var Template = new Schema({
+    id: {
+        type: Number,
+        required: true
+    },
+    type: String,
+    event: String,
+    points: Number,
+    amount: Number,
+    unit_price: Number,
+    sum: Number,
+    date: String,
+    milli: Number,
+    done_times: [Number],
+    triggered: {
+        type: Boolean,
+        default: false
+    }
+});
 
 var Record = new Schema({
     tPoints: {
@@ -36,7 +56,10 @@ var Record = new Schema({
     },
     mRecords: [mRecSchema],
     tRecords: [tRecSchema],
-    tARecords: [tRecSchema]
+    tARecords: [tRecSchema],
+    mrRecords: [mRecSchema],
+    trRecords: [tRecSchema],
+    mtRecords: [Template]
 });
 
 exports.Record = Record;

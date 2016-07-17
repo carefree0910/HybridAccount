@@ -1,0 +1,52 @@
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).recent.a}}">
+    <ion-content>
+        <div class="row">
+            <ion-radio class="col center" ng-model="typeText" value="money">{{lang(localInfo.lang).recent.b}}</ion-radio>
+            <ion-radio class="col center" ng-model="typeText" value="task">{{lang(localInfo.lang).recent.c}}</ion-radio>
+        </div>
+        <ion-list>
+            <div ng-show="typeText === 'money'" class="card">
+                <div class="item item-divider"> {{lang(localInfo.lang).recent.d}} </div>
+                <div class="list list-inset">
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.e}}</span> <span class="inline-content">{{sumOutput(typeText)}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.f}}</span> <span class="inline-content">{{sumIncome(typeText)}}</span> </label>
+                </div>
+            </div>
+            <div ng-show="typeText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.g}} </div>    
+            <div ng-show="typeText === 'task'" class="card">
+                <div class="item item-divider"> {{lang(localInfo.lang).recent.h}} </div>
+                <div class="list list-inset">
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.i}}</span> <span class="inline-content">{{sumTask(typeText)}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.j}}</span> <span class="inline-content">{{sumDesire(typeText)}}</span> </label>
+                </div>
+            </div>
+            <div ng-show="typeText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.k}} </div>
+            <ion-item ng-show="typeText === 'money'" ng-repeat="rec in mrRecords" class="item-text-wrap">
+                <div ng-show="typeText === 'money'">
+                    <h1 class="title">{{rec.event}}</h1>
+                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.l}}：{{rec.sum}}</p>
+                    <p>{{lang(localInfo.lang).recent.m}}：{{time(rec)}}</p>
+                </div>
+                <div ng-show="typeText === 'task'">
+                    <h1 class="title">{{rec.event}}</h1>
+                    <p>{{textType(rec.type)}}：{{rec.points}}</p>
+                    <p>{{lang(localInfo.lang).recent.n}}{{doneType(rec.type)}}{{lang(localInfo.lang).recent.o}}：{{rec.amount}}</p>
+                    <p>{{doneType(rec.type)}} {{lang(localInfo.lang).recent.p}}：{{doneTimes(rec)}}</p>
+                </div>
+            </ion-item>
+            <ion-item ng-show="typeText === 'task'" ng-repeat="rec in trRecords" class="item-text-wrap">
+                <div ng-show="typeText === 'money'">
+                    <h1 class="title">{{rec.event}}</h1>
+                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.l}}：{{rec.sum}}</p>
+                    <p>{{lang(localInfo.lang).recent.m}}：{{time(rec)}}</p>
+                </div>
+                <div ng-show="typeText === 'task'">
+                    <h1 class="title">{{rec.event}}</h1>
+                    <p>{{textType(rec.type)}}：{{rec.points}}</p>
+                    <p>{{lang(localInfo.lang).recent.n}}{{doneType(rec.type)}}{{lang(localInfo.lang).recent.o}}：{{rec.amount}}</p>
+                    <p>{{doneType(rec.type)}} {{lang(localInfo.lang).recent.p}}：{{doneTimes(rec)}}</p>
+                </div>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

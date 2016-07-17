@@ -1,53 +1,57 @@
-<ion-view cache-view="false" view-title="主页">
+<ion-view view-title="主页">
     <ion-content>
+<!--
+        <div class="card">
+            <div class="item item-divider"> Debug Card </div>
+            <p>{{lRecFac.getMRecords()}}</p>
+            <p>{{lRecFac.getMrRecords()}}</p>
+        </div>
+        <div class="card">
+            <div class="item item-divider"> Debug Card </div>
+            <p>{{lRecFac.getTRecords()}}</p>
+            <p>{{lRecFac.getTrRecords()}}</p>
+        </div>
+-->
         <div class="card">
             <div class="item item-divider">
-                财务管理综述
+                {{lang(localInfo.lang).home.a}}
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label inline-title">记账次数</span>
-                    <span class="inline-content">{{mLength()}}</span>
-                </label>
-                <label class="item item-input">
-                    <span class="input-label inline-title">支出金额</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.b}}</span>
                     <span class="inline-content">{{output()}}</span>
                 </label>
                 <label class="item item-input">
-                    <span class="input-label inline-title">收入金额</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.c}}</span>
                     <span class="inline-content">{{income()}}</span>
                 </label>
             </div>
         </div>
         <div class="card">
             <div class="item item-divider">
-                事件管理综述
+                {{lang(localInfo.lang).home.d}}
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label inline-title">任务个数</span>
-                    <span class="inline-content">{{ttLength()}}</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.e}}</span>
+                    <span class="inline-content">{{records.tPoints}}</span>
                 </label>
-                <label class="item item-input">
-                    <span class="input-label inline-title">欲望个数</span>
-                    <span class="inline-content">{{tdLength()}}</span>
-                </label>
-                <label class="item item-input">
-                    <span class="input-label inline-title">剩余点数</span>
-                    <span class="inline-content">{{points()}}</span>
+                <label class="item item-text-wrap">
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.f}}</span>
+                    <div class="item" ng-repeat="memo in records.tRecords | filter: { type: 'memo' } | memoFilter" ng-show="checkMemo()"><small>{{memo.event}}</small></div>
                 </label>
             </div>
         </div>
         <div class="card">
             <div class="item item-divider">
-                记账者信息
+                {{lang(localInfo.lang).home.g}}
             </div>
             <div class="list list-inset">
                 <label class="item item-avatar">
                     <img ng-src={{localInfo.icon}}>
-                    <p class="title">用户名</p>
+                    <p class="title">{{lang(localInfo.lang).home.h}}</p>
                     <p class="content">{{localInfo.username}}</p>
-                    <p class="title">年收入</p> 
+                    <p class="title">{{lang(localInfo.lang).home.i}}</p> 
                     <p class="content">{{localInfo.income}}</p>
                 </label>
             </div>

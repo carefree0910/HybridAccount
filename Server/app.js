@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var assert = require('assert');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -10,6 +11,9 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var config = require('./config');
 var authenticate = require('./authenticate');
+
+mongoose.Promise = require('bluebird');
+// assert.equal(query.exec().constructor, require('bluebird'));
 
 mongoose.connect(config.mongoUrl);
 var db = mongoose.connection;
@@ -71,6 +75,9 @@ if (app.get('env') === 'development') {
             message: err.message,
             error: err
         });
+        console.log("3333333333333333333333333333333333333333333333333");
+        console.log(err);
+        console.log("3333333333333333333333333333333333333333333333333");
     });
 }
 

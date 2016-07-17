@@ -1,11 +1,17 @@
 {
     "jscodehints.detectedExclusions": [
-        "D:/Compute/Web/Work/Account/www/js/controllers.js",
-        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-camera/www/Camera.js",
-        "D:/Compute/Web/Work/Blend Account/Main/www/js/controllers.js",
-        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-device/www/device.js",
-        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-image-picker/www/imagepicker.js",
-        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-splashscreen/www/splashscreen.js",
-        "D:/Compute/Web/Work/Blend Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-statusbar/www/statusbar.js"
+        "D:/Compute/Web/Work/Hybrid Account/www/js/controllers.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-camera/www/Camera.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/www/js/controllers.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-device/www/device.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-image-picker/www/imagepicker.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-vibration/www/vibration.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-x-toast/test/tests.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/cordova-plugin-x-toast/www/Toast.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/de.appplant.cordova.plugin.local-notification/www/local-notification-core.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/de.appplant.cordova.plugin.local-notification/www/local-notification-util.js",
+        "D:/Compute/Web/Work/Hybrid Account/Main/platforms/android/build/intermediates/assets/debug/www/plugins/de.appplant.cordova.plugin.local-notification/www/local-notification.js"
     ]
 }

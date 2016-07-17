@@ -15,7 +15,7 @@ recRouter.route('/')
         if (err) return next(err);
         res.json(user.records);
     });
-})
+});
 
 recRouter.route('/m')
 
@@ -31,6 +31,34 @@ recRouter.route('/m')
     });
 });
 
+recRouter.route('/mr')
+
+.put(Verify.verifyOrdinaryUser, function(req, res, next) {
+    User.findById(req.decoded._id, function (err, user) {
+        if (err) return next(err);
+        user.records.mrRecords = req.body;
+        user.save(function(err, resp) {
+            if (err) return next(err);
+            console.log('Updated mrRecords!');
+            res.json(resp);
+        });
+    });
+});
+
+recRouter.route('/mt')
+
+.put(Verify.verifyOrdinaryUser, function(req, res, next) {
+    User.findById(req.decoded._id, function (err, user) {
+        if (err) return next(err);
+        user.records.mtRecords = req.body;
+        user.save(function(err, resp) {
+            if (err) return next(err);
+            console.log('Updated mtRecords!');
+            res.json(resp);
+        });
+    });
+});
+
 recRouter.route('/t')
 
 .put(Verify.verifyOrdinaryUser, function(req, res, next) {
@@ -40,6 +68,20 @@ recRouter.route('/t')
         user.save(function(err, resp) {
             if (err) return next(err);
             console.log('Updated tRecords!');
+            res.json(resp);
+        });
+    });
+});
+
+recRouter.route('/tr')
+
+.put(Verify.verifyOrdinaryUser, function(req, res, next) {
+    User.findById(req.decoded._id, function (err, user) {
+        if (err) return next(err);
+        user.records.trRecords = req.body;
+        user.save(function(err, resp) {
+            if (err) return next(err);
+            console.log('Updated trRecords!');
             res.json(resp);
         });
     });
@@ -64,10 +106,24 @@ recRouter.route('/tp')
 .put(Verify.verifyOrdinaryUser, function(req, res, next) {
     User.findById(req.decoded._id, function (err, user) {
         if (err) return next(err);
-        user.records.tPoints = req.body.points;
+        user.records.tPoints = req.body;
         user.save(function(err, resp) {
             if (err) return next(err);
             console.log('Updated tPoints!');
+            res.json(resp);
+        });
+    });
+});
+
+recRouter.route('/all')
+
+.put(Verify.verifyOrdinaryUser, function(req, res, next) {
+    User.findById(req.decoded._id, function (err, user) {
+        if (err) return next(err);
+        user.records = req.body;
+        user.save(function(err, resp) {
+            if (err) return next(err);
+            console.log('Updated all records!');
             res.json(resp);
         });
     });

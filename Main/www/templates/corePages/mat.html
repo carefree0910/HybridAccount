@@ -1,0 +1,42 @@
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mat.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+<!--
+        <div class="card">
+            <h1 class="title">Debug Card</h1>
+            <p>Records Length: {{records.length}}</p>
+            <p>Content: {{records}}</p>
+        </div>
+-->
+        <div class="row">
+            <label class="col center">{{lang(localInfo.lang).mat.b}}</label>
+            <label class="col center">{{lang(localInfo.lang).mat.c}}</label>
+        </div>
+        <div class="row">
+            <select class="col" ng-model="order">
+                <option value="date">{{lang(localInfo.lang).mat.d}}</option>
+                <option value="sum">{{lang(localInfo.lang).mat.e}}</option>
+            </select>
+            <select class="col" ng-model="orderText">
+                <option value="{{order}}">{{lang(localInfo.lang).mat.f}}</option>
+                <option value="{{'-' + order}}">{{lang(localInfo.lang).mat.g}}</option>
+            </select>
+        </div>
+        <ion-list show-delete="showAllDelete">
+            <ion-item collection-repeat="rec in records | filter: {type: type} | orderBy: orderText" ng-click="loadTemplate(rec.id)">
+                <h1 class="title">{{rec.date | date}}</h1>
+                <p>{{lang(localInfo.lang).mat.h}}：{{rec.event}}</p>
+                <p ng-show="type === 'output'">{{lang(localInfo.lang).mat.i}}：{{rec.unit_price}}</p>
+                <p ng-show="type === 'output'">{{lang(localInfo.lang).mat.j}}：{{rec.amount}}</p>
+                <p ng-show="type === 'income'">{{lang(localInfo.lang).mat.k}}：{{rec.unit_price}}</p>
+                <p>{{lang(localInfo.lang).mat.l}}：{{time(rec)}}</p>
+                <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mat.m}}</span></ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

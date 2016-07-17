@@ -1,37 +1,46 @@
-<ion-view view-title="财务记录查询">
+<ion-view view-title="{{lang(localInfo.lang).mc.a}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
         </div>
     </ion-nav-buttons>
     <ion-content>
+<!--
+        <div class="card">
+            <h1 class="title">Debug Card</h1>
+            <p>Records Length: {{records.length}}</p>
+            <p>Content: {{records}}</p>
+        </div>
+-->
         <div class="row">
-            <label class="col center">查询类别</label>
-            <label class="col center">排列方式</label>
-            <label class="col center">排列顺序</label>
+            <label class="col center">{{lang(localInfo.lang).mc.b}}</label>
+            <label class="col center">{{lang(localInfo.lang).mc.c}}</label>
+            <label class="col center">{{lang(localInfo.lang).mc.d}}</label>
         </div>
         <div class="row">
             <select class="col" ng-model="filtText">
-                <option value="output">支出</option>
-                <option value="income">收入</option>
+                <option value="output">{{lang(localInfo.lang).mc.e}}</option>
+                <option value="income">{{lang(localInfo.lang).mc.f}}</option>
             </select>
             <select class="col" ng-model="order">
-                <option value="date">时间</option>
-                <option value="sum">金额</option>
+                <option value="date">{{lang(localInfo.lang).mc.g}}</option>
+                <option value="sum">{{lang(localInfo.lang).mc.h}}</option>
             </select>
             <select class="col" ng-model="orderText">
-                <option value="{{order}}">顺序</option>
-                <option value="{{'-' + order}}">倒序</option>
+                <option value="{{order}}">{{lang(localInfo.lang).mc.i}}</option>
+                <option value="{{'-' + order}}">{{lang(localInfo.lang).mc.j}}</option>
             </select>
         </div>
         <ion-list show-delete="showAllDelete">
-            <ion-item ng-repeat="rec in records | filter: {type: filtText} | orderBy: orderText" href="#/app/mc/{{rec.id}}">
+            <ion-item collection-repeat="rec in records | filter: {type: filtText} | orderBy: orderText" href="#/app/mc/{{rec.id}}">
                 <h1 class="title">{{rec.date | date}}</h1>
-                <p>事件：{{rec.event}}</p>
-                <p>总数额：{{rec.sum}}</p>
-                <p>具体时间：{{time(rec)}}</p>
+                <p>{{lang(localInfo.lang).mc.k}}：{{rec.event}}</p>
+                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mc.l}}：{{rec.unit_price}}</p>
+                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mc.m}}：{{rec.amount}}</p>
+                <p ng-show="filtText === 'income'">{{lang(localInfo.lang).mc.n}}：{{rec.unit_price}}</p>
+                <p>{{lang(localInfo.lang).mc.o}}：{{time(rec)}}</p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> 删除</span></ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mc.p}}</span></ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>

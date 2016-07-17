@@ -1,11 +1,13 @@
 angular.module('Account.controllers', [])
 
-.controller('AppCtrl', function($resource, baseURL, $rootScope, $scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $ionicPopup, $ionicPopover, $cordovaCamera, $cordovaImagePicker, $cordovaToast, localRecordFactory, userFactory, authFactory, localInfo, loginData, mRecords, tRecords, tARecords) {
+.controller('AppCtrl', function($state, $rootScope, $resource, baseURL, $scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $ionicPopup, $ionicPopover, $cordovaCamera, $cordovaImagePicker, $cordovaToast, localRecordFactory, cloudRecordFactory, userFactory, authFactory, localInfo, loginData, records, regToastType, loginToastType, settingToastType, uploadToastType, downloadToastType, lang) {
 
     $scope.loggedIn = false;
     $scope.registration = {};
     $scope.loginData = loginData;
     $scope.localInfo = localInfo;
+    $scope.tmpInfo = { "lang": localInfo.lang };
+    $scope.lang = lang;
     
     if (authFactory.isAuthenticated()) {
         $scope.loggedIn = true;
@@ -25,6 +27,7 @@ angular.module('Account.controllers', [])
         $scope.loginData.username = $scope.registration.username;
         $scope.loginData.password = $scope.registration.password;
         authFactory.register($scope.registration);
+        authFactory.login($scope.loginData);
         $scope.closeRegister();
     };
     $scope.closeRegister = function () {
@@ -33,10 +36,9 @@ angular.module('Account.controllers', [])
 
     $rootScope.$on('registration:Successful', function () {
         $scope.loggedIn = authFactory.isAuthenticated();
-        $scope.localInfo.username = authFactory.getUsername();
         $ionicPlatform.ready(function () {
             $cordovaToast
-                .showLongBottom('注册成功 !')
+                .showLongBottom(regToastType("success"))
                 .then(
                     function (success) {}, 
                     function (error) {}
@@ -68,10 +70,11 @@ angular.module('Account.controllers', [])
     
     $rootScope.$on('login:Successful', function () {
         $scope.loggedIn = authFactory.isAuthenticated();
+        $scope.tmpInfo.username = authFactory.getUsername();
         $scope.localInfo.username = authFactory.getUsername();
         $ionicPlatform.ready(function () {
             $cordovaToast
-                .showLongBottom('登录成功 !')
+                .showLongBottom(loginToastType("success"))
                 .then(
                     function (success) {}, 
                     function (error) {}
@@ -88,16 +91,25 @@ angular.module('Account.controllers', [])
         $scope.setting_modal.show();
     };
     $scope.doSetting = function() {
+        
+        $scope.localInfo.lang = $scope.tmpInfo.lang;
+        $scope.localInfo.icon = $scope.tmpInfo.icon;
+        $scope.localInfo.username = $scope.tmpInfo.username;
+        $scope.localInfo.income = $scope.tmpInfo.income;
         $localStorage.storeObject('localInfo', $scope.localInfo);
+        
+        $rootScope.$broadcast("$ionicView.beforeEnter");
+        
         $ionicPlatform.ready(function () {
-            $scope.closeSetting();
             $cordovaToast
-                .showLongBottom('设置成功 !')
+                .showLongBottom(settingToastType("success"))
                 .then(
                     function (success) {}, 
                     function (error) {}
                 );
+            $scope.closeSetting();
         });
+        
     };
     $scope.closeSetting = function() {
         $scope.setting_modal.hide();
@@ -105,11 +117,9 @@ angular.module('Account.controllers', [])
     
     $ionicPopover.fromTemplateUrl('templates/sync-popover.html', {
         scope: $scope
-    }).then(
-        function(popover) {
-            $scope.popover = popover;
-        }
-    );
+    }).then(function(popover) {
+        $scope.popover = popover;
+    });
     $scope.sync = function($event) {
         $scope.popover.show($event);
     };
@@ -118,9 +128,7 @@ angular.module('Account.controllers', [])
     };
     
     var upload_info = function() {
-        $resource(baseURL + "users/info", null, {
-            'update': { method: 'PUT' }
-        }).update($scope.localInfo);
+        cloudRecordFactory.upload_info($scope.localInfo);
     };
     var download_info = function() {
         $resource(baseURL + "users/info").get(function(res) {
@@ -131,49 +139,49 @@ angular.module('Account.controllers', [])
     };
     
     var upload_records = function() {
-        $resource(baseURL + "records/m", null, {
-            'update': { method: 'PUT' }
-        }).update(mRecords);
-        $resource(baseURL + "records/t", null, {
-            'update': { method: 'PUT' }
-        }).update(tRecords);
-        $resource(baseURL + "records/ta", null, {
-            'update': { method: 'PUT' }
-        }).update(tARecords);
-        $resource(baseURL + "records/tp", null, {
-            'update': { method: 'PUT' }
-        }).update({ "points": localRecordFactory.getPoints() });
+        cloudRecordFactory.upload_allRec(records);
     };
-    var download_records = function() {
-        
-        mRecords.length = 0;
-        tRecords.length = 0;
-        tARecords.length = 0;
-        
+    var download_records = function() {        
         $resource(baseURL + "records/").get(function(res) {
             
+            records.mRecords.length = 0;
+            records.tRecords.length = 0;
+            records.tARecords.length = 0;
+            records.mrRecords.length = 0;
+            records.trRecords.length = 0;
+            records.mtRecords.length = 0;
+            
             for (var i = 0; i < res.mRecords.length; i++)
-                mRecords.push(res.mRecords[i])
+                records.mRecords.push(res.mRecords[i]);
             for (var i = 0; i < res.tRecords.length; i++)
-                tRecords.push(res.tRecords[i])
+                records.tRecords.push(res.tRecords[i]);
             for (var i = 0; i < res.tARecords.length; i++)
-                tARecords.push(res.tARecords[i])
+                records.tARecords.push(res.tARecords[i]);
+            for (var i = 0; i < res.mrRecords.length; i++)
+                records.mrRecords.push(res.mrRecords[i]);
+            for (var i = 0; i < res.trRecords.length; i++)
+                records.trRecords.push(res.trRecords[i]);
+            for (var i = 0; i < res.mtRecords.length; i++)
+                records.mtRecords.push(res.mtRecords[i]);
+            records.tPoints = res.tPoints;
                 
-            $localStorage.storeObject('mRecords', mRecords);
-            $localStorage.storeObject('tRecords', tRecords);
-            $localStorage.storeObject('tARecords', tARecords);
-            $localStorage.storeObject('tPoints', res.tPoints);
+            $localStorage.storeObject('mRecords', records.mRecords);
+            $localStorage.storeObject('tRecords', records.tRecords);
+            $localStorage.storeObject('tARecords', records.tARecords);
+            $localStorage.storeObject('mrRecords', records.mrRecords);
+            $localStorage.storeObject('trRecords', records.trRecords);
+            $localStorage.storeObject('mtRecords', records.mtRecords);
+            $localStorage.storeObject('tPoints', records.tPoints);
             
         });
-        
-    }
+    };
     
     $scope.upload = function() {
         upload_info();
         upload_records();
         $ionicPlatform.ready(function () {
             $cordovaToast
-                .showLongBottom('上传成功 !')
+                .showLongBottom(uploadToastType("success"))
                 .then(
                     function (success) {}, 
                     function (error) {}
@@ -182,21 +190,24 @@ angular.module('Account.controllers', [])
         $scope.closePopover();
     };
     $scope.download = function() {
+        
         download_info();
         download_records();
+        $rootScope.$broadcast("$ionicView.beforeEnter");
+        
         $ionicPlatform.ready(function () {
             $cordovaToast
-                .showLongBottom('下载成功 !')
+                .showLongBottom(downloadToastType("success"))
                 .then(
                     function (success) {}, 
                     function (error) {}
                 );
         });
         $scope.closePopover();
-    };    
+    };
     
     $ionicPlatform.ready(function () {
-        var options = {
+        /*var options = {
             quality: 80,
             destinationType: Camera.DestinationType.DATA_URL,
             sourceType: Camera.PictureSourceType.CAMERA,
@@ -206,27 +217,27 @@ angular.module('Account.controllers', [])
             targetHeight: 100,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
-        };
+        };*/
         var gal_options = {
             maximumImagesCount: 1,
             width: 100,
             height: 100,
             quality: 80
         };
-        $scope.takePicture = function() {
+        /*$scope.takePicture = function() {
             $cordovaCamera.getPicture(options).then(
                 function(imageData) {
-                    $scope.settingData.icon = "data:image/jpeg;base64," + imageData;
+                    $scope.tmpInfo.icon = "data:image/jpeg;base64," + imageData;
                 }, 
                 function(err) {
                     console.log(err);
                 });
             $scope.registerform.show();
-        };
+        };*/
         $scope.getPicture = function() {
             $cordovaImagePicker.getPictures(gal_options).then(
                 function (results) {
-                    $scope.localInfo.icon = results[0];
+                    $scope.tmpInfo.icon = results[0];
                 }, 
                 function (error) {
                     console.log(err);
@@ -236,140 +247,256 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('IndexController', function($resource, $scope, baseURL, $ionicPlatform, $cordovaToast, localRecordFactory, mRecords, tRecords, tARecords, tPoints, localInfo) {
+.controller('homeController', function($scope, records, localInfo, formatNumber, lang) {
 
-    $scope.baseURL = baseURL;
     $scope.localInfo = localInfo;
-
-    $scope.mLength = function() {
-        return mRecords.length;
-    }
-    $scope.ttLength = function() {
-        var rs = 0;
-        for (var i = 0; i < tRecords.length; i++) {
-            if (tRecords[i].type === "task")
-                rs += 1;
-        }
-        return rs;
-    };
-    $scope.tdLength = function() {
-        var rs = 0;
-        for (var i = 0; i < tRecords.length; i++) {
-            if (tRecords[i].type === "desire")
-                rs += 1;
-        }
-        return rs;
-    };
+    $scope.lang = lang;
     
-    $scope.income = function() {
-        var amount = 0;
-        for (var i = 0; i < mRecords.length; i++) {
-            var tmpRec = mRecords[i];
-            if (tmpRec.type === "income")
-                amount += tmpRec.sum;
-        }
-        return amount;
-    };
+    $scope.records = records;
+    
     $scope.output = function() {
         var amount = 0;
-        for (var i = 0; i < mRecords.length; i++) {
-            var tmpRec = mRecords[i];
+        for (var i = 0; i < records.mRecords.length; i++) {
+            var tmpRec = records.mRecords[i];
             if (tmpRec.type === "output")
                 amount += tmpRec.sum;
         }
-        return amount;
+        return formatNumber(amount, 2);
     };
-    $scope.points = function() {
-        return localRecordFactory.getPoints();
-    }
+    $scope.income = function() {
+        var amount = 0;
+        for (var i = 0; i < records.mRecords.length; i++) {
+            var tmpRec = records.mRecords[i];
+            if (tmpRec.type === "income")
+                amount += tmpRec.sum;
+        }
+        return formatNumber(amount, 2);
+    };
+
+    $scope.checkMemo = function() {
+        var exist = false;
+        for (var i = 0; i < records.tRecords.length; i++) {
+            if (records.tRecords[i].type === "memo") {
+                exist = true; break;
+            }
+                
+        }
+        return exist;
+    };
 
 })
 
-.controller('maController', function($scope, baseURL, $ionicPlatform, $cordovaToast, localRecordFactory, cloudRecordFactory, forms, mRecords) {
+.controller('recentController', function($filter, $scope, $ionicModal, localRecordFactory, localInfo, mrRecords, trRecords, moneyType, taskType, doneType, textType, time, formatNumber, lang) {
     
-    $scope.baseURL = baseURL;
-    $scope.forms = forms;
-    $scope.records = mRecords;
+    localRecordFactory.refreshRRecords();
+    
+    $scope.typeText = "money";
+    $scope.mrRecords = mrRecords;
+    $scope.trRecords = trRecords;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.moneyType = moneyType;
+    $scope.taskType = taskType;
+    $scope.doneType = doneType;
+    $scope.textType = textType;
+    
+    $scope.time = time;
+    
+    $scope.doneTimes = function(rec) {
+        var rs = "";
+        for (var i = 0; i < rec.done_times.length; i++) {
+            var date = new Date();
+            date.setTime(rec.done_times[i]);
+            rs += $filter('date') (date, 'HH:mm') + " ";
+        }
+        return rs;
+    };
+    
+    $scope.sumOutput = function(typeText) {
+        if (typeText === "money") {
+            var amount = 0;
+            for (var i = 0; i < mrRecords.length; i++) {
+                var rec = mrRecords[i];
+                if (rec.type === "output")
+                    amount += rec.sum;
+            }
+            return formatNumber(amount, 2);
+        }
+    };
+    $scope.sumIncome = function(typeText) {
+        if (typeText === "money") {
+            var amount = 0;
+            for (var i = 0; i < mrRecords.length; i++) {
+                var rec = mrRecords[i];
+                if (rec.type === "income")
+                    amount += rec.sum;
+            }
+            return formatNumber(amount, 2);
+        }
+    };
+    $scope.sumTask = function(typeText) {
+        if (typeText === "task") {
+            var points = 0;
+            for (var i = 0; i < trRecords.length; i++) {
+                var rec = trRecords[i];
+                if (rec.type === "task")
+                    points += rec.points * rec.amount;
+            }
+            return formatNumber(points, 2);
+        }
+    };
+    $scope.sumDesire = function(typeText) {
+        if (typeText === "task") {
+            var points = 0;
+            for (var i = 0; i < trRecords.length; i++) {
+                var rec = trRecords[i];
+                if (rec.type === "desire")
+                    points += rec.points * rec.amount;
+            }
+            return formatNumber(points, 2);
+        }
+    };
+    
+})
+
+.controller('maController', function($state, $scope, localRecordFactory, cloudRecordFactory, formFactory, localInfo, mRecords, mtRecords, doMoneyFormAdd, lang) {
+    
+    $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.forms = formFactory.getMForms(localInfo.lang);
+    });
+    
+    $scope.tab = 1;
+    $scope.filtText = "output";
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.select = function(setTab) {
+        
+        $scope.tab = setTab;
+
+        if (setTab === 1) {
+            $scope.filtText = "output";
+        } else if (setTab === 2) {
+            $scope.filtText = "income";
+        } else {
+            console.log("Error: No implementation in maController of tab: ", setTab);
+        }
+        
+    };
+    $scope.isSelected = function(checkTab) {
+        return ($scope.tab === checkTab);
+    };
     
     $scope.doAdd = function(type) {
-        var newMRec = {
-            "id": 0,
-            "type": "money records",
-            "content": $scope.records
-        };
-        var date = new Date();
-        var info = {
-            "id": $scope.records.length,
-            "type": type,
-            "event": "",
-            "amount": 0,
-            "unit_price": 0,
-            "sum": 0,
-            "date": date,
-            "milli": date.getTime()
-        };
-        var form_idx = 0, amount_idx = 0, per_idx = 0, event_idx = 0;
-        var err_flag = false, err_msg = "";
-        var err_type = "";
-
-        if (type === "output") {
-            form_idx = 0; event_idx = 2;
-            amount_idx = 1; per_idx = 0;
-            err_type = "单价";
-        } else {
-            form_idx = 1; event_idx = 1;
-            amount_idx = -1; per_idx = 0;
-            err_type = "数额";
-        }
-
-        info.event = $scope.forms[form_idx].contents[event_idx].body;
-        if (amount_idx < 0)
-            info.amount = 1;
-        else
-            info.amount = parseInt($scope.forms[form_idx].contents[amount_idx].body);
-        info.unit_price = parseFloat($scope.forms[form_idx].contents[per_idx].body);
-
-        if (isNaN(info.amount)) {
-            err_flag = true;
-            err_msg += "\n请输入正确的数量 !"
-        }
-        if (isNaN(info.unit_price)) {
-            err_flag = true;
-            err_msg += "\n请输入正确的" + err_type + " !"
-        }
-
-        if (!err_flag) {
+        doMoneyFormAdd(type, $scope.forms, mRecords, "记录", function(info) {
             info.sum = info.amount * info.unit_price;
-            $scope.records.push(info);
-            localRecordFactory.updateMRecords($scope.records);
-        }
-
-        $ionicPlatform.ready(function() {
-            if (!err_flag) {
-                $cordovaToast
-                    .showLongBottom('记录成功 !')
-                    .then(
-                        function (success) {}, 
-                        function (error) {}
-                    );
-            } else {
-                $cordovaToast
-                    .show('记录失败 !' + err_msg, 'long', 'center')
-                    .then(
-                        function (success) {}, 
-                        function (error) {}
-                    );
-            }
+            mRecords.push(info);
+            localRecordFactory.updateRRecords(info, "money");
+            localRecordFactory.updateMRecords(mRecords);
+        });
+    };
+    $scope.saveTemplate = function(type) {
+        doMoneyFormAdd(type, $scope.forms, mtRecords, "保存", function(info) {
+            info.sum = info.amount * info.unit_price;
+            mtRecords.push(info);
+            localRecordFactory.updateMtRecords(mtRecords);
         });
     };
     
 })
 
-.controller('mcController', function($scope, baseURL, $filter, $ionicPlatform, $ionicPopup, $ionicListDelegate, $cordovaToast, localRecordFactory, cloudRecordFactory, mRecords, time, doDel) {
+.controller('matController', function($state, $scope, $filter, $ionicPopup, $ionicListDelegate, localRecordFactory, cloudRecordFactory, localInfo, mtRecords, time, doDel, type, lang) {
     
-    $scope.baseURL = baseURL;
+    $scope.records = mtRecords;
+    $scope.showAllDelete = false;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    var tmpOt = localRecordFactory.tmpOutputTemplate;
+    var tmpIt = localRecordFactory.tmpIncomeTemplate;
+    tmpOt.triggered = false; tmpIt.triggered = false;
+    
+    $scope.type = type;
+    $scope.order = "date";
+    $scope.orderText = "-date";
+    
+    $scope.time = time;
+    
+    $scope.toggleDel = function() {
+        $scope.showAllDelete = !$scope.showAllDelete;
+    };
+    $scope.doDel = function(id, filtText) {
+        doDel("templates", "", id, "删除", function() {});
+        $scope.showAllDelete = false;
+    };
+    
+    $scope.loadTemplate = function(id) {
+        
+        var tmp;
+        var rec = mtRecords[id];
+        
+        if (rec.type === "output")
+            tmp = tmpOt;
+        else
+            tmp = tmpIt;
+        
+        tmp.triggered = true;
+        tmp.event = rec.event;
+        tmp.amount = rec.amount;
+        tmp.unit_price = rec.unit_price;
+        
+        $state.go('app.mata');
+        
+    };
+    
+})
+
+.controller('mataController', function($state, $scope, $ionicHistory, localRecordFactory, cloudRecordFactory, localInfo, mRecords, mtRecords, doMoneyTemplateAdd, lang) {
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.tmpOutput = localRecordFactory.tmpOutputTemplate;
+    $scope.tmpIncome = localRecordFactory.tmpIncomeTemplate;
+    
+    $scope.doAdd = function(type) {
+        doMoneyFormAdd(type, $scope.forms, mRecords, function(info) {
+            info.sum = info.amount * info.unit_price;
+            mRecords.push(info);
+            localRecordFactory.updateRRecords(info, "money");
+            localRecordFactory.updateMRecords(mRecords);
+        });
+    };
+    
+    $scope.finishLoadTemplate = function(type) {
+        var tmp;
+        if (type === "output")
+            tmp = $scope.tmpOutput;
+        else
+            tmp = $scope.tmpIncome;
+        doMoneyTemplateAdd(type, tmp, mRecords, function(info) {
+            info.sum = info.amount * info.unit_price;
+            mRecords.push(info);
+            localRecordFactory.updateRRecords(info, "money");
+            localRecordFactory.updateMRecords(mRecords);
+            $ionicHistory.goBack();
+        });
+        
+    };
+    
+})
+
+.controller('mcController', function($scope, $filter, $ionicPopup, $ionicListDelegate, localRecordFactory, cloudRecordFactory, localInfo, mRecords, time, doDel, lang) {
+
     $scope.records = mRecords;
     $scope.showAllDelete = false;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
     
     $scope.filtText = "output";
     $scope.order = "date";
@@ -387,10 +514,12 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mceController', function($scope, baseURL, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, mRecords, textType, id) {
+.controller('mceController', function($scope, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, localInfo, mRecords, textType, modifyToastType, meErrMsg, id, lang) {
     
-    $scope.baseURL = baseURL;
     $scope.record = {};
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
     
     var rec = mRecords[id];
     $scope.record.id = rec.id;
@@ -410,13 +539,13 @@ angular.module('Account.controllers', [])
         $scope.record.amount = parseInt($scope.record.amount);
         $scope.record.unit_price = parseFloat($scope.record.unit_price);
         
-        if (isNaN($scope.record.amount)) {
+        if (isNaN($scope.record.amount) || $scope.record.amount <= 0) {
             err_flag = true;
-            err_msg += "\n请输入正确的数量 !";
+            err_msg += meErrMsg("amount");
         }
         if (isNaN($scope.record.unit_price)) {
             err_flag = true;
-            err_msg += "\n请输入正确的" + $scope.textType() + " !";
+            err_msg += meErrMsg("unit_price") + $scope.textType($scope.record.type) + " !";
         }
         
         if (!err_flag) {
@@ -427,16 +556,16 @@ angular.module('Account.controllers', [])
         
         $ionicPlatform.ready(function () {
             if (!err_flag) {
-                $ionicHistory.goBack();
                 $cordovaToast
-                    .showLongBottom('修改成功 !')
+                    .showLongBottom(modifyToastType("success"))
                     .then(
                         function (success) {}, 
                         function (error) {}
                     );
+                $ionicHistory.goBack();
             } else {
                 $cordovaToast
-                    .show('修改失败 !' + err_msg, 'long', 'center')
+                    .show(modifyToastType("failed") + err_msg, 'long', 'center')
                     .then(
                         function (success) {}, 
                         function (error) {}
@@ -448,18 +577,156 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('taController', function ($scope, baseURL, $ionicPlatform, $cordovaToast, localRecordFactory, cloudRecordFactory, forms, tRecords) {
+.controller('mtController', function($stateParams, $scope, $filter, $ionicPopup, $ionicListDelegate, localRecordFactory, cloudRecordFactory, localInfo, mtRecords, date, time, doDel, lang) {
     
-    $scope.baseURL = baseURL;
-    $scope.forms = forms;
+    $scope.records = mtRecords;
+    $scope.showAllDelete = false;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.filtText = "output";
+    $scope.order = "date";
+    $scope.orderText = "-date";
+    
+    $scope.date = date;
+    $scope.time = time;
+    
+    $scope.toggleDel = function() {
+        $scope.showAllDelete = !$scope.showAllDelete;
+    };
+    $scope.doDel = function(id, filtText) {
+        doDel("templates", "", id, "删除", function() {});
+        $scope.showAllDelete = false;
+    };
+    
+})
+
+.controller('mteController', function($state, $scope, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, localInfo, mtRecords, textType, modifyToastType, meErrMsg, id, lang) {
+    
+    $scope.record = {};
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    var tmpOt = localRecordFactory.tmpOutputTemplate;
+    var tmpIt = localRecordFactory.tmpIncomeTemplate;
+    tmpOt.triggered = false; tmpIt.triggered = false;
+    
+    var rec = mtRecords[id];
+    $scope.record.id = rec.id;
+    $scope.record.type = rec.type;
+    $scope.record.event = rec.event;
+    $scope.record.amount = rec.amount;
+    $scope.record.unit_price = rec.unit_price;
+    var date = new Date(), milli = rec.milli;
+    date.setTime(milli);
+    $scope.record.date = date;
+    
+    $scope.textType = textType;
+    
+    $scope.finishEdit = function() {
+        
+        var err_flag = false, err_msg = "";
+        $scope.record.amount = parseInt($scope.record.amount);
+        $scope.record.unit_price = parseFloat($scope.record.unit_price);
+        
+        if (isNaN($scope.record.amount) || $scope.record.amount < 0) {
+            err_flag = true;
+            err_msg += meErrMsg("amount");
+        }
+        if (isNaN($scope.record.unit_price)) {
+            err_flag = true;
+            err_msg += meErrMsg("unit_price") + $scope.textType($scope.record.type) + " !";
+        }
+        
+        if (!err_flag) {
+            $scope.record.milli = $scope.record.date.getTime();
+            $scope.record.sum = $scope.record.amount * $scope.record.unit_price;
+            localRecordFactory.editFromMtRec(id, $scope.record);
+        } 
+        
+        $ionicPlatform.ready(function () {
+            if (!err_flag) {
+                $cordovaToast
+                    .showLongBottom(modifyToastType("success"))
+                    .then(
+                        function (success) {}, 
+                        function (error) {}
+                    );
+            } else {
+                $cordovaToast
+                    .show(modifyToastType("failed") + err_msg, 'long', 'center')
+                    .then(
+                        function (success) {}, 
+                        function (error) {}
+                    );
+            }
+        s});
+        
+    };
+    $scope.loadTemplate = function() {
+        
+        var tmp;
+        if (rec.type === "output")
+            tmp = tmpOt;
+        else
+            tmp = tmpIt;
+        
+        tmp.triggered = true;
+        tmp.event = $scope.record.event;
+        tmp.amount = $scope.record.amount;
+        tmp.unit_price = $scope.record.unit_price;
+        
+        $state.go('app.mata');
+        
+    };
+    
+})
+
+.controller('mgController', function($scope, localInfo, mRecords, time, lang) {
+    
+    $scope.records = mRecords;
+    $scope.time = time;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+})
+
+.controller('taController', function ($scope, $ionicPlatform, $cordovaToast, localRecordFactory, cloudRecordFactory, formFactory, localInfo, tRecords, addToastType, teErrMsg, lang) {
+    
+    $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.forms = formFactory.getTForms(localInfo.lang);
+    });
+    
     $scope.records = tRecords;
+    $scope.tab = 1;
+    $scope.filtText = "task";
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.select = function(setTab) {
+        
+        $scope.tab = setTab;
+
+        if (setTab === 1) {
+            $scope.filtText = "task";
+        } else if (setTab === 2) {
+            $scope.filtText = "desire";
+        } else if (setTab === 3) {
+            $scope.filtText = "memo";
+        } else {
+            console.log("Error: No implementation in taController of tab: ", setTab);
+        }
+        
+    };
+    $scope.isSelected = function(checkTab) {
+        return ($scope.tab === checkTab);
+    };
     
     $scope.doAdd = function(type) {
-        var newTRec = {
-            "id": 1,
-            "type": "task records",
-            "content": $scope.records
-        };
         var date = new Date();
         var info = {
             "id": $scope.records.length,
@@ -473,16 +740,24 @@ angular.module('Account.controllers', [])
         };
         var form_idx = 0;
         var err_flag = false, err_msg = "";
+        
+        if (type != "memo") {
+            
+            if (type === "desire")
+                form_idx = 1;
+            
+            info.event = $scope.forms[form_idx].contents[0].body;
+            info.points = parseFloat($scope.forms[form_idx].contents[1].body);
 
-        if (type === "desire")
-            form_idx = 1
-
-        info.event = $scope.forms[form_idx].contents[0].body;
-        info.points = parseFloat($scope.forms[form_idx].contents[1].body);
-
-        if (isNaN(info.points)) {
-            err_flag = true;
-            err_msg = "请输入正确的点数 !"
+            if (isNaN(info.points)) {
+                err_flag = true;
+                err_msg = teErrMsg("points");
+            }
+            
+        } else {
+            
+            info.event = $scope.forms[2].contents[0].body;
+            
         }
 
         if (!err_flag) {
@@ -493,14 +768,14 @@ angular.module('Account.controllers', [])
         $ionicPlatform.ready(function() {
             if (!err_flag) {
                 $cordovaToast
-                    .showLongBottom('添加成功 !')
+                    .showLongBottom(addToastType("success"))
                     .then(
                         function (success) {}, 
                         function (error) {}
                     );
             } else {
                 $cordovaToast
-                    .show('添加失败 !\n' + err_msg, 'long', 'center')
+                    .show(addToastType("failed") + err_msg, 'long', 'center')
                     .then(
                         function (success) {}, 
                         function (error) {}
@@ -511,11 +786,13 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('tcController', function($scope, baseURL, tRecords, taskType, doneType, textType, date, time, doDel) {
+.controller('tcController', function($scope, localInfo, tRecords, taskType, doneType, textType, date, time, doDel, lang) {
     
-    $scope.baseURL = baseURL;
     $scope.showAllDelete = false;
     $scope.records = tRecords;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
     
     $scope.filtText = "task";
     $scope.taskType = taskType;
@@ -535,72 +812,66 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('tceController', function($scope, baseURL, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, tRecords, tARecords, tPoints, doDel, id) {
+.controller('tceController', function($scope, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, localInfo, tRecords, tARecords, tPoints, injectInfo, taskType, textType, doneType, doneText, archiveType, doDel, modifyToastType, tceErrMsg, tceDoneText, id, lang) {
     
-    $scope.baseURL = baseURL;
     $scope.record = {};
     
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.taskType = taskType;
+    $scope.textType = textType;
+    $scope.doneType = doneType;
+    $scope.doneText = doneText;
+    $scope.archiveType = archiveType;
+    
     var rec = tRecords[id];
-    var pt = 0, done_text = "";
-    $scope.record.id = rec.id;
-    $scope.record.type = rec.type;
-    $scope.record.event = rec.event;
-    $scope.record.points = rec.points;
-    $scope.record.amount = rec.amount;
+    var pt = 0;
+    injectInfo(rec, $scope.record);
     
     if ($scope.record.type === "task") {
         pt = rec.points;
-        $scope.taskType = "任务";
-        $scope.textType = "得点";
-        $scope.doneType = "完成次数";
-        $scope.doneText = "完成任务";
         $scope.btn_class = "button-balanced";
-        done_text = "记录成功 ! 点数 + " + $scope.record.points + " !";
     } else {
         pt = rec.points * -1;
-        $scope.taskType = "欲望";
-        $scope.textType = "失点";
-        $scope.doneType = "实现次数";
-        $scope.doneText = "实现欲望";
         $scope.btn_class = "button-assertive";
-        done_text = "记录成功 ! 点数 - " + $scope.record.points + " !";
     }
     
     $scope.finishEdit = function() {
         
         var err_flag = false, err_msg = "";
+        $scope.record.date = new Date();
+        $scope.record.milli = $scope.record.date.getTime();
         $scope.record.points = parseFloat($scope.record.points);
         $scope.record.amount = parseInt($scope.record.amount);
         
         if (isNaN($scope.record.points)) {
             err_flag = true;
-            err_msg += "\n请输入正确的点数 !";
+            err_msg += tceErrMsg("points");
         }
-        if ($scope.record.amount < 0) {
+        if (isNaN($scope.record.amount) || $scope.record.amount < 0) {
             err_flag = true;
-            err_msg += "\n请输入正确的次数 !";
+            err_msg += tceErrMsg("amount");
         }
         
         if (!err_flag) {
-            tPoints += $scope.record.amount * $scope.record.points - rec.amount * rec.points;
-            $scope.record.date = new Date();
-            $scope.record.milli = $scope.record.date.getTime();
+            tPoints += $scope.record.amount * $scope.record.points - rec.amount * rec.points;   
             localRecordFactory.updatePoints(tPoints);
             localRecordFactory.editFromTRec(id, $scope.record);
         } 
         
         $ionicPlatform.ready(function () {
             if (!err_flag) {
-                $ionicHistory.goBack();
                 $cordovaToast
-                    .showLongBottom('修改成功 !')
+                    .showLongBottom(modifyToastType("success"))
                     .then(
                         function (success) {}, 
                         function (error) {}
                     );
+                $ionicHistory.goBack();
             } else {
                 $cordovaToast
-                    .show('修改失败 !\n' + err_msg, 'long', 'center')
+                    .show(modifyToastType("failed") + err_msg, 'long', 'center')
                     .then(
                         function (success) {}, 
                         function (error) {}
@@ -610,31 +881,35 @@ angular.module('Account.controllers', [])
         
     };
     $scope.finishDone = function() {
+        
+        rec.date = new Date();
+        rec.milli = rec.date.getTime();
+        localRecordFactory.updateRRecords(rec, "task");
+        
         tPoints += pt;
-        rec.amount += 1;
-        var date = new Date();
-        var milli = date.getTime();
-        rec.done_times.push(milli);
-        rec.date = date;
-        rec.milli = milli;
+        $scope.record.date = new Date();
+        $scope.record.milli = $scope.record.date.getTime();
+        $scope.record.amount += 1;
+        $scope.record.done_times.push($scope.record.milli);
         localRecordFactory.updatePoints(tPoints);
-        localRecordFactory.editFromTRec(id, rec);
+        localRecordFactory.editFromTRec(id, $scope.record);
+        
         $ionicPlatform.ready(function() {
             $cordovaToast
-                .show(done_text, 'long', 'center')
+                .show(tceDoneText($scope.record.type) + $scope.record.points + " !", 'long', 'center')
                 .then(
                     function (success) {}, 
                     function (error) {}
                 );
             $ionicHistory.goBack();
         });
+        
     };
     $scope.finishArchive = function() {
+        $scope.record.date = new Date();
+        $scope.record.milli = $scope.record.date.getTime();
         doDel("task", $scope.record.type, $scope.record.id, "归档", function() {
             $scope.record.id = tARecords.length;
-            $scope.record.date = new Date();
-            $scope.record.milli = $scope.record.date.getTime();
-            $scope.record.done_times = rec.done_times;
             tARecords.push($scope.record);
             localRecordFactory.updateTARecords(tARecords);
             $ionicHistory.goBack();
@@ -643,11 +918,65 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('tsController', function($scope, baseURL, $ionicPlatform, $cordovaToast, localRecordFactory, tARecords, textType, date, time, doDel) {
+.controller('tmController', function($scope, localInfo, tRecords, date, time, doDel, lang) {
     
-    $scope.baseURL = baseURL;
+    $scope.showAllDelete = false;
+    $scope.records = tRecords;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    $scope.date = date;
+    $scope.time = time;
+    
+    $scope.toggleDel = function() {
+        $scope.showAllDelete = !$scope.showAllDelete;
+    };
+    $scope.doDel = function(type, id) {
+        doDel("task", type, id, "删除", function() {});
+        $scope.showAllDelete = false;
+    };
+    
+})
+
+.controller('tmeController', function($scope, $ionicPlatform, $ionicHistory, $cordovaToast, localRecordFactory, localInfo, tRecords, injectInfo, modifyToastType, id, lang) {
+    
+    $scope.record = {};
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
+    
+    var rec = tRecords[id];
+    injectInfo(rec, $scope.record);
+    
+    $scope.finishEdit = function() {
+        
+        $scope.record.date = new Date();
+        $scope.record.milli = $scope.record.date.getTime();
+        
+        localRecordFactory.editFromTRec(id, $scope.record);
+        
+        $ionicPlatform.ready(function () {
+            $cordovaToast
+                .showLongBottom(modifyToastType("success"))
+                .then(
+                    function (success) {}, 
+                    function (error) {}
+                );
+            $ionicHistory.goBack();
+        });
+        
+    };
+    
+})
+
+.controller('tsController', function($scope, localRecordFactory, localInfo, tARecords, textType, date, time, doDel, lang) {
+    
     $scope.records = tARecords;
     $scope.showAllDelete = false;
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
     
     $scope.textType = textType;
     $scope.date = date;
@@ -663,10 +992,12 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('tsdController', function($scope, baseURL, tARecords, taskType, doneType, textType, date, time, showDateAndTime, id) {
+.controller('tsdController', function($scope, localInfo, tARecords, taskType, doneType, textType, date, time, showDateAndTime, id, lang) {
     
-    $scope.baseURL = baseURL;
     $scope.record = tARecords[id];
+    
+    $scope.localInfo = localInfo;
+    $scope.lang = lang;
     
     $scope.taskType = taskType($scope.record.type);
     $scope.doneType = doneType($scope.record.type);
@@ -677,5 +1008,16 @@ angular.module('Account.controllers', [])
     $scope.showDateAndTime = showDateAndTime;
     
 })
+
+.filter('memoFilter', function () {
+    return function(records) {
+        var out = [];
+        for (var i = 0; i < records.length; i++) {
+            out.push(records[i]);
+            if (i === 2)
+                break;
+        }
+        return out;
+}})
 
 ;

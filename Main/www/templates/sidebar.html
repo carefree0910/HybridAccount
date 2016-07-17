@@ -10,23 +10,26 @@
     </ion-side-menu-content>
     <ion-side-menu side="left">
         <ion-header-bar class="bar-positive">
-            <h1 class="title">导航</h1> </ion-header-bar>
+            <h1 class="title">{{lang(localInfo.lang).sidebar.a}}</h1> </ion-header-bar>
         <ion-content>
             <div class="list">
-                <a class="item item-input" menu-close href="#/app/home"> <i class="input-label icon ion-android-home"></i> 主页 </a>
-                <ion-item class="item-divider"> 财务账本 </ion-item>
-                <a class="item item-input" menu-close href="#/app/ma"> <i class="input-label icon ion-compose"></i> 记一笔 </a>
-                <a class="item item-input" menu-close href="#/app/mc"> <i class="input-label icon ion-search"></i> 查询记录 </a>
-                <a class="item item-input" menu-close href="#/app/ms"> <i class="input-label icon ion-ios-analytics"></i> 统计记录 </a>
-                <ion-item class="item-divider"> 事件账本 </ion-item>
-                <a class="item item-input" menu-close href="#/app/ta"> <i class="input-label icon ion-compose"></i> 增添事件 </a>
-                <a class="item item-input" menu-close href="#/app/tc"> <i class="input-label icon ion-search"></i> 查看事件 </a>
-                <a class="item item-input" menu-close href="#/app/ts"> <i class="input-label icon ion-archive"></i> 归档事件 </a>
-                <ion-item class="item-divider"> 服务 </ion-item>
-                <a class="item item-input" menu-close ng-click="login()"> <i class="input-label icon ion-earth"></i> 登录 </a>
-                <a class="item item-input" menu-close ng-click="register()"> <i class="input-label icon ion-plus-round"></i> 注册 </a>
-                <a class="item item-input" menu-close ng-click="setting()"> <i class="input-label icon ion-gear-a"></i> 设置 </a>
-                <a class="item item-input" menu-close ng-click="sync($event)"> <i class="input-label icon ion-loop"></i> 同步 </a>
+                <a class="item item-input" menu-close href="#/app/home"> <i class="input-label icon ion-android-home"></i> {{lang(localInfo.lang).sidebar.b}} </a>
+                <a class="item item-input" menu-close href="#/app/recent"> <i class="input-label icon ion-clipboard"></i> {{lang(localInfo.lang).sidebar.c}} </a>
+                <ion-item class="item-divider"> {{lang(localInfo.lang).sidebar.d}} </ion-item>
+                <a class="item item-input" menu-close href="#/app/ma"> <i class="input-label icon ion-compose"></i> {{lang(localInfo.lang).sidebar.e}} </a>
+                <a class="item item-input" menu-close href="#/app/mc"> <i class="input-label icon ion-search"></i> {{lang(localInfo.lang).sidebar.f}} </a>
+                <a class="item item-input" menu-close href="#/app/mt"> <i class="input-label icon ion-android-folder-open"></i> {{lang(localInfo.lang).sidebar.g}} </a>
+                <a class="item item-input" menu-close href="#/app/mg"> <i class="input-label icon ion-ios-analytics"></i> {{lang(localInfo.lang).sidebar.h}} </a>
+                <ion-item class="item-divider"> {{lang(localInfo.lang).sidebar.i}} </ion-item>
+                <a class="item item-input" menu-close href="#/app/ta"> <i class="input-label icon ion-compose"></i> {{lang(localInfo.lang).sidebar.j}} </a>
+                <a class="item item-input" menu-close href="#/app/tc"> <i class="input-label icon ion-search"></i> {{lang(localInfo.lang).sidebar.k}} </a>
+                <a class="item item-input" menu-close href="#/app/tm"> <i class="input-label icon ion-android-folder-open"></i> {{lang(localInfo.lang).sidebar.l}} </a>
+                <a class="item item-input" menu-close href="#/app/ts"> <i class="input-label icon ion-archive"></i> {{lang(localInfo.lang).sidebar.m}} </a>
+                <ion-item class="item-divider"> {{lang(localInfo.lang).sidebar.n}} </ion-item>
+                <a class="item item-input" menu-close ng-click="login()"> <i class="input-label icon ion-earth"></i> {{lang(localInfo.lang).sidebar.o}} </a>
+                <a class="item item-input" menu-close ng-click="register()"> <i class="input-label icon ion-plus-round"></i> {{lang(localInfo.lang).sidebar.p}} </a>
+                <a class="item item-input" menu-close ng-click="setting()"> <i class="input-label icon ion-gear-a"></i> {{lang(localInfo.lang).sidebar.q}} </a>
+                <a class="item item-input" menu-close ng-click="sync($event)"> <i class="input-label icon ion-loop"></i> {{lang(localInfo.lang).sidebar.r}} </a>
             </div>
         </ion-content>
     </ion-side-menu>

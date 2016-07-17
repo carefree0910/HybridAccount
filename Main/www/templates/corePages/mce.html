@@ -1,17 +1,17 @@
-<ion-view view-title="编辑记录">
+<ion-view view-title="{{lang(localInfo.lang).mce.a}}">
     <ion-content>
-        <div class="card">
+        <form class="card" ng-submit="finishEdit()">
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label bold">日期</span>
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.b}}</span>
                     <input type="date" ng-model="record.date" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label bold">时间</span>
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.c}}</span>
                     <input type="time" ng-model="record.date" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label bold">事件</span>
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.d}}</span>
                     <input type="text" ng-model="record.event" />
                 </label>
                 <label class="item item-input">
@@ -19,13 +19,13 @@
                     <input type="text" ng-model="record.unit_price" />
                 </label>
                 <label class="item item-input" ng-show="{{record.type === 'output'}}">
-                    <span class="input-label bold">数量</span>
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.e}}</span>
                     <input type="text" ng-model="record.amount" />
                 </label>
                 <label class="item">
-                    <button class="button button-block button-calm" ng-click="finishEdit()">修改</button>
+                    <button class="button button-block button-calm" type="submit">{{lang(localInfo.lang).mce.f}}</button>
                 </label>
             </div>
-        </div>
+        </form>
     </ion-content>
 </ion-view>
