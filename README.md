@@ -1,4 +1,4 @@
-# Blend-Account
+# Hybrid-Account
 Ionic + Mongoose
 
 学习全栈时为巩固所学知识而做的安卓小作品
