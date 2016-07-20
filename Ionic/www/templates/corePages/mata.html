@@ -1,0 +1,31 @@
+<ion-view view-title="{{lang(localInfo.lang).mata.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-compose-outline" ng-click="finishLoadTemplate()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+        <form ng-show="tmpOutput.triggered === true" class="card" ng-submit="finishLoadTemplate()">
+            <div class="item item-divider"> {{lang(localInfo.lang).mata.b}} </div>
+            <div class="list list-inset">
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mata.c}} </span>
+                    <input type="text" ng-model="tmpOutput.unit_price"> </label>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mata.d}} </span>
+                    <input type="text" ng-model="tmpOutput.amount"> </label>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mata.e}} </span>
+                    <input type="text" ng-model="tmpOutput.event"> </label>
+            </div>
+            <button ng-show="false"></button>
+        </form>
+        <form ng-show="tmpIncome.triggered === true" class="card" ng-submit="finishLoadTemplate()">
+            <div class="item item-divider"> {{lang(localInfo.lang).mata.f}} </div>
+            <div class="list list-inset">
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mata.g}} </span>
+                    <input type="text" ng-model="tmpIncome.unit_price"> </label>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mata.h}} </span>
+                    <input type="text" ng-model="tmpIncome.event"> </label>
+            </div>
+            <button ng-show="false"></button>
+        </form>
+    </ion-content>
+</ion-view>

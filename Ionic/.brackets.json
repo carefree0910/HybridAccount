@@ -1,0 +1,27 @@
+{
+    "jscodehints.detectedExclusions": [
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/js/controllers.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/cordova-js-src/platform.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular/angular.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular/angular.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular/index.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-animate/angular-animate.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-animate/angular-animate.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-animate/index.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-sanitize/angular-sanitize.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-sanitize/angular-sanitize.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/angular-sanitize/index.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-animate.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-animate.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-resource.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-resource.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-sanitize.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular-sanitize.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular/angular.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular-ui/angular-ui-router.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/platforms/android/build/intermediates/assets/debug/www/lib/ionic/js/angular-ui/angular-ui-router.min.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/www/js/controllers.js",
+        "D:/Compute/Web/Work/HybridAccount/Ionic/www/js/services.js"
+    ]
+}

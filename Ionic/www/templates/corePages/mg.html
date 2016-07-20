@@ -1,0 +1,21 @@
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mg.a}}">
+    <div class="tabs-striped tabs-color-header">
+        <ul class="tabs">
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).mg.b}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).mg.c}} </a></li>
+        </ul>
+    </div>
+    <ion-content>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.d(filtText)}}</div>
+        <div>
+            <canvas class="chart" id="day" height="250"></canvas>
+        </div>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.e(filtText)}}</div>
+        <canvas class="chart" id="week" height="250"></canvas>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.f(filtText)}}</div>
+        <canvas class="chart" id="month" height="250"></canvas>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.g(filtText)}}</div>
+        <canvas class="chart" id="year" height="250"></canvas>
+        <br> <br> <br>
+    </ion-content>
+</ion-view>

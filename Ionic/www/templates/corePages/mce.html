@@ -1,0 +1,34 @@
+<ion-view view-title="{{lang(localInfo.lang).mce.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-compose-outline" ng-click="finishEdit()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+        <form class="card" ng-submit="finishEdit()">
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.b}}</span>
+                    <input type="date" ng-model="record.date" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.c}}</span>
+                    <input type="time" ng-model="record.date" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.d}}</span>
+                    <input type="text" ng-model="record.event" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{textType(record.type)}}</span>
+                    <input type="text" ng-model="record.unit_price" />
+                </label>
+                <label class="item item-input" ng-show="{{record.type === 'output'}}">
+                    <span class="input-label bold">{{lang(localInfo.lang).mce.e}}</span>
+                    <input type="text" ng-model="record.amount" />
+                </label>
+            </div>
+            <button ng-show="false"></button>
+        </form>
+    </ion-content>
+</ion-view>

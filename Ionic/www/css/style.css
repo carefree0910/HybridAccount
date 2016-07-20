@@ -1,0 +1,62 @@
+.popover {
+    height: auto !important;
+}
+
+.popover ion-header-bar {
+    position: relative;
+}
+
+.popover ion-content {
+    top: 0;
+    position: relative;
+}
+
+.popover-inner-content {
+    width: 100%;
+    padding: 5px 20px;
+}
+
+.inline-title {
+    font-weight: bold;
+    width: 50%;
+}
+
+.inline-content {
+    width: 40%;
+    text-align: right;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.content {
+    width: 95%;
+    text-align: right;
+}
+
+.memo {
+    width: 100%;
+    height: 12em;
+}
+
+.multi_buttons {
+    padding: 5%;
+}
+
+.center {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.placehold {
+    text-align: center;
+}
+
+.chart {
+    padding: 5%;
+}

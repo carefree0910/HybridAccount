@@ -1,0 +1,34 @@
+<ion-view view-title="{{lang(localInfo.lang).mat.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="row">
+            <label class="col center">{{lang(localInfo.lang).mat.b}}</label>
+            <label class="col center">{{lang(localInfo.lang).mat.c}}</label>
+        </div>
+        <div class="row">
+            <select class="col" ng-model="order">
+                <option value="milli">{{lang(localInfo.lang).mat.d}}</option>
+                <option value="sum">{{lang(localInfo.lang).mat.e}}</option>
+            </select>
+            <select class="col" ng-model="orderText">
+                <option value="{{order}}">{{lang(localInfo.lang).mat.f}}</option>
+                <option value="{{'-' + order}}">{{lang(localInfo.lang).mat.g}}</option>
+            </select>
+        </div>
+        <ion-list show-delete="showAllDelete">
+            <ion-item collection-repeat="rec in mtRecords | filter: {type: type} | orderBy: orderText" ng-click="loadTemplate(rec.id)">
+                <h1 class="title">{{rec.event}}</h1>
+                <p ng-show="type === 'output'">{{lang(localInfo.lang).mat.h}}：{{rec.unit_price}}</p>
+                <p ng-show="type === 'output'">{{lang(localInfo.lang).mat.i}}：{{rec.amount}}</p>
+                <p ng-show="type === 'income'">{{lang(localInfo.lang).mat.j}}：{{rec.unit_price}}</p>
+                <p>{{lang(localInfo.lang).mat.k}}：{{time(rec)}}</p>
+                <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mat.l}}</span></ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

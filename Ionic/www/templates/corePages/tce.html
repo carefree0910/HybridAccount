@@ -1,0 +1,24 @@
+<ion-view view-title="{{taskType(record.type) + lang(localInfo.lang).tce.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-compose-outline" ng-click="finishEdit()"></button>
+        </div>
+    </ion-nav-buttons>
+    <ion-content>
+        <form class="card" ng-submit="finishEdit()">
+            <div class="list list-inset">
+                <label class="item item-input"> <span class="input-label">{{lang(localInfo.lang).tce.b}}</span>
+                    <input type="text" ng-model="record.event" /> </label>
+                <label class="item item-input"> <span class="input-label">{{textType(record.type)}}</span>
+                    <input type="text" ng-model="record.points" /> </label>
+                <label class="item item-input"> <span class="input-label">{{doneType(record.type)}}{{lang(localInfo.lang).tce.c}}</span>
+                    <input type="text" ng-model="record.amount" /> </label>
+            </div>
+            <button ng-show="false"></button>
+        </form>
+        <div class="multi_buttons button-bar">
+            <button class="button button-block" ng-class="[btn_class]" ng-click="finishDone()"><i class="icon ion-checkmark"></i> {{doneText(record.type)}}</button>
+            <button class="button button-block button-calm" ng-click="finishArchive()"><i class="icon ion-archive"></i> {{archiveType(record.type)}}</button>
+        </div>
+    </ion-content>
+</ion-view>
