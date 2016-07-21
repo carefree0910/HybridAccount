@@ -892,7 +892,7 @@ angular.module('Account.controllers', [])
 
         if (!err_flag) {
             $scope.tRecords.push(info);
-            localRecordFactory.updateTRecords($scope.records);
+            localRecordFactory.updateTRecords($scope.tRecords);
             if (type === "memo")
                 $scope.forms[2].contents[0].body = "";
         }
