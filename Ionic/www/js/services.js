@@ -132,13 +132,12 @@ angular.module('Account.services', ['ngResource'])
         return records.tPoints;
     };
     
-    recFac.getMrRecords = function() {
-        var date = new Date();
+    recFac.getMrRecords = function(date) {
+        if (!date)
+            date = new Date();
         var mRecords = recFac.getMRecords();
         var mr = {};
-        mr.records = {};
         mr.mrd = {}; mr.mrw = {}; mr.mrm = {}; mr.mry = {};
-        mr.records.o = []; mr.records.i = [];
         mr.mrd.o = []; mr.mrd.i = [];
         mr.mrw.o = []; mr.mrw.i = [];
         mr.mrm.o = []; mr.mrm.i = [];
@@ -148,10 +147,8 @@ angular.module('Account.services', ['ngResource'])
             var pDate = new Date(); pDate.setTime(rec.milli);
             var dT, wT, mT, yT;
             if (rec.type === "output") {
-                mr.records.o.push(rec);
                 dT = mr.mrd.o; wT = mr.mrw.o; mT = mr.mrm.o; yT = mr.mry.o;
             } else {
-                mr.records.i.push(rec);
                 dT = mr.mrd.i; wT = mr.mrw.i; mT = mr.mrm.i; yT = mr.mry.i;
             }
             var debug = mr.debug;
@@ -178,6 +175,21 @@ angular.module('Account.services', ['ngResource'])
         }
         
         return mr;
+    };
+    recFac.getMoiRecords = function() {
+        var rs = {};
+        rs.o = []; rs.i = [];
+        var mRecords = recFac.getMRecords();
+        
+        for (var i = mRecords.length - 1; i >= 0; i--) {
+            if (mRecords[i].type === "output")
+                rs.o.push(mRecords[i]);
+            else
+                rs.i.push(mRecords[i]);
+        }
+        
+        return rs;
+        
     };
     recFac.getTrRecords = function() {
         return records.trRecords;
@@ -1049,26 +1061,27 @@ angular.module('Account.services', ['ngResource'])
         },
         "mg": {
             "a": "统计记录",
-            "b": "近况",
+            "b": "聚焦",
             "c": "加总",
-            "d": function(filtText) {
-                if (filtText === "sep")
-                    return "今日记录统计";
-                return "每日记录加总";
-            },
+            "d": "日期",
             "e": function(filtText) {
                 if (filtText === "sep")
-                    return "本周记录统计";
-                return "每周记录加总";
+                    return "当日记录统计";
+                return "每日记录加总";
             },
             "f": function(filtText) {
                 if (filtText === "sep")
-                    return "本月记录统计";
-                return "每月记录加总";
+                    return "当周记录统计";
+                return "每周记录加总";
             },
             "g": function(filtText) {
                 if (filtText === "sep")
-                    return "今年记录统计";
+                    return "当月记录统计";
+                return "每月记录加总";
+            },
+            "h": function(filtText) {
+                if (filtText === "sep")
+                    return "当年记录统计";
                 return "每年记录加总";
             }
         },
@@ -1421,26 +1434,27 @@ angular.module('Account.services', ['ngResource'])
         },
         "mg": {
             "a": "Analytics",
-            "b": "Recent",
+            "b": "Focus",
             "c": "Adding Up",
-            "d": function(filtText) {
-                if (filtText === "sep")
-                    return "Analytics for Today";
-                return "Adding up each Day's Records";
-            },
+            "d": "Date",
             "e": function(filtText) {
                 if (filtText === "sep")
-                    return "Analytics for This Week";
-                return "Adding up each Week's Records";
+                    return "Analytics for that Day";
+                return "Adding up each Day's Records";
             },
             "f": function(filtText) {
                 if (filtText === "sep")
-                    return "Analytics for This Month";
-                return "Adding up each Month's Records";
+                    return "Analytics for that Week";
+                return "Adding up each Week's Records";
             },
             "g": function(filtText) {
                 if (filtText === "sep")
-                    return "Analytics for This Year";
+                    return "Analytics for that Month";
+                return "Adding up each Month's Records";
+            },
+            "h": function(filtText) {
+                if (filtText === "sep")
+                    return "Analytics for that Year";
                 return "Adding up each Year's Records";
             }
         },

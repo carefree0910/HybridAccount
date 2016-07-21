@@ -1,4 +1,9 @@
 <ion-view cache-view="false" view-title="{{lang(localInfo.lang).mg.a}}">
+    <ion-nav-buttons side="secondary">
+        <div class="buttons">
+            <button class="button button-icon icon ion-ios-analytics" ng-click="dt.refresh_sep()"></button>
+        </div>
+    </ion-nav-buttons>
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
             <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).mg.b}} </a></li>
@@ -6,15 +11,20 @@
         </ul>
     </div>
     <ion-content>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.d(filtText)}}</div>
+        <div>{{date}}</div>
+        <label class="item item-input">
+            <span class="input-label bold">{{lang(localInfo.lang).mg.d}}</span>
+            <input type="date" ng-model="dt.date" />
+        </label>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.e(filtText)}}</div>
         <div>
             <canvas class="chart" id="day" height="250"></canvas>
         </div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.e(filtText)}}</div>
-        <canvas class="chart" id="week" height="250"></canvas>
         <div class="item item-divider">{{lang(localInfo.lang).mg.f(filtText)}}</div>
-        <canvas class="chart" id="month" height="250"></canvas>
+        <canvas class="chart" id="week" height="250"></canvas>
         <div class="item item-divider">{{lang(localInfo.lang).mg.g(filtText)}}</div>
+        <canvas class="chart" id="month" height="250"></canvas>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.h(filtText)}}</div>
         <canvas class="chart" id="year" height="250"></canvas>
         <br> <br> <br>
     </ion-content>

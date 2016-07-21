@@ -708,116 +708,124 @@ angular.module('Account.controllers', [])
         }
     };
     
-    var next_sep = function(mr) {
-        var dData = init_data(mr.mrd.o, mr.mrd.i, "day");
-        var wData = init_data(mr.mrw.o, mr.mrw.i, "week");
-        var mData = init_data(mr.mrm.o, mr.mrm.i, "month");
-        var yData = init_data(mr.mry.o, mr.mry.i, "year");
-        
-        var dctx = document.getElementById("day");
-        var wctx = document.getElementById("week");
-        var mctx = document.getElementById("month");
-        var yctx = document.getElementById("year");
-        
-        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
-        dp.replaceChild(new_dctx, dctx);
-        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
-        wp.replaceChild(new_wctx, wctx);
-        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
-        mp.replaceChild(new_mctx, mctx);
-        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
-        yp.replaceChild(new_yctx, yctx);
-        
-        var day = new Chart(new_dctx, {
-            type: 'line',
-            data: dData,
-            options: $scope.options
-        });
-        var week = new Chart(new_wctx, {
-            type: 'line',
-            data: wData,
-            options: $scope.options
-        });
-        var month = new Chart(new_mctx, {
-            type: 'line',
-            data: mData,
-            options: $scope.options
-        });
-        var year = new Chart(new_yctx, {
-            type: 'line',
-            data: yData,
-            options: $scope.options
-        });
-        
-        $rootScope.$broadcast("loading:hide");
-    };
-    var next_sum = function(mr) {
-        var dData = init_data(mr.records.o, mr.records.i, "day");
-        var wData = init_data(mr.records.o, mr.records.i, "week");
-        var mData = init_data(mr.records.o, mr.records.i, "month");
-        var yData = init_data(mr.records.o, mr.records.i, "year");
-        
-        var dctx = document.getElementById("day");
-        var wctx = document.getElementById("week");
-        var mctx = document.getElementById("month");
-        var yctx = document.getElementById("year");
-        
-        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
-        dp.replaceChild(new_dctx, dctx);
-        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
-        wp.replaceChild(new_wctx, wctx);
-        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
-        mp.replaceChild(new_mctx, mctx);
-        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
-        yp.replaceChild(new_yctx, yctx);
-        
-        var day = new Chart(new_dctx, {
-            type: 'line',
-            data: dData,
-            options: $scope.options
-        });
-        var week = new Chart(new_wctx, {
-            type: 'line',
-            data: wData,
-            options: $scope.options
-        });
-        var month = new Chart(new_mctx, {
-            type: 'line',
-            data: mData,
-            options: $scope.options
-        });
-        var year = new Chart(new_yctx, {
-            type: 'line',
-            data: yData,
-            options: $scope.options
-        });
-        
-        $rootScope.$broadcast("loading:hide");
-    };
-    
-    var refresh =  function(next) {
+    $scope.dt = {};
+    $scope.dt.date = new Date();
+    $scope.dt.refresh_sep = function() {
         $rootScope.$broadcast("loading:show");
         
         $scope.localInfo = userFactory.getLocalInfo();
-        var mr = localRecordFactory.getMrRecords();
+        var mr = localRecordFactory.getMrRecords($scope.dt.date);
         
-        $timeout(function() { next(mr); }, 500);
+        $scope.tab = 1;
+        $scope.filtText = "sep";
+        
+        $timeout(function() {
+            var dData = init_data(mr.mrd.o, mr.mrd.i, "day");
+            var wData = init_data(mr.mrw.o, mr.mrw.i, "week");
+            var mData = init_data(mr.mrm.o, mr.mrm.i, "month");
+            var yData = init_data(mr.mry.o, mr.mry.i, "year");
+
+            var dctx = document.getElementById("day");
+            var wctx = document.getElementById("week");
+            var mctx = document.getElementById("month");
+            var yctx = document.getElementById("year");
+
+            var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+            dp.replaceChild(new_dctx, dctx);
+            var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+            wp.replaceChild(new_wctx, wctx);
+            var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+            mp.replaceChild(new_mctx, mctx);
+            var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+            yp.replaceChild(new_yctx, yctx);
+
+            var day = new Chart(new_dctx, {
+                type: 'line',
+                data: dData,
+                options: $scope.options
+            });
+            var week = new Chart(new_wctx, {
+                type: 'line',
+                data: wData,
+                options: $scope.options
+            });
+            var month = new Chart(new_mctx, {
+                type: 'line',
+                data: mData,
+                options: $scope.options
+            });
+            var year = new Chart(new_yctx, {
+                type: 'line',
+                data: yData,
+                options: $scope.options
+            });
+
+            $rootScope.$broadcast("loading:hide");
+        }, 500);
     };
+    $scope.dt.refresh_sum = function() {
+        $rootScope.$broadcast("loading:show");
+        
+        $scope.localInfo = userFactory.getLocalInfo();
+        var moi = localRecordFactory.getMoiRecords();
+        
+        $scope.tab = 2;
+        $scope.filtText = "sum";
+        
+        $timeout(function() {
+            var dData = init_data(moi.o, moi.i, "day");
+            var wData = init_data(moi.o, moi.i, "week");
+            var mData = init_data(moi.o, moi.i, "month");
+            var yData = init_data(moi.o, moi.i, "year");
+
+            var dctx = document.getElementById("day");
+            var wctx = document.getElementById("week");
+            var mctx = document.getElementById("month");
+            var yctx = document.getElementById("year");
+
+            var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+            dp.replaceChild(new_dctx, dctx);
+            var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+            wp.replaceChild(new_wctx, wctx);
+            var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+            mp.replaceChild(new_mctx, mctx);
+            var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+            yp.replaceChild(new_yctx, yctx);
+
+            var day = new Chart(new_dctx, {
+                type: 'line',
+                data: dData,
+                options: $scope.options
+            });
+            var week = new Chart(new_wctx, {
+                type: 'line',
+                data: wData,
+                options: $scope.options
+            });
+            var month = new Chart(new_mctx, {
+                type: 'line',
+                data: mData,
+                options: $scope.options
+            });
+            var year = new Chart(new_yctx, {
+                type: 'line',
+                data: yData,
+                options: $scope.options
+            });
+        
+            $rootScope.$broadcast("loading:hide");
+        }, 500);
+    }
     
-    $scope.$on('$ionicView.beforeEnter', refresh(next_sep));
-    $scope.$on('refresh:/app/mg', refresh(next_sep));
-    
-    $scope.tab = 1;
-    $scope.filtText = "sep";
+    $scope.$on('$ionicView.beforeEnter', $scope.dt.refresh_sep());
+    $scope.$on('refresh:/app/mg', $scope.dt.refresh_sep());
     
     $scope.select = function(setTab) {
         $scope.tab = setTab;
         if (setTab === 1) {
-            $scope.filtText = "sep";
-            refresh(next_sep);
+            $scope.dt.refresh_sep();
         } else if (setTab === 2) {
-            $scope.filtText = "sum";
-            refresh(next_sum);
+            $scope.dt.refresh_sum();
         } else {
             console.log("Error: No implementation in mgController of tab: ", setTab);
         }

@@ -1,6 +1,6 @@
 angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controllers', 'Account.services'])
 
-.run(function($ionicPlatform, $rootScope, $location, $ionicLoading, $ionicHistory, $cordovaSplashscreen, $cordovaToast, $timeout, languageFactory, userFactory) {
+.run(function($ionicPlatform, $rootScope, $location, $ionicLoading, $ionicHistory, $cordovaSplashscreen, $cordovaToast, $timeout, languageFactory, userFactory, localRecordFactory) {
     
     $ionicPlatform.ready(function() {
         if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -125,7 +125,6 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 templateUrl: 'templates/home.html',
                 controller: 'homeController',
                 resolve: {
-                    
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
                     }],
