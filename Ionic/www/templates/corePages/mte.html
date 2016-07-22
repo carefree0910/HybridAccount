@@ -12,18 +12,37 @@
                     <input type="text" ng-model="record.unit_price" />
                 </label>
                 <label class="item item-input" ng-show="{{record.type === 'output'}}">
-                    <span class="input-label bold">{{lang(localInfo.lang).mte.b}}</span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mte.b}} </span>
                     <input type="text" ng-model="record.amount" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label bold">{{lang(localInfo.lang).mte.c}}</span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mte.c}} </span>
                     <input type="text" ng-model="record.event" />
                 </label>
             </div>
+            <div class="list">
+                <div class="item item-text-wrap">
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mte.d}} </small></span>
+                    <span ng-repeat="tag in tagManager.current_tags track by $index">
+                        <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
+                    </span>
+                </div>
+            </div>
             <button ng-show="false"> </button>
         </form>
-        <div class="multi_buttons">
-            <button class="button button-block button-calm" ng-click="loadTemplate()">{{lang(localInfo.lang).mte.d}}</button>
+        <div class="multi_buttons button-bar">
+            <button class="button button-block button-calm" ng-click="loadTemplate()"> {{lang(localInfo.lang).mte.e}} </button>
+        </div>
+        <form class="card" ng-submit="tagManager.addTag()">
+            <label class="item item-input">
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mte.f}}" /> 
+                <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
+            </label>
+            <button ng-show="false"></button>
+        </form>
+        <div class="item item-divider"> {{lang(localInfo.lang).mte.g}} </div>
+        <div class="item" ng-repeat="tag in tagManager.tags track by $index" ng-click="tagManager.addTagById(tag.id)">
+            {{tag.body}}
         </div>
     </ion-content>
 </ion-view>

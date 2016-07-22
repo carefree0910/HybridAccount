@@ -8,8 +8,8 @@
             <div ng-show="typeText === 'money'" class="card">
                 <div class="item item-divider"> {{lang(localInfo.lang).recent.d}} </div>
                 <div class="list list-inset">
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.e}}</span> <span class="inline-content">{{sumOutput(typeText)}}</span> </label>
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.f}}</span> <span class="inline-content">{{sumIncome(typeText)}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.e}}</span> <span class="inline-content">{{sumOutput(typeText) | currency}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.f}}</span> <span class="inline-content">{{sumIncome(typeText) | currency}}</span> </label>
                 </div>
             </div>
             <div ng-show="typeText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.g}} </div>
@@ -26,7 +26,7 @@
             <ion-item ng-show="typeText === 'money'" ng-repeat="rec in mrdRecords" class="item-text-wrap">
                 <div ng-show="typeText === 'money'">
                     <h1 class="title">{{rec.event}}</h1>
-                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.l}}：{{rec.sum}}</p>
+                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.l}}：{{rec.sum | currency}}</p>
                     <p>{{lang(localInfo.lang).recent.m}}：{{time(rec)}}</p>
                 </div>
                 <div ng-show="typeText === 'task'">

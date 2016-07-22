@@ -26,6 +26,32 @@
     text-align: right;
 }
 
+.tag-input {
+    font-weight: bold;
+    width: 60%;
+}
+
+.tag-button {
+    width: 20%;
+    text-align: center;
+}
+
+.tag-badge {
+    background-color: transparent;
+    color: tan;
+    z-index: 1;
+    display: inline-block;
+    padding: 10px 8px;
+    min-width: 10px;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
 .title {
     font-weight: bold;
     font-size: 1.2em;
@@ -42,7 +68,7 @@
 }
 
 .multi_buttons {
-    padding: 5%;
+    padding: 0 5%;
 }
 
 .center {
@@ -54,6 +80,9 @@
 }
 
 .placehold {
+    width: 100%;
+    color: darkgray;
+    font-weight: bold;
     text-align: center;
 }
 

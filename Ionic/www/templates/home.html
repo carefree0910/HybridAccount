@@ -7,11 +7,11 @@
             <div class="list list-inset">
                 <label class="item item-input">
                     <span class="input-label inline-title">{{lang(localInfo.lang).home.c}}</span>
-                    <span class="inline-content">{{output(records)}}</span>
+                    <span class="inline-content">{{output(records) | currency}}</span>
                 </label>
                 <label class="item item-input">
                     <span class="input-label inline-title">{{lang(localInfo.lang).home.d}}</span>
-                    <span class="inline-content">{{income(records)}}</span>
+                    <span class="inline-content">{{income(records) | currency}}</span>
                 </label>
             </div>
         </div>

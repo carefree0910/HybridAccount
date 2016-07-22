@@ -1,39 +1,51 @@
 <ion-view view-title="{{lang(localInfo.lang).mc.a}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
-            <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
+            <button class="button button-icon icon ion-ios-search" ng-click="dt.doFilter()"></button>
         </div>
     </ion-nav-buttons>
+    <div class="tabs-striped tabs-color-header">
+        <ul class="tabs">
+            <li ng-class="{active:dt.isSelected(1)}" class="tab-item"> <a ng-click="dt.select(1)"> {{lang(localInfo.lang).mc.b}} </a></li>
+            <li ng-class="{active:dt.isSelected(2)}" class="tab-item"> <a ng-click="dt.select(2)"> {{lang(localInfo.lang).mc.c}} </a></li>
+        </ul>
+    </div>
     <ion-content>
         <div class="row">
-            <label class="col center">{{lang(localInfo.lang).mc.b}}</label>
-            <label class="col center">{{lang(localInfo.lang).mc.c}}</label>
-            <label class="col center">{{lang(localInfo.lang).mc.d}}</label>
+            <ion-radio class="col center" ng-model="dt.type" value="output"> {{lang(localInfo.lang).mc.d}} </ion-radio>
+            <ion-radio class="col center" ng-model="dt.type" value="income"> {{lang(localInfo.lang).mc.e}} </ion-radio>
         </div>
-        <div class="row">
-            <select class="col" ng-model="filtText">
-                <option value="output">{{lang(localInfo.lang).mc.e}}</option>
-                <option value="income">{{lang(localInfo.lang).mc.f}}</option>
-            </select>
-            <select class="col" ng-model="order">
-                <option value="milli">{{lang(localInfo.lang).mc.g}}</option>
-                <option value="sum">{{lang(localInfo.lang).mc.h}}</option>
-            </select>
-            <select class="col" ng-model="orderText">
-                <option value="{{order}}">{{lang(localInfo.lang).mc.i}}</option>
-                <option value="{{'-' + order}}">{{lang(localInfo.lang).mc.j}}</option>
-            </select>
-        </div>
+        <form class="card" ng-submit="dt.doFilter()">
+            <div class="item item-divider">
+                {{lang(localInfo.lang).mc.f}}
+            </div>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label bold"> {{lang(localInfo.lang).mc.g}} </span>
+                    <input type="text" ng-model="dt.tag.body" />
+                </label>
+                <label class="item item-input" ng-show="dt.isSelected(1)">
+                    <span class="input-label bold"> {{lang(localInfo.lang).mc.h}} </span>
+                    <input type="date" ng-model="dt.date" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold"> {{lang(localInfo.lang).mc.i}} </span>
+                    <input type="text" ng-model="dt.description" />
+                </label>
+            </div>
+            <button ng-show="false"> </button>
+        </form>
         <ion-list show-delete="showAllDelete">
-            <ion-item collection-repeat="rec in mRecords | filter: {type: filtText} | orderBy: orderText" href="#/app/mc/{{rec.id}}">
-                <h1 class="title">{{rec.date | date}}</h1>
-                <p>{{lang(localInfo.lang).mc.k}}：{{rec.event}}</p>
-                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mc.l}}：{{rec.unit_price | currency}}</p>
-                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mc.m}}：{{rec.amount}}</p>
-                <p ng-show="filtText === 'income'">{{lang(localInfo.lang).mc.n}}：{{rec.unit_price | currency}}</p>
-                <p>{{lang(localInfo.lang).mc.o}}：{{time(rec)}}</p>
+            <ion-item collection-repeat="rec in dt.rs | filter: {type: dt.type}" href="#/app/mc/{{rec.id}}">
+                <h1 class="title">{{rec.event}}</h1>
+                <span class="badge badge-header">{{dt.getTags(rec)}}</span>
+                <p ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.j}}：{{rec.unit_price | currency}} </p>
+                <p ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.k}}：{{rec.amount}} </p>
+                <p ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.l}}：{{rec.unit_price | currency}} </p>
+                <p> {{lang(localInfo.lang).mc.m}}：{{time(rec)}} </p>
+                <p ng-show="rec.type === 'income'"><br></p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mc.p}}</span></ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mc.n}} </span></ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>

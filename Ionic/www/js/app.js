@@ -179,50 +179,11 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
                     }],
+                    genTagManager: ['recordManageFactory', function(rmFac) {
+                        return rmFac.genTagManager;
+                    }],
                     doMoneyFormAdd: ['recordManageFactory', function(rmFac) {
                         return rmFac.doMoneyFormAdd;
-                    }]
-                }
-            }
-        }
-    })
-    
-    .state('app.mat', {
-        url: '/mat/:type',
-        views: {
-            'mainContent': {
-                templateUrl: 'templates/corePages/mat.html',
-                controller: 'matController',
-                resolve: {
-                    lang: ['languageFactory', function(lFac) {
-                        return lFac.lang;
-                    }],
-                    time: ['formatFactory', function(fFac) {
-                        return fFac.time;
-                    }],
-                    doDel: ['recordManageFactory', function(rmFac) {
-                        return rmFac.doDel;
-                    }],
-                    type: ['$stateParams', function($param) {
-                        return $param.type;
-                    }]
-                }
-            }
-        }
-    })
-    
-    .state('app.mata', {
-        url: '/mata',
-        views: {
-            'mainContent': {
-                templateUrl: 'templates/corePages/mata.html',
-                controller: 'mataController',
-                resolve: {
-                    lang: ['languageFactory', function(lFac) {
-                        return lFac.lang;
-                    }],
-                    doMoneyTemplateAdd: ['recordManageFactory', function(rmFac) {
-                        return rmFac.doMoneyTemplateAdd;
                     }]
                 }
             }
@@ -238,6 +199,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 resolve: {
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
+                    }],
+                    checkTagInvolve: ['recordManageFactory', function(rmFac) {
+                        return rmFac.checkTagInvolve;
                     }],
                     time: ['formatFactory', function(fFac) {
                         return fFac.time;
@@ -259,6 +223,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 resolve: {
                     localInfo: ['userFactory', function(userFac) {
                         return userFac.getLocalInfo();
+                    }],
+                    genTagManager: ['recordManageFactory', function(rmFac) {
+                        return rmFac.genTagManager;
                     }],
                     mRecords: ['localRecordFactory', function(recFac) {
                         return recFac.getMRecords();
@@ -293,6 +260,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
                     }],
+                    checkTagInvolve: ['recordManageFactory', function(rmFac) {
+                        return rmFac.checkTagInvolve;
+                    }],
                     full_date: ['formatFactory', function(fFac) {
                         return fFac.full_date;
                     }],
@@ -301,6 +271,37 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     }],
                     doDel: ['recordManageFactory', function(rmFac) {
                         return rmFac.doDel;
+                    }],
+                    type: function() { return "all"; }
+                }
+            }
+        }
+    })
+    
+    .state('app.mtp', {
+        url: '/mtp/:type',
+        views: {
+            'mainContent': {
+                templateUrl: 'templates/corePages/mt.html',
+                controller: 'mtController',
+                resolve: {
+                    lang: ['languageFactory', function(lFac) {
+                        return lFac.lang;
+                    }],
+                    checkTagInvolve: ['recordManageFactory', function(rmFac) {
+                        return rmFac.checkTagInvolve;
+                    }],
+                    full_date: ['formatFactory', function(fFac) {
+                        return fFac.full_date;
+                    }],
+                    time: ['formatFactory', function(fFac) {
+                        return fFac.time;
+                    }],
+                    doDel: ['recordManageFactory', function(rmFac) {
+                        return rmFac.doDel;
+                    }],
+                    type: ['$stateParams', function($param) {
+                        return $param.type;
                     }]
                 }
             }
@@ -316,6 +317,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 resolve: {
                     localInfo: ['userFactory', function(userFac) {
                         return userFac.getLocalInfo();
+                    }],
+                    genTagManager: ['recordManageFactory', function(rmFac) {
+                        return rmFac.genTagManager;
                     }],
                     mtRecords: ['localRecordFactory', function(recFac) {
                         return recFac.getMtRecords();
@@ -340,6 +344,27 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
         }
     })
     
+    .state('app.mtd', {
+        url: '/mtd',
+        views: {
+            'mainContent': {
+                templateUrl: 'templates/corePages/mtd.html',
+                controller: 'mtdController',
+                resolve: {
+                    lang: ['languageFactory', function(lFac) {
+                        return lFac.lang;
+                    }],
+                    genTagManager: ['recordManageFactory', function(rmFac) {
+                        return rmFac.genTagManager;
+                    }],
+                    doMoneyTemplateAdd: ['recordManageFactory', function(rmFac) {
+                        return rmFac.doMoneyTemplateAdd;
+                    }]
+                }
+            }
+        }
+    })
+    
     .state('app.mg', {
         url: '/mg',
         views: {
@@ -349,6 +374,12 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 resolve: {
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
+                    }],
+                    genTagManager: ['recordManageFactory', function(rmFac) {
+                        return rmFac.genTagManager;
+                    }],
+                    getAndFiltOiRecordsWithTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.getAndFiltOiRecordsWithTags;
                     }],
                     init_data: ['graphManageFactory', function(gFac) {
                         return gFac.init_data;

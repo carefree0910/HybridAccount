@@ -17,6 +17,19 @@ angular.module('Account.services', ['ngResource'])
     }
 })
 
+.filter('moneyRecordsFilter', function() {
+    return function(records, type) {
+        if (type === "all")
+            return records;
+        var rs = [];
+        for (var i = records.length - 1; i >= 0; i--) {
+            if (records[i].type === type)
+                rs.push(records[i]);
+        }
+        return rs;
+    }
+})
+
 .factory('$localStorage', function($window) {
     return {
         store: function(key, value) {
@@ -111,9 +124,10 @@ angular.module('Account.services', ['ngResource'])
     records.tARecords = $localStorage.getObject('tARecords', '[]');
     records.tPoints = parseFloat($localStorage.get('tPoints', 0));
     
+    records.mtRecords = $localStorage.getObject('mtRecords', '[]');
     records.trRecords = $localStorage.getObject('trRecords', '[]');
     
-    records.mtRecords = $localStorage.getObject('mtRecords', '[]');
+    records.tags = $localStorage.getObject('tags', '[]');
     
     recFac.getAllRecords = function() {
         return records;
@@ -132,6 +146,21 @@ angular.module('Account.services', ['ngResource'])
         return records.tPoints;
     };
     
+    recFac.getDateRecords = function(date) {
+        if (!date)
+            date = new Date();
+        var mRecords = recFac.getMRecords();
+        
+        var rs = [];
+        for (var i = mRecords.length - 1; i >= 0; i--) {
+            var rec = mRecords[i];
+            var pDate = new Date(); pDate.setTime(rec.milli);
+            if (pDate.getDate() === date.getDate() && pDate.getMonth() === date.getMonth() && pDate.getFullYear() === date.getFullYear())
+                rs.push(rec);
+        }
+        
+        return rs;
+    }
     recFac.getMrRecords = function(date) {
         if (!date)
             date = new Date();
@@ -142,7 +171,7 @@ angular.module('Account.services', ['ngResource'])
         mr.mrw.o = []; mr.mrw.i = [];
         mr.mrm.o = []; mr.mrm.i = [];
         mr.mry.o = []; mr.mry.i = [];
-        for (var i = 0; i < mRecords.length; i++) {
+        for (var i = mRecords.length - 1; i >= 0; i--) {
             var rec = mRecords[i];
             var pDate = new Date(); pDate.setTime(rec.milli);
             var dT, wT, mT, yT;
@@ -151,7 +180,6 @@ angular.module('Account.services', ['ngResource'])
             } else {
                 dT = mr.mrd.i; wT = mr.mrw.i; mT = mr.mrm.i; yT = mr.mry.i;
             }
-            var debug = mr.debug;
             if (pDate.getFullYear() != date.getFullYear())
                 continue;
             if (pDate.getMonth() != date.getMonth()) {
@@ -188,15 +216,18 @@ angular.module('Account.services', ['ngResource'])
                 rs.i.push(mRecords[i]);
         }
         
-        return rs;
-        
+        return rs;  
+    };
+    
+    recFac.getMtRecords = function() {
+        return records.mtRecords;
     };
     recFac.getTrRecords = function() {
         return records.trRecords;
     };
     
-    recFac.getMtRecords = function() {
-        return records.mtRecords;
+    recFac.getTags = function() {
+        return records.tags;
     };
     
     recFac.updateMRecords = function(mRec) {
@@ -215,10 +246,9 @@ angular.module('Account.services', ['ngResource'])
         records.tPoints = pt;
         $localStorage.store('tPoints', pt);
     };
-    
     recFac.updateMtRecords = function(mtRec) {
         records.mtRecords = mtRec;
-        $localStorage.storeObject('mtRecords', records.mtRecords);
+        $localStorage.storeObject('mtRecords', mtRec);
     };
     recFac.updateTrRecords = function(rec) {
         var date = new Date;
@@ -236,7 +266,7 @@ angular.module('Account.services', ['ngResource'])
         }
         
         var involve_flag = false;
-        for (var i = 0; i < trRecords.length; i++) {
+        for (var i = trRecords.length - 1; i >= 0; i--) {
             var trRec = trRecords[i];
             if (trRec.id == rec.id) {
                 involve_flag = true;
@@ -254,92 +284,79 @@ angular.module('Account.services', ['ngResource'])
         }
         $localStorage.storeObject('trRecords', trRecords);
     };
+    recFac.updateTags = function(tags) {
+        records.tags = tags;
+        $localStorage.storeObject('tags', tags);
+    }
     
-    recFac.delFromMRec = function(id) {
-        for (var i = 0; i < records.mRecords.length; i++) {
+    recFac.delById = function(id, rec, type) {        
+        for (var i = rec.length - 1; i >= 0; i--) {
             if (i == id) {
-                records.mRecords.splice(i, 1);
+                rec.splice(i, 1);
                 break;
             }
         }
-        for (var i = 0; i < records.mRecords.length; i++) {
+        for (var i = rec.length - 1; i >= 0; i--) {
             if (i >= id)
-                records.mRecords[i].id = i;
+                rec[i].id = i;
         }
-        $localStorage.storeObject('mRecords', records.mRecords);
-    };
-    recFac.editFromMRec = function(id, rec) {
-        records.mRecords[id] = rec;
-        $localStorage.storeObject('mRecords', records.mRecords);
+        if (type)
+            $localStorage.storeObject(type, rec);
+    }
+    recFac.delFromMRec = function(id) {
+        recFac.delById(id, records.mRecords, "mRecords");
     };
     recFac.delFromTRec = function(id) {
-        for (var i = 0; i < records.tRecords.length; i++) {
-            if (i == id) {
-                records.tRecords.splice(i, 1);
-                break;
-            }
-        }
-        for (var i = 0; i < records.tRecords.length; i++) {
-            if (i >= id)
-                records.tRecords[i].id = i;
-        }
-        for (var i = 0; i < records.trRecords.length; i++) {
+        recFac.delById(id, records.tRecords, "tRecords");
+        for (var i = records.trRecords.length - 1; i >= 0; i--) {
             if (records.trRecords[i].id == id) {
                 records.trRecords.splice(i, 1);
                 break;
             }
         }
-        for (var i = 0; i < records.trRecords.length; i++) {
+        for (var i = records.trRecords.length - 1; i >= 0; i--) {
             if (records.trRecords[i].id > id)
                 records.trRecords[i].id -= 1;
         }
-        $localStorage.storeObject('tRecords', records.tRecords);
         $localStorage.storeObject('trRecords', records.trRecords);
+    };
+    recFac.delFromTARec = function(id) {
+        recFac.delById(id, records.tARecords, "tARecords");
+    };
+    recFac.delFromMtRec = function(id) {
+        recFac.delById(id, records.mtRecords, "mtRecords");
+    };
+    recFac.delFromTags = function(id) {
+        recFac.delById(id, records.tags, "tags");
+    };
+    
+    recFac.editFromMRec = function(id, rec) {
+        records.mRecords[id] = rec;
+        $localStorage.storeObject('mRecords', records.mRecords);
     };
     recFac.editFromTRec = function(id, rec) {
         records.tRecords[id] = rec;
         $localStorage.storeObject('tRecords', records.tRecords);
-    };
-    recFac.delFromTARec = function(id) {
-        for (var i = 0; i < records.tARecords.length; i++) {
-            if (i == id) {
-                records.tARecords.splice(i, 1);
-                break;
-            }
-        }
-        for (var i = 0; i < records.tARecords.length; i++) {
-            if (i >= id)
-                records.tARecords[i].id = i;
-        }
-        $localStorage.storeObject('tARecords', records.tARecords);
-    };
-    
-    recFac.delFromMtRec = function(id) {
-        for (var i = 0; i < records.mtRecords.length; i++) {
-            if (i == id) {
-                records.mtRecords.splice(i, 1);
-                break;
-            }
-        }
-        for (var i = 0; i < records.mtRecords.length; i++) {
-            if (i >= id)
-                records.mtRecords[i].id = i;
-        }
-        $localStorage.storeObject('mtRecords', records.mtRecords);
-    };
+    };  
     recFac.editFromMtRec = function(id, rec) {
         records.mtRecords[id] = rec;
         $localStorage.storeObject('mtRecords', records.mtRecords);
     };
+    recFac.editFromMtRec = function(id, tag) {
+        records.tags[id] = tag;
+        $localStorage.storeObject('tags', records.tags);
+    };
     
     recFac.tmpOutputTemplate = {
         "triggered": false,
+        "tags": [],
         "event": "",
         "amount": 0,
         "unit_price": 0
     };
     recFac.tmpIncomeTemplate = {
         "triggered": false,
+        "tags": [],
         "event": "",
         "amount": 1,
         "unit_price": 0
@@ -472,6 +489,85 @@ angular.module('Account.services', ['ngResource'])
 .factory('recordManageFactory', function($ionicPlatform, $ionicListDelegate, $ionicPopup, $cordovaToast, localRecordFactory, textManageFactory, languageFactory, userFactory) {
     var rmFac = {};
     
+    rmFac.checkTagInvolve = function(tagBody, tags) {
+        for (var i = tags.length - 1; i >= 0; i--) {
+            if (tags[i].body === tagBody)
+                return true;
+        }
+        return false;
+    };
+    rmFac.genTagManager = function(current_tags) {
+        var tagManager = {};
+        tagManager.tags = localRecordFactory.getTags();
+        tagManager.selectedTag = "";
+        tagManager.current_tag = {};
+        tagManager.current_tags = current_tags;
+        
+        tagManager.addTag = function() {
+            if (tagManager.current_tag.body) {
+                var involve = rmFac.checkTagInvolve(tagManager.current_tag.body, tagManager.current_tags);
+                if (!involve) {
+                    tagManager.current_tag.id = tagManager.current_tags.length;
+                    tagManager.current_tags.push(tagManager.current_tag);
+                }
+                tagManager.current_tag = {};
+            }
+        };
+        tagManager.addTagById = function(id) {
+            var involve = rmFac.checkTagInvolve(tagManager.tags[id].body, tagManager.current_tags);
+            if (!involve) {
+                var tmpTag = {};
+                tmpTag.id = tagManager.current_tags.length;
+                tmpTag.body = tagManager.tags[id].body;
+                tagManager.current_tags.push(tmpTag);
+            }
+        };
+        tagManager.addTagByBody = function() {
+            if (tagManager.selectedTag) {
+                var involve = rmFac.checkTagInvolve(tagManager.selectedTag.body, tagManager.current_tags);
+                if (!involve) {
+                    var tmpTag = {};
+                    tmpTag.id = tagManager.current_tags.length;
+                    tmpTag.body = tagManager.selectedTag.body;
+                    tagManager.current_tags.push(tmpTag);
+                }
+                tagManager.selectedTag = "";
+            }
+        };
+        tagManager.delTagById = function(id) {
+            localRecordFactory.delById(id, tagManager.current_tags);
+        };
+        return tagManager;
+    };
+    
+    rmFac.checkSubTagList = function(sub, org) {
+        for (var i = sub.length - 1; i >= 0; i--) {
+            var involve = false;
+            var tmpBody = sub[i].body;
+            for (var j = org.length - 1; j >= 0; j--) {
+                if (tmpBody === org[j].body) {
+                    involve = true; break;
+                }
+            }
+            if (!involve)
+                return false;
+        }
+        return true;
+    };
+    rmFac.filtRecordsWithTags = function(tags, records) {
+        for (var i = records.length - 1; i >= 0; i--) {
+            if (!rmFac.checkSubTagList(tags, records[i].tags))
+                records.splice(i, 1);
+        }
+    };
+    rmFac.getAndFiltOiRecordsWithTags = function(oiRecords, tags) {
+        if (tags.length === 0)
+            return oiRecords;
+        rmFac.filtRecordsWithTags(tags, oiRecords.o);
+        rmFac.filtRecordsWithTags(tags, oiRecords.i);
+        return oiRecords;
+    };
+    
     rmFac.injectBasicTRecInfo = function(org, tar) {
         tar.id = org.id;
         tar.type = org.type;
@@ -535,6 +631,7 @@ angular.module('Account.services', ['ngResource'])
         var info = {
             "id": records.length,
             "type": type,
+            "tags": [],
             "event": "",
             "amount": 0,
             "unit_price": 0,
@@ -599,6 +696,7 @@ angular.module('Account.services', ['ngResource'])
         var info = {
             "id": records.length,
             "type": type,
+            "tags": [],
             "event": template.event,
             "amount": parseInt(template.amount),
             "unit_price": parseFloat(template.unit_price),
@@ -653,28 +751,28 @@ angular.module('Account.services', ['ngResource'])
         if (type === "day") {
             graph.labels = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            for (var i = 0; i < records.length; i++) {
+            for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
                 graph.data[graph.labels.indexOf(fFac.hour(rec))] += rec.sum;
             }
         } else if (type === "week") {
             graph.labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             graph.data = [0, 0, 0, 0, 0, 0, 0];
-            for (var i = 0; i < records.length; i++) {
+            for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
                 graph.data[graph.labels.indexOf(fFac.day(rec))] += rec.sum;
             }
         } else if (type === "month") {
             graph.labels = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            for (var i = 0; i < records.length; i++) {
+            for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
                 graph.data[graph.labels.indexOf(fFac.date(rec))] += rec.sum;
             }
         } else if (type === "year") {
             graph.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            for (var i = 0; i < records.length; i++) {
+            for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
                 graph.data[graph.labels.indexOf(fFac.month(rec))] += rec.sum;
             }
@@ -826,7 +924,7 @@ angular.module('Account.services', ['ngResource'])
                     },
                     {
                         "title": lang.mForm.c,
-                        "body": ""
+                        "body": "1"
                     },
                     {
                         "title": lang.mForm.d,
@@ -1007,79 +1105,62 @@ angular.module('Account.services', ['ngResource'])
             "a": "增添财务记录",
             "b": "记录支出",
             "c": "记录收入",
-            "d": "保存模板",
-            "e": "加载模板"
-        },
-        "mat": {
-            "a": "记录模板查询",
-            "b": "排列方式",
-            "c": "排列顺序",
-            "d": "时间",
-            "e": "金额",
-            "f": "顺序",
-            "g": "倒序",
-            "h": "单价",
-            "i": "数量",
-            "j": "数额",
-            "k": "更新时间",
-            "l": "删除"
-        },
-        "mata": {
-            "a": "增添财务记录",
-            "b": "记录支出",
-            "c": "单价",
-            "d": "数量",
-            "e": "事件描述",
-            "f": "记录收入",
-            "g": "数额",
-            "h": "事件描述"
+            "d": "暂无标签...",
+            "e": "保存模板",
+            "f": "加载模板",
+            "g": "输入或选择一个标签...",
+            "h": "所有标签"
         },
         "mc": {
             "a": "财务记录查询",
-            "b": "查询类别",
-            "c": "排列方式",
-            "d": "排列顺序",
-            "e": "支出",
-            "f": "收入",
-            "g": "时间",
-            "h": "金额",
-            "i": "顺序",
-            "j": "倒序",
-            "k": "事件",
-            "l": "单价",
-            "m": "数量",
-            "n": "数额",
-            "o": "具体时间",
-            "p": "删除"
+            "b": "当日记录",
+            "c": "全部记录",
+            "d": "支出",
+            "e": "收入",
+            "f": "过滤器",
+            "g": "标签",
+            "h": "日期",
+            "i": "事件描述",
+            "j": "单价",
+            "k": "数量",
+            "l": "数额",
+            "m": "具体时间",
+            "n": "删除"
         },
         "mce": {
             "a": "编辑记录",
             "b": "日期",
             "c": "时间",
             "d": "事件",
-            "e": "数量"
+            "e": "数量",
+            "f": "暂无标签...",
+            "g": "输入或选择一个标签...",
+            "h": "所有标签"
         },
         "mg": {
             "a": "统计记录",
             "b": "聚焦",
             "c": "加总",
-            "d": "日期",
-            "e": function(filtText) {
+            "d": "设置",
+            "e": "日期",
+            "f": "暂无标签限制...",
+            "g": "选择标签...",
+            "h": function(filtText) {
                 if (filtText === "sep")
                     return "当日记录统计";
                 return "每日记录加总";
             },
-            "f": function(filtText) {
+            "i": function(filtText) {
                 if (filtText === "sep")
                     return "当周记录统计";
                 return "每周记录加总";
             },
-            "g": function(filtText) {
+            "j": function(filtText) {
                 if (filtText === "sep")
                     return "当月记录统计";
                 return "每月记录加总";
             },
-            "h": function(filtText) {
+            "k": function(filtText) {
                 if (filtText === "sep")
                     return "当年记录统计";
                 return "每年记录加总";
@@ -1087,26 +1168,39 @@ angular.module('Account.services', ['ngResource'])
         },
         "mt": {
             "a": "记录模板查询",
-            "b": "查询类别",
-            "c": "排列方式",
-            "d": "排列顺序",
-            "e": "支出",
-            "f": "收入",
-            "g": "时间",
-            "h": "金额",
-            "i": "顺序",
-            "j": "倒序",
-            "k": "单价",
-            "l": "数量",
-            "m": "数额",
-            "n": "更新时间",
-            "o": "删除"
+            "b": "支出",
+            "c": "收入",
+            "d": "过滤器",
+            "e": "标签",
+            "f": "事件描述",
+            "g": "单价",
+            "h": "数量",
+            "j": "数额",
+            "k": "更新时间",
+            "l": "删除"
         },
         "mte": {
             "a": "编辑模板",
             "b": "数量",
             "c": "事件",
-            "d": "应用"
+            "d": "暂无标签...",
+            "e": "应用",
+            "f": "输入或选择一个标签...",
+            "g": "所有标签"
+        },
+        "mtd": {
+            "a": "增添财务记录",
+            "b": "记录支出",
+            "c": "单价",
+            "d": "数量",
+            "e": "事件描述",
+            "f": "暂无标签...",
+            "g": "记录收入",
+            "h": "数额",
+            "i": "事件描述",
+            "j": "暂无标签...",
+            "k": "输入或选择一个标签...",
+            "l": "所有标签"
         },
         
         "ta": {
@@ -1380,79 +1474,62 @@ angular.module('Account.services', ['ngResource'])
             "a": "Add Financial Record",
             "b": "Expenditure Record",
             "c": "Income Record",
-            "d": "Save Template",
-            "e": "Load Template"
-        },
-        "mat": {
-            "a": "Check Templates",
-            "b": "Ordered By",
-            "c": "Ordered Type",
-            "d": "Time",
-            "e": "Amount",
-            "f": "Normal",
-            "g": "Inverted",
-            "h": "Unit-Price",
-            "i": "Quantity",
-            "j": "Amount",
-            "k": "Update Time",
-            "l": "Delete"
-        },
-        "mata": {
-            "a": "Add Financial Record",
-            "b": "Expenditure Record",
-            "c": "Unit-Price",
-            "d": "Quantity",
-            "e": "Description",
-            "f": "Income Record",
-            "g": "Amount",
-            "h": "Description"
+            "d": "No tags yet...",
+            "e": "Save Template",
+            "f": "Load Template",
+            "g": "Enter or select a tag...",
+            "h": "All Tags"
         },
         "mc": {
             "a": "Check Financial Records",
-            "b": "Type",
-            "c": "Ordered by",
-            "d": "Ordered Type",
-            "e": "Expenditure",
-            "f": "Income",
-            "g": "Time",
-            "h": "Amount",
-            "i": "Normal",
-            "j": "Inverted",
-            "k": "Description",
-            "l": "Unit-Price",
-            "m": "Quantity",
-            "n": "Amount",
-            "o": "Time",
-            "p": "Delete"
+            "b": "Focus",
+            "c": "All",
+            "d": "Expenditure",
+            "e": "Income",
+            "f": "Filter",
+            "g": "Tag",
+            "h": "Date",
+            "i": "Description",
+            "j": "Unit-Price",
+            "k": "Quantity",
+            "l": "Amount",
+            "m": "Time",
+            "n": "Delete"
         },
         "mce": {
             "a": "Edit Record",
             "b": "Date",
             "c": "Time",
             "d": "Description",
-            "e": "Quantity"
+            "e": "Quantity",
+            "f": "No tags yet...",
+            "g": "Enter or select a tag...",
+            "h": "All Tags"
         },
         "mg": {
             "a": "Analytics",
             "b": "Focus",
             "c": "Adding Up",
-            "d": "Date",
-            "e": function(filtText) {
+            "d": "Setting",
+            "e": "Date",
+            "f": "No tags specified yet...",
+            "g": "Select a tag...",
+            "h": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Day";
                 return "Adding up each Day's Records";
             },
-            "f": function(filtText) {
+            "i": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Week";
                 return "Adding up each Week's Records";
             },
-            "g": function(filtText) {
+            "j": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Month";
                 return "Adding up each Month's Records";
             },
-            "h": function(filtText) {
+            "k": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Year";
                 return "Adding up each Year's Records";
@@ -1460,26 +1537,39 @@ angular.module('Account.services', ['ngResource'])
         },
         "mt": {
             "a": "Check Templates",
-            "b": "Type",
-            "c": "Ordered by",
-            "d": "Ordered Type",
-            "e": "Expenditure",
-            "f": "Income",
-            "g": "Time",
-            "h": "Amount",
-            "i": "Normal",
-            "j": "Inverted",
-            "k": "Unit-Price",
-            "l": "Quantity",
-            "m": "Amount",
-            "n": "Update Time",
-            "o": "Delete"
+            "b": "Expenditure",
+            "c": "Income",
+            "d": "Filter",
+            "e": "Tag",
+            "f": "Description",
+            "g": "Unit-Price",
+            "h": "Quantity",
+            "i": "Amount",
+            "j": "Update Time",
+            "k": "Delete"
         },
         "mte": {
             "a": "Edit Template",
             "b": "Quantity",
             "c": "Description",
-            "d": "Apply"
+            "d": "No tags yet...",
+            "e": "Apply",
+            "f": "Enter or select a tag...",
+            "g": "All Tags"
+        },
+        "mtd": {
+            "a": "Add Financial Record",
+            "b": "Expenditure Record",
+            "c": "Unit-Price",
+            "d": "Quantity",
+            "e": "Description",
+            "f": "No tags yet...",
+            "g": "Income Record",
+            "h": "Amount",
+            "i": "Description",
+            "j": "No tags yet...",
+            "k": "Enter or select a tag...",
+            "l": "All Tags"
         },
         
         "ta": {

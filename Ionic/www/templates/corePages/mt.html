@@ -1,38 +1,41 @@
 <ion-view view-title="{{lang(localInfo.lang).mt.a}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
-            <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
+            <button class="button button-icon icon ion-ios-search" ng-click="dt.doFilter()"></button>
         </div>
     </ion-nav-buttons>
     <ion-content>
         <div class="row">
-            <label class="col center">{{lang(localInfo.lang).mt.b}}</label>
-            <label class="col center">{{lang(localInfo.lang).mt.c}}</label>
-            <label class="col center">{{lang(localInfo.lang).mt.d}}</label>
+            <ion-radio class="col center" ng-model="dt.type" value="output">{{lang(localInfo.lang).mt.b}}</ion-radio>
+            <ion-radio class="col center" ng-model="dt.type" value="income">{{lang(localInfo.lang).mt.c}}</ion-radio>
         </div>
-        <div class="row">
-            <select class="col" ng-model="filtText">
-                <option value="output">{{lang(localInfo.lang).mt.e}}</option>
-                <option value="income">{{lang(localInfo.lang).mt.f}}</option>
-            </select>
-            <select class="col" ng-model="order">
-                <option value="milli">{{lang(localInfo.lang).mt.g}}</option>
-                <option value="sum">{{lang(localInfo.lang).mt.h}}</option>
-            </select>
-            <select class="col" ng-model="orderText">
-                <option value="{{order}}">{{lang(localInfo.lang).mt.i}}</option>
-                <option value="{{'-' + order}}">{{lang(localInfo.lang).mt.j}}</option>
-            </select>
-        </div>
+        <form class="card" ng-submit="dt.doFilter()">
+            <div class="item item-divider">
+                {{lang(localInfo.lang).mt.d}}
+            </div>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mt.e}}</span>
+                    <input type="text" ng-model="dt.tag.body" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label bold">{{lang(localInfo.lang).mt.f}}</span>
+                    <input type="text" ng-model="dt.description" />
+                </label>
+            </div>
+            <button ng-show="false"> </button>
+        </form>
         <ion-list show-delete="showAllDelete">
-            <ion-item collection-repeat="rec in mtRecords | filter: {type: filtText} | orderBy: orderText" href="#/app/mt/{{rec.id}}">
+            <ion-item collection-repeat="rec in dt.rs | filter: {type: dt.type}" href="#/app/mt/{{rec.id}}">
                 <h1 class="title">{{rec.event}}</h1>
-                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mt.k}}：{{rec.unit_price}}</p>
-                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mt.l}}：{{rec.amount}}</p>
-                <p ng-show="filtText === 'income'">{{lang(localInfo.lang).mt.m}}：{{rec.unit_price}}</p>
-                <p>{{lang(localInfo.lang).mt.n}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <span class="badge badge-header">{{dt.getTags(rec)}}</span>
+                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mt.g}}：{{rec.unit_price}}</p>
+                <p ng-show="filtText === 'output'">{{lang(localInfo.lang).mt.h}}：{{rec.amount}}</p>
+                <p ng-show="filtText === 'income'">{{lang(localInfo.lang).mt.i}}：{{rec.unit_price}}</p>
+                <p>{{lang(localInfo.lang).mt.j}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <p ng-show="filtText === 'income'"><br></p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mt.o}}</span></ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mt.k}}</span></ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>

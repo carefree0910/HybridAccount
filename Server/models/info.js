@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var Info = new Schema({
     username: String,
     income: Number,
-    icon: String
+    icon: String,
+    lang: String
 });
 
 exports.Info = Info;
