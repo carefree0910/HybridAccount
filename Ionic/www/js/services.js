@@ -342,7 +342,7 @@ angular.module('Account.services', ['ngResource'])
         records.mtRecords[id] = rec;
         $localStorage.storeObject('mtRecords', records.mtRecords);
     };
-    recFac.editFromMtRec = function(id, tag) {
+    recFac.editFromTag = function(id, tag) {
         records.tags[id] = tag;
         $localStorage.storeObject('tags', records.tags);
     };
@@ -498,6 +498,7 @@ angular.module('Account.services', ['ngResource'])
     };
     rmFac.genTagManager = function(current_tags) {
         var tagManager = {};
+        
         tagManager.tags = localRecordFactory.getTags();
         tagManager.selectedTag = "";
         tagManager.current_tag = {};
@@ -537,7 +538,33 @@ angular.module('Account.services', ['ngResource'])
         tagManager.delTagById = function(id) {
             localRecordFactory.delById(id, tagManager.current_tags);
         };
+        tagManager.delAllTagById = function(id) {
+            var tagBody = tagManager.tags[id].body;
+            rmFac.doDel("tags", "", id, tagBody, function() {});
+            var mRecords = localRecordFactory.getMRecords();
+            for (var i = mRecords.length - 1; i >= 0; i--) {
+                var idx = -1, tmpTags = mRecords[i].tags;
+                for (var j = tmpTags.length - 1; j >= 0; j--) {
+                    if (tmpTags[j].body === tagBody) {
+                        idx = j; break;
+                    }
+                }
+                if (idx >= 0)
+                    localRecordFactory.delById(idx, tmpTags);
+            }
+            localRecordFactory.updateMRecords(mRecords);
+        };
+        
         return tagManager;
+    };
+    rmFac.getTags = function(rec) {
+        if (rec.length === 0)
+            return "";
+        var tags = rec.tags;
+        var rs = "";
+        for (var i = tags.length - 1; i >= 0; i--)
+            rs += tags[i].body + " ";
+        return rs;
     };
     
     rmFac.checkSubTagList = function(sub, org) {
@@ -560,7 +587,7 @@ angular.module('Account.services', ['ngResource'])
                 records.splice(i, 1);
         }
     };
-    rmFac.getAndFiltOiRecordsWithTags = function(oiRecords, tags) {
+    rmFac.filtOiRecordsWithTags = function(oiRecords, tags) {
         if (tags.length === 0)
             return oiRecords;
         rmFac.filtRecordsWithTags(tags, oiRecords.o);
@@ -597,6 +624,10 @@ angular.module('Account.services', ['ngResource'])
             del_method = localRecordFactory.delFromMtRec;
             pop_msg = lang.rmFac.templatesPop;
             toast_msg = lang.rmFac.templatesToast;
+        } else if (category === "tags") {
+            del_method = localRecordFactory.delFromTags;
+            pop_msg = lang.rmFac.tagPop(msg);
+            toast_msg = lang.rmFac.tagToast;
         } else {
             console.log("Error, doDel not implemented with " + category + " !");
         }
@@ -787,7 +818,7 @@ angular.module('Account.services', ['ngResource'])
             labels: [],
             datasets: [
                 {
-                    label: lang.gmFac.a,
+                    label: lang.gmFac.oTitle,
                     fill: false,
                     lineTension: 0,
                     backgroundColor: "rgba(255, 177, 165, 0.5)",
@@ -807,7 +838,7 @@ angular.module('Account.services', ['ngResource'])
                     data: [],
                 },
                 {
-                    label: lang.gmFac.b,
+                    label: lang.gmFac.iTitle,
                     fill: false,
                     lineTension: 0,
                     backgroundColor: "rgba(156, 241, 178, 0.5)",
@@ -916,32 +947,32 @@ angular.module('Account.services', ['ngResource'])
         var rs = [
             {
                 "type": "output",
-                "title": lang.mForm.a,
+                "title": lang.mForm.outputTitle,
                 "contents": [
                     {
-                        "title": lang.mForm.b,
+                        "title": lang.mForm.outputContent1,
                         "body": ""
                     },
                     {
-                        "title": lang.mForm.c,
+                        "title": lang.mForm.outputContent2,
                         "body": "1"
                     },
                     {
-                        "title": lang.mForm.d,
+                        "title": lang.mForm.outputContent3,
                         "body": ""
                     }
                 ]
             },
             {
                 "type": "income",
-                "title": lang.mForm.e,
+                "title": lang.mForm.incomeTitle,
                 "contents": [
                     {
-                        "title": lang.mForm.f,
+                        "title": lang.mForm.incomeContent1,
                         "body": ""
                     },
                     {
-                        "title": lang.mForm.g,
+                        "title": lang.mForm.incomeContent2,
                         "body": ""
                     }
                 ]
@@ -954,35 +985,35 @@ angular.module('Account.services', ['ngResource'])
         var rs = [
             {
                 "type": "task",
-                "title": lang.tForm.a,
+                "title": lang.tForm.taskTitle,
                 "contents": [
                     {
-                        "title": lang.tForm.b,
+                        "title": lang.tForm.taskContent1,
                         "body": ""
                     },
                     {
-                        "title": lang.tForm.c,
+                        "title": lang.tForm.taskContent2,
                         "body": ""
                     }
                 ]
             },
             {
                 "type": "desire",
-                "title": lang.tForm.d,
+                "title": lang.tForm.desireTitle,
                 "contents": [
                     {
-                        "title": lang.tForm.e,
+                        "title": lang.tForm.desireContent1,
                         "body": ""
                     },
                     {
-                        "title": lang.tForm.f,
+                        "title": lang.tForm.desireContent2,
                         "body": ""
                     }
                 ]
             },
             {
                 "type": "memo",
-                "title": lang.tForm.g,
+                "title": lang.tForm.memoTitle,
                 "contents": [{
                     "title": "",
                     "body": ""
@@ -1083,241 +1114,239 @@ angular.module('Account.services', ['ngResource'])
     langFac.zh_cn = {
         
         "mForm": {
-            "a": "记录支出",
-            "b": "单价",
-            "c": "数量",
-            "d": "事件描述",
-            "e": "记录收入",
-            "f": "数额",
-            "g": "事件描述"
+            "outputTitle": "记录支出",
+            "outputContent1": "单价",
+            "outputContent2": "数量",
+            "outputContent3": "事件描述",
+            "incomeTitle": "记录收入",
+            "incomeContent1": "数额",
+            "incomeContent2": "事件描述"
         },
         "tForm": {
-            "a": "新任务",
-            "b": "描述",
-            "c": "得点",
-            "d": "新欲望",
-            "e": "描述",
-            "f": "失点",
-            "g": "新备忘"
+            "taskTitle": "新任务",
+            "taskContent1": "描述",
+            "taskContent2": "得点",
+            "desireTitle": "新欲望",
+            "desireContent1": "描述",
+            "desireContent2": "失点",
+            "memoTitle": "新备忘"
         },
         
         "ma": {
-            "a": "增添财务记录",
-            "b": "记录支出",
-            "c": "记录收入",
-            "d": "暂无标签...",
-            "e": "保存模板",
-            "f": "加载模板",
-            "g": "输入或选择一个标签...",
-            "h": "所有标签"
+            "viewTitle": "增添财务记录",
+            "output": "记录支出",
+            "income": "记录收入",
+            "placeholder1": "暂无标签...",
+            "save": "保存模板",
+            "load": "加载模板",
+            "placeholder2": "输入一个标签...",
+            "placeholder3": "选择一个标签..."
         },
         "mc": {
-            "a": "财务记录查询",
-            "b": "当日记录",
-            "c": "全部记录",
-            "d": "支出",
-            "e": "收入",
-            "f": "过滤器",
-            "g": "标签",
-            "h": "日期",
-            "i": "事件描述",
-            "j": "单价",
-            "k": "数量",
-            "l": "数额",
-            "m": "具体时间",
-            "n": "删除"
+            "viewTitle": "财务记录查询",
+            "focus": "当日记录",
+            "all": "全部记录",
+            "output": "支出",
+            "income": "收入",
+            "filter": "过滤器",
+            "tag": "标签",
+            "date": "日期",
+            "event": "事件描述",
+            "unitPrice": "单价",
+            "quantity": "数量",
+            "amount": "数额",
+            "time": "具体时间",
+            "delete": "删除"
         },
         "mce": {
-            "a": "编辑记录",
-            "b": "日期",
-            "c": "时间",
-            "d": "事件",
-            "e": "数量",
-            "f": "暂无标签...",
-            "g": "输入或选择一个标签...",
-            "h": "所有标签"
+            "viewTitle": "编辑记录",
+            "date": "日期",
+            "time": "时间",
+            "event": "事件",
+            "amount": "数量",
+            "placeholder1": "暂无标签...",
+            "placeholder2": "输入一个标签...",
+            "placeholder3": "选择一个标签..."
         },
         "mg": {
-            "a": "统计记录",
-            "b": "聚焦",
-            "c": "加总",
-            "d": "设置",
-            "e": "日期",
-            "f": "暂无标签限制...",
-            "g": "选择标签...",
-            "h": function(filtText) {
+            "viewTitle": "统计记录",
+            "focus": "聚焦",
+            "addUp": "加总",
+            "setting": "设置",
+            "date": "日期",
+            "placeholder1": "暂无标签限制...",
+            "placeholder2": "选择标签...",
+            "dType": function(filtText) {
                 if (filtText === "sep")
                     return "当日记录统计";
                 return "每日记录加总";
             },
-            "i": function(filtText) {
+            "wType": function(filtText) {
                 if (filtText === "sep")
                     return "当周记录统计";
                 return "每周记录加总";
             },
-            "j": function(filtText) {
+            "mType": function(filtText) {
                 if (filtText === "sep")
                     return "当月记录统计";
                 return "每月记录加总";
             },
-            "k": function(filtText) {
+            "yType": function(filtText) {
                 if (filtText === "sep")
                     return "当年记录统计";
                 return "每年记录加总";
             }
         },
         "mt": {
-            "a": "记录模板查询",
-            "b": "支出",
-            "c": "收入",
-            "d": "过滤器",
-            "e": "标签",
-            "f": "事件描述",
-            "g": "单价",
-            "h": "数量",
-            "j": "数额",
-            "k": "更新时间",
-            "l": "删除"
+            "viewTitle": "记录模板查询",
+            "type": "类型",
+            "all": "全部",
+            "output": "支出",
+            "income": "收入",
+            "filter": "过滤器",
+            "tag": "标签",
+            "event": "事件描述",
+            "unitPrice": "单价",
+            "quantity": "数量",
+            "amount": "数额",
+            "updateTime": "更新时间",
+            "delete": "删除"
         },
         "mte": {
-            "a": "编辑模板",
-            "b": "数量",
-            "c": "事件",
-            "d": "暂无标签...",
-            "e": "应用",
-            "f": "输入或选择一个标签...",
-            "g": "所有标签"
+            "viewTitle": "编辑模板",
+            "amount": "数量",
+            "event": "事件",
+            "placeholder1": "暂无标签...",
+            "apply": "应用",
+            "placeholder2": "输入一个标签...",
+            "placeholder3": "选择一个标签..."
         },
         "mtd": {
-            "a": "增添财务记录",
-            "b": "记录支出",
-            "c": "单价",
-            "d": "数量",
-            "e": "事件描述",
-            "f": "暂无标签...",
-            "g": "记录收入",
-            "h": "数额",
-            "i": "事件描述",
-            "j": "暂无标签...",
-            "k": "输入或选择一个标签...",
-            "l": "所有标签"
+            "viewTitle": "增添财务记录",
+            "recOutput": "记录支出",
+            "unitPrice": "单价",
+            "quantity": "数量",
+            "oEvent": "事件描述",
+            "placeholder1": "暂无标签...",
+            "recIncome": "记录收入",
+            "amount": "数额",
+            "iEvent": "事件描述",
+            "placeholder2": "输入一个标签...",
+            "placeholder3": "选择一个标签..."
         },
         
         "ta": {
-            "a": "增添事件",
-            "b": "新任务",
-            "c": "新欲望",
-            "d": "新备忘"
+            "viewTitle": "增添事件",
+            "task": "新任务",
+            "desire": "新欲望",
+            "memo": "新备忘"
         },
         "tc": {
-            "a": "事件查询",
-            "b": "任务",
-            "c": "欲望",
-            "d": "次数",
-            "e": "更新时间",
-            "f": "删除"
+            "viewTitle": "事件查询",
+            "task": "任务",
+            "desire": "欲望",
+            "time": "次数",
+            "updateTime": "更新时间",
+            "delete": "删除"
         },
         "tce": {
-            "a": "详情",
-            "b": "事件",
-            "c": "次数",
-            "d": "修改"
+            "viewTitle": "详情",
+            "event": "事件",
+            "time": "次数"
         },
         "tm": {
-            "a": "备忘查询",
-            "b": "更新时间",
-            "c": "删除"
+            "viewTitle": "备忘查询",
+            "time": "更新时间",
+            "delete": "删除"
         },
         "tme": {
-            "a": "编辑备忘"
+            "viewTitle": "编辑备忘"
         },
         "ts": {
-            "a": "归档事件",
-            "b": "任务",
-            "c": "欲望",
-            "d": "次数",
-            "e": "归档时间",
-            "f": "删除"
+            "viewTitle": "归档事件",
+            "task": "任务",
+            "desire": "欲望",
+            "time": "次数",
+            "archiveTime": "归档时间",
+            "delete": "删除"
         },
         "tsd": {
-            "a": "详情",
-            "b": "事件",
-            "c": "次数",
-            "d": "时间"
+            "viewTitle": "详情",
+            "event": "事件",
+            "time": "次数",
+            "doneTimes": "时间"
         },
         
         "home": {
-            "a": "主页",
-            "b": "财务管理综述",
-            "c": "支出金额",
-            "d": "收入金额",
-            "e": "事件管理综述",
-            "f": "剩余点数",
-            "g": "最近备忘",
-            "h": "记账者信息",
-            "i": "用户名",
-            "j": "年收入"
+            "viewTitle": "主页",
+            "mTitle": "财务管理综述",
+            "expenditure": "支出金额",
+            "income": "收入金额",
+            "tTitle": "事件管理综述",
+            "ptLeft": "剩余点数",
+            "latestMemo": "最近备忘",
+            "userInfo": "记账者信息",
+            "username": "用户名",
+            "yIncome": "年收入"
         },
         "login": {
-            "a": "登录",
-            "b": "用户名",
-            "c": "密码"
+            "title": "登录",
+            "username": "用户名",
+            "password": "密码"
         },
         "recent": {
-            "a": "今日账本",
-            "b": "财务账本",
-            "c": "事件账本",
-            "d": "今日财务统计",
-            "e": "总支出数额",
-            "f": "总收入数额",
-            "g": "今日财务记录",
-            "h": "今日事件统计",
-            "i": "总得点",
-            "j": "总失点",
-            "k": "今日事件记录",
-            "l": "数额",
-            "m": "具体时间",
-            "n": "今日",
-            "o": "次数",
-            "p": "时间"
+            "viewTitle": "今日账本",
+            "mAccount": "财务账本",
+            "tAccount": "事件账本",
+            "mTitle": "今日财务统计",
+            "sumOutput": "总支出数额",
+            "sumIncome": "总收入数额",
+            "mDetail": "今日财务记录",
+            "tTitle": "今日事件统计",
+            "sumPtGet": "总得点",
+            "sumPtLost": "总失点",
+            "tDetail": "今日事件记录",
+            "amount": "数额",
+            "time": "具体时间",
+            "today": "今日",
+            "todayAmount": "次数",
+            "todayTime": "时间"
         },
         "register": {
-            "a": "注册",
-            "b": "用户名",
-            "c": "密码"
+            "title": "注册",
+            "username": "用户名",
+            "password": "密码"
         },
         "setting": {
-            "a": "设置",
-            "b": "语言",
-            "c": "头像",
-            "d": "照相",
-            "e": "图库",
-            "f": "用户名",
-            "g": "年收入"
+            "title": "设置",
+            "lang": "语言",
+            "avatar": "头像",
+            "username": "用户名",
+            "yIncome": "年收入"
         },
         "sidebar": {
-            "a": "导航",
-            "b": "主页",
-            "c": "今日账本",
-            "d": "财务账本",
-            "e": "记一笔",
-            "f": "查询记录",
-            "g": "查询模板",
-            "h": "统计记录",
-            "i": "事件账本",
-            "j": "增添事件",
-            "k": "查看事件",
-            "l": "查看备忘",
-            "m": "归档事件",
-            "n": "服务",
-            "o": "登录",
-            "p": "注册",
-            "q": "设置",
-            "r": "同步"
+            "title": "导航",
+            "home": "主页",
+            "today": "今日账本",
+            "mAccount": "财务账本",
+            "ma": "记一笔",
+            "mc": "查询记录",
+            "mt": "查询模板",
+            "mg": "统计记录",
+            "tAccount": "事件账本",
+            "ta": "增添事件",
+            "tc": "查看事件",
+            "tm": "查看备忘",
+            "ts": "归档事件",
+            "services": "服务",
+            "login": "登录",
+            "register": "注册",
+            "setting": "设置",
+            "sync": "同步"
         },
         "sync": {
-            "a": "上传数据",
-            "b": "下载数据"
+            "upload": "上传数据",
+            "download": "下载数据"
         },
         
         "moneyType": {
@@ -1418,6 +1447,10 @@ angular.module('Account.services', ['ngResource'])
             "aTaskToast": "删除成功 !",
             "templatesPop": "你确定要删除这个模板吗 ?",
             "templatesToast": "删除成功 !",
+            "tagPop": function(msg) {
+                return "确认删除 '" + msg + "' 这个标签 ?";
+            },
+            "tagToast": "删除成功 !",
 
             "err_type": function(type) {
                 if (type === "output")
@@ -1437,256 +1470,254 @@ angular.module('Account.services', ['ngResource'])
 
         },
         "gmFac": {
-            "a": "支出",
-            "b": "收入",
+            "oTitle": "支出",
+            "iTitle": "收入"
         },
         
         "loading": {
-            "a": "加载中"
+            "loading": "加载中"
         },
         "exit": {
-            "a": "再按一次退出"
+            "exit": "再按一次退出"
         }
         
     };
     langFac.en = {
         
         "mForm": {
-            "a": "Expenditure",
-            "b": "Unit-Price",
-            "c": "Quantity",
-            "d": "Description",
-            "e": "Income",
-            "f": "Amount",
-            "g": "Description"
+            "outputTitle": "Expenditure",
+            "outputContent1": "Unit-Price",
+            "outputContent2": "Quantity",
+            "outputContent3": "Description",
+            "incomeTitle": "Income",
+            "incomeContent1": "Amount",
+            "incomeContent2": "Description"
         },
         "tForm": {
-            "a": "New Task",
-            "b": "Description",
-            "c": "pt. +",
-            "d": "New Desire",
-            "e": "Description",
-            "f": "pt. -",
-            "g": "New Memo"
+            "taskTitle": "New Task",
+            "taskContent1": "Description",
+            "taskContent2": "pt. +",
+            "desireTitle": "New Desire",
+            "desireContent1": "Description",
+            "desireContent2": "pt. -",
+            "memoTitle": "New Memo"
         },
         
         "ma": {
-            "a": "Add Financial Record",
-            "b": "Expenditure Record",
-            "c": "Income Record",
-            "d": "No tags yet...",
-            "e": "Save Template",
-            "f": "Load Template",
-            "g": "Enter or select a tag...",
-            "h": "All Tags"
+            "viewTitle": "Add Financial Record",
+            "output": "Expenditure Record",
+            "income": "Income Record",
+            "placeholder1": "No tags yet...",
+            "save": "Save Template",
+            "load": "Load Template",
+            "placeholder2": "Enter a tag...",
+            "placeholder3": "Select a tag..."
         },
         "mc": {
-            "a": "Check Financial Records",
-            "b": "Focus",
-            "c": "All",
-            "d": "Expenditure",
-            "e": "Income",
-            "f": "Filter",
-            "g": "Tag",
-            "h": "Date",
-            "i": "Description",
-            "j": "Unit-Price",
-            "k": "Quantity",
-            "l": "Amount",
-            "m": "Time",
-            "n": "Delete"
+            "viewTitle": "Check Financial Records",
+            "focus": "Focus",
+            "all": "All",
+            "output": "Expenditure",
+            "income": "Income",
+            "filter": "Filter",
+            "tag": "Tag",
+            "date": "Date",
+            "event": "Description",
+            "unitPrice": "Unit-Price",
+            "quantity": "Quantity",
+            "amount": "Amount",
+            "time": "Time",
+            "delete": "Delete"
         },
         "mce": {
-            "a": "Edit Record",
-            "b": "Date",
-            "c": "Time",
-            "d": "Description",
-            "e": "Quantity",
-            "f": "No tags yet...",
-            "g": "Enter or select a tag...",
-            "h": "All Tags"
+            "viewTitle": "Edit Record",
+            "date": "Date",
+            "time": "Time",
+            "event": "Description",
+            "amount": "Quantity",
+            "placeholder1": "No tags yet...",
+            "placeholder2": "Enter a tag...",
+            "placeholder3": "Select a tag..."
         },
         "mg": {
-            "a": "Analytics",
-            "b": "Focus",
-            "c": "Adding Up",
-            "d": "Setting",
-            "e": "Date",
-            "f": "No tags specified yet...",
-            "g": "Select a tag...",
-            "h": function(filtText) {
+            "viewTitle": "Analytics",
+            "focus": "Focus",
+            "addUp": "Adding Up",
+            "setting": "Setting",
+            "date": "Date",
+            "placeholder1": "No tags specified yet...",
+            "placeholder2": "Select a tag...",
+            "dType": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Day";
                 return "Adding up each Day's Records";
             },
-            "i": function(filtText) {
+            "wType": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Week";
                 return "Adding up each Week's Records";
             },
-            "j": function(filtText) {
+            "mType": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Month";
                 return "Adding up each Month's Records";
             },
-            "k": function(filtText) {
+            "yType": function(filtText) {
                 if (filtText === "sep")
                     return "Analytics for that Year";
                 return "Adding up each Year's Records";
             }
         },
         "mt": {
-            "a": "Check Templates",
-            "b": "Expenditure",
-            "c": "Income",
-            "d": "Filter",
-            "e": "Tag",
-            "f": "Description",
-            "g": "Unit-Price",
-            "h": "Quantity",
-            "i": "Amount",
-            "j": "Update Time",
-            "k": "Delete"
+            "viewTitle": "Check Templates",
+            "type": "Type",
+            "all": "All",
+            "output": "Expenditure",
+            "income": "Income",
+            "filter": "Filter",
+            "tag": "Tag",
+            "event": "Description",
+            "unitPrice": "Unit-Price",
+            "quantity": "Quantity",
+            "amount": "Amount",
+            "updateTime": "Update Time",
+            "delete": "Delete"
         },
         "mte": {
-            "a": "Edit Template",
-            "b": "Quantity",
-            "c": "Description",
-            "d": "No tags yet...",
-            "e": "Apply",
-            "f": "Enter or select a tag...",
-            "g": "All Tags"
+            "viewTitle": "Edit Template",
+            "amount": "Quantity",
+            "event": "Description",
+            "placeholder1": "No tags yet...",
+            "apply": "Apply",
+            "placeholder2": "Enter a tag...",
+            "placeholder3": "Select a tag..."
         },
         "mtd": {
-            "a": "Add Financial Record",
-            "b": "Expenditure Record",
-            "c": "Unit-Price",
-            "d": "Quantity",
-            "e": "Description",
-            "f": "No tags yet...",
-            "g": "Income Record",
-            "h": "Amount",
-            "i": "Description",
-            "j": "No tags yet...",
-            "k": "Enter or select a tag...",
-            "l": "All Tags"
+            "viewTitle": "Add Financial Record",
+            "recOutput": "Expenditure Record",
+            "unitPrice": "Unit-Price",
+            "quantity": "Quantity",
+            "oEvent": "Description",
+            "placeholder1": "No tags yet...",
+            "recIncome": "Income Record",
+            "amount": "Amount",
+            "iEvent": "Description",
+            "placeholder2": "Enter a tag...",
+            "placeholder3": "Select a tag..."
         },
         
         "ta": {
-            "a": "Add Event",
-            "b": "New Task",
-            "c": "New Desire",
-            "d": "New Memo"
+            "viewTitle": "Add Event",
+            "task": "New Task",
+            "desire": "New Desire",
+            "memo": "New Memo"
         },
         "tc": {
-            "a": "Check Events",
-            "b": "Tasks",
-            "c": "Desires",
-            "d": "",
-            "e": "Update Time",
-            "f": "Delete"
+            "viewTitle": "Check Events",
+            "task": "Tasks",
+            "desire": "Desires",
+            "time": "",
+            "updateTime": "Update Time",
+            "delete": "Delete"
         },
         "tce": {
-            "a": "Detail",
-            "b": "Description",
-            "c": "",
-            "d": "Modify"
+            "viewTitle": "Detail",
+            "event": "Description",
+            "time": ""
         },
         "tm": {
-            "a": "Check Memo",
-            "b": "Update Time",
-            "c": "Delete"
+            "viewTitle": "Check Memo",
+            "time": "Update Time",
+            "delete": "Delete"
         },
         "tme": {
-            "a": "Edit Memo"
+            "viewTitle": "Edit Memo"
         },
         "ts": {
-            "a": "Archived Events",
-            "b": "Task",
-            "c": "Desire",
-            "d": "",
-            "e": "Archive Time",
-            "f": "Delete"
+            "viewTitle": "Archived Events",
+            "task": "Task",
+            "desire": "Desire",
+            "time": "",
+            "archiveTime": "Archive Time",
+            "delete": "Delete"
         },
         "tsd": {
-            "a": "Detail",
-            "b": "Description",
-            "c": "",
-            "d": " Time(s)"
+            "viewTitle": "Detail",
+            "event": "Description",
+            "time": "",
+            "doneTimes": " Time(s)"
         },
         
         "home": {
-            "a": "Home",
-            "b": "Financial Summerization",
-            "c": "Expenditure",
-            "d": "Income",
-            "e": "Event Summerization",
-            "f": "pt. Left",
-            "g": "Latest Memo",
-            "h": "User Info",
-            "i": "Username",
-            "j": "Income"
+            "viewTitle": "Home",
+            "mTitle": "Financial Summerization",
+            "expenditure": "Expenditure",
+            "income": "Income",
+            "tTitle": "Event Summerization",
+            "ptLeft": "pt. Left",
+            "latestMemo": "Latest Memo",
+            "userInfo": "User Info",
+            "username": "Username",
+            "yIncome": "Income"
         },
         "login": {
-            "a": "Log In",
-            "b": "Username",
-            "c": "Password"
+            "title": "Log In",
+            "username": "Username",
+            "password": "Password"
         },
         "recent": {
-            "a": "Today's Account",
-            "b": "Finance",
-            "c": "Event",
-            "d": "Today's Financial Summerization",
-            "e": "Total Expenditure",
-            "f": "Total Income",
-            "g": "Details",
-            "h": "Today's Event Summerization",
-            "i": "Total pt. Gained",
-            "j": "Total pt. Lost",
-            "k": "Details",
-            "l": "",
-            "m": "Time",
-            "n": "",
-            "o": "",
-            "p": "Time(s)"
+            "viewTitle": "Today's Account",
+            "mAccount": "Finance",
+            "tAccount": "Event",
+            "mTitle": "Today's Financial Summerization",
+            "sumOutput": "Total Expenditure",
+            "sumIncome": "Total Income",
+            "mDetail": "Details",
+            "tTitle": "Today's Event Summerization",
+            "sumPtGet": "Total pt. Gained",
+            "sumPtLost": "Total pt. Lost",
+            "tDetail": "Details",
+            "amount": "",
+            "time": "Time",
+            "today": "",
+            "todayAmount": "",
+            "todayTime": "Time(s)"
         },
         "register": {
-            "a": "Register",
-            "b": "Username",
-            "c": "Password"
+            "title": "Register",
+            "username": "Username",
+            "password": "Password"
         },
         "setting": {
-            "a": "Setting",
-            "b": "Language",
-            "c": "Avatar",
-            "d": "Camera",
-            "e": "Gallery",
-            "f": "Username",
-            "g": "Income"
+            "title": "Setting",
+            "lang": "Language",
+            "avatar": "Avatar",
+            "username": "Username",
+            "yIncome": "Income"
         },
         "sidebar": {
-            "a": "Navigation",
-            "b": "Home",
-            "c": "Today's Account",
-            "d": "Financial Account",
-            "e": "Add Record",
-            "f": "Check Records",
-            "g": "Check Templates",
-            "h": "Analytics",
-            "i": "Event Account",
-            "j": "Add Event",
-            "k": "Check Events",
-            "l": "Check Memo",
-            "m": "Archived",
-            "n": "Services",
-            "o": "Log in",
-            "p": "Register",
-            "q": "Settings",
-            "r": "Sync"
+            "title": "Navigation",
+            "home": "Home",
+            "today": "Today's Account",
+            "mAccount": "Financial Account",
+            "ma": "Add Record",
+            "mc": "Check Records",
+            "mt": "Check Templates",
+            "mg": "Analytics",
+            "tAccount": "Event Account",
+            "ta": "Add Event",
+            "tc": "Check Events",
+            "tm": "Check Memo",
+            "ts": "Archived",
+            "services": "Services",
+            "login": "Log in",
+            "register": "Register",
+            "setting": "Settings",
+            "sync": "Sync"
         },
         "sync": {
-            "a": "Upload",
-            "b": "Download"
+            "upload": "Upload",
+            "download": "Download"
         },
         
         "moneyType": {
@@ -1767,7 +1798,6 @@ angular.module('Account.services', ['ngResource'])
         },
         
         "rmFac": {
-
             "moneyPop": "Confirm Deletion ?",
             "moneyToast": "Deleted Successfully !",
             "taskPop": function(msg, type) {
@@ -1795,6 +1825,10 @@ angular.module('Account.services', ['ngResource'])
             "aTaskToast": "Deleted Successfully !",
             "templatesPop": "Confirm Deletion ?",
             "templatesToast": "Deleted Successfully !",
+            "tagPop": function(msg) {
+                return "Confirm Deleting tag '" + msg + "' ?";
+            },
+            "tagToast": "Deleted Successfully !",
 
             "err_type": function(type) {
                 if (type === "output")
@@ -1819,18 +1853,17 @@ angular.module('Account.services', ['ngResource'])
                     return sMsg;
                 return fMsg + err_msg;
             }
-
         },
         "gmFac": {
-            "a": "Expenditure",
-            "b": "Income",
+            "oTitle": "Expenditure",
+            "iTitle": "Income",
         },
         
         "loading": {
-            "a": "Loading"
+            "loading": "Loading"
         },
         "exit": {
-            "a": "Press again to Exit"
+            "exit": "Press again to Exit"
         }
         
     };

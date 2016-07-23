@@ -1,4 +1,4 @@
-<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mg.a}}">
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mg.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-analytics" ng-click="dt.refresh_sep()"></button>
@@ -6,46 +6,45 @@
     </ion-nav-buttons>
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
-            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).mg.b}} </a></li>
-            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).mg.c}} </a></li>
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).mg.focus}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).mg.addUp}} </a></li>
         </ul>
     </div>
     <ion-content>
         <div class="card">
             <div class="item item-divider">
-                 {{lang(localInfo.lang).mg.d}} 
+                 {{lang(localInfo.lang).mg.setting}} 
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label bold">{{lang(localInfo.lang).mg.e}}</span>
+                    <span class="input-label bold">{{lang(localInfo.lang).mg.date}}</span>
                     <input type="date" ng-model="dt.date" />
                 </label>
             </div>
             <div class="list">
                 <div class="item item-text-wrap">
-                    <span ng-show="dt.tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mg.f}} </small></span>
+                    <span ng-show="dt.tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mg.placeholder1}} </small></span>
                     <span ng-repeat="tag in dt.tagManager.current_tags track by $index">
                         <a class="tag-badge" ng-click="dt.tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
-            <div class="item item-select">
-                <button class="button button-light icon ion-arrow-up-c" ng-click="dt.tagManager.addTagByBody()"></button>
+            <div class="item item-input item-select">
+                <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="dt.onClick('add')"></button>
+                <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="dt.onClick('del')"></button>
                 <select ng-model="dt.tagManager.selectedTag" ng-options="tag.body for tag in dt.tagManager.tags">
-                    <option value=""> {{lang(localInfo.lang).mg.g}} </option>
+                    <option value=""> {{lang(localInfo.lang).mg.placeholder2}} </option>
                 </select>
             </div>
         </div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.h(filtText)}}</div>
-        <div>
-            <canvas class="chart" id="day" height="250"></canvas>
-        </div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.i(filtText)}}</div>
-        <canvas class="chart" id="week" height="250"></canvas>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.j(filtText)}}</div>
-        <canvas class="chart" id="month" height="250"></canvas>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.k(filtText)}}</div>
-        <canvas class="chart" id="year" height="250"></canvas>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.dType(filtText)}}</div>
+        <div><canvas class="chart" id="day" height="250"></canvas></div>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.wType(filtText)}}</div>
+        <div><canvas class="chart" id="week" height="250"></canvas></div>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.mType(filtText)}}</div>
+        <div><canvas class="chart" id="month" height="250"></canvas></div>
+        <div class="item item-divider">{{lang(localInfo.lang).mg.yType(filtText)}}</div>
+        <div><canvas class="chart" id="year" height="250"></canvas></div>
         <br> <br> <br>
     </ion-content>
 </ion-view>

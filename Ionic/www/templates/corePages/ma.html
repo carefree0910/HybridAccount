@@ -1,4 +1,4 @@
-<ion-view view-title="{{lang(localInfo.lang).ma.a}}">
+<ion-view view-title="{{lang(localInfo.lang).ma.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-compose-outline" ng-click="doAdd(filtText)"></button>
@@ -6,12 +6,13 @@
     </ion-nav-buttons>
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
-            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).ma.b}} </a></li>
-            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).ma.c}} </a></li>
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).ma.output}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).ma.income}} </a></li>
         </ul>
     </div>
     <ion-content>
         <form ng-repeat="form in forms" ng-show="form.type === filtText" class="card" ng-submit="doAdd(form.type)">
+            <button ng-show="false"></button>
             <div class="item item-divider"> {{form.title}} </div>
             <div ng-repeat="content in form.contents" class="list list-inset">
                 <label class="item item-input item-text-wrap"> <span class="input-label">{{content.title}}</span>
@@ -19,28 +20,31 @@
             </div>
             <div class="list">
                 <div class="item item-text-wrap">
-                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).ma.d}} </small></span>
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).ma.placeholder1}} </small></span>
                     <span ng-repeat="tag in tagManager.current_tags track by $index">
                         <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
-            <button ng-show="false"></button>
         </form>
         <div class="multi_buttons button-bar">
-            <button class="button button-block button-balanced" ng-click="saveTemplate(filtText)"> {{lang(localInfo.lang).ma.e}} </button>
-            <a class="button button-block button-calm" href="#/app/mtp/{{filtText}}"> {{lang(localInfo.lang).ma.f}} </a>
+            <button class="button button-block button-balanced" ng-click="saveTemplate(filtText)"> {{lang(localInfo.lang).ma.save}} </button>
+            <a class="button button-block button-calm" href="#/app/mtp/{{filtText}}"> {{lang(localInfo.lang).ma.load}} </a>
         </div>
         <form class="card" ng-submit="tagManager.addTag()">
-            <label class="item item-input">
-                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).ma.g}}" />
+            <div class="item item-input">
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).ma.placeholder2}}" />
                 <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
-            </label>
+                <span class="tag-enter-span"></span>
+            </div>
+            <div class="item item-input item-select">
+                <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="onClick('add')"></button>
+                <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="onClick('del')"></button>
+                <select ng-model="tagManager.selectedTag" ng-options="tag.body for tag in tagManager.tags">
+                    <option value=""> {{lang(localInfo.lang).ma.placeholder3}} </option>
+                </select>
+            </div>
         </form>
-        <div class="item item-divider"> {{lang(localInfo.lang).ma.h}} </div>
-        <div class="item" ng-repeat="tag in tagManager.tags track by $index" ng-click="tagManager.addTagById(tag.id)">
-            {{tag.body}}
-        </div>
         <br> <br> <br>
     </ion-content>
 </ion-view>

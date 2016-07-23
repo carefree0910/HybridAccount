@@ -1,6 +1,6 @@
 <ion-modal-view>
     <ion-header-bar>
-        <h1 class="title">{{lang(localInfo.lang).register.a}}</h1>
+        <h1 class="title">{{lang(localInfo.lang).register.title}}</h1>
         <div class="buttons">
             <button class="button button-nav" ng-click="doRegister()"><i class="icon ion-android-done"></i></button>
         </div>
@@ -10,13 +10,14 @@
     </ion-header-bar>
     <ion-content>
         <form ng-submit="doRegister()">
+            <button ng-show="false"> </button>
             <div class="list">
-                <label class="item item-input"> <span class="input-label">{{lang(localInfo.lang).register.b}}</span>
+                <label class="item item-input"> <span class="input-label">{{lang(localInfo.lang).register.username}}</span>
                     <input type="text" ng-model="registration.username"> </label>
-                <label class="item item-input"> <span class="input-label">{{lang(localInfo.lang).register.c}}</span>
+                <label class="item item-input"> <span class="input-label">{{lang(localInfo.lang).register.password}}</span>
                     <input type="password" ng-model="registration.password"> </label>
             </div>
-            <button ng-show="false"> </button>
         </form>
+        <br> <br> <br>
     </ion-content>
 </ion-modal-view>

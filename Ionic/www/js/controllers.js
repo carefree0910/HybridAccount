@@ -277,12 +277,14 @@ angular.module('Account.controllers', [])
 
 })
 
-.controller('recentController', function($filter, $rootScope, $scope, $timeout, localRecordFactory, userFactory, moneyType, taskType, doneType, textType, time, formatNumber, lang) {
+.controller('recentController', function($filter, $rootScope, $scope, $timeout, localRecordFactory, userFactory, getTags, moneyType, taskType, doneType, textType, time, formatNumber, lang) {
     
     var refresh = function() {
         $rootScope.$broadcast("loading:show");
         $timeout(function() {
             $scope.localInfo = userFactory.getLocalInfo();
+            $scope.getTags = getTags;
+            
             var mrRecords = localRecordFactory.getMrRecords();
             $scope.mrdRecords = mrRecords.mrd.o.concat(mrRecords.mrd.i);
             $scope.trRecords = localRecordFactory.getTrRecords();
@@ -335,6 +337,7 @@ angular.module('Account.controllers', [])
             $rootScope.$broadcast("loading:hide");
         }, 500);
     };
+    
     $scope.$on('$ionicView.beforeEnter', refresh);
     $scope.$on('refresh:/app/recent', refresh);
     
@@ -394,6 +397,13 @@ angular.module('Account.controllers', [])
         return (checkTab === $scope.tab);
     };
     
+    $scope.onClick = function(type) {
+        if (type === "add")
+            $scope.tagManager.addTagByBody();
+        else if ($scope.tagManager.selectedTag)
+            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+    };
+    
     $scope.doAdd = function(type) {
         doMoneyFormAdd(type, $scope.forms, $scope.mRecords, "记录", function(info) {
             info.sum = info.amount * info.unit_price;
@@ -403,11 +413,11 @@ angular.module('Account.controllers', [])
             }
             $scope.mRecords.push(info);
             localRecordFactory.updateMRecords($scope.mRecords);
-            for (var i = 0; i < $scope.tagManager.current_tags.length; i++) {
+            for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
                 var tmpTag = $scope.tagManager.current_tags[i];
                 var involve = false;
-                for (var i = $scope.tagManager.tags.length - 1; i >= 0; i--) {
-                    if ($scope.tagManager.tags[i].body === tmpTag.body) {
+                for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
+                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
                         involve = true; break;
                     }
                 }
@@ -435,22 +445,14 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mcController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, time, doDel, lang) {
+.controller('mcController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, time, doDel, lang) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
     $scope.dt.date = new Date();
     $scope.dt.tag = {};
-    $scope.dt.getTags = function(rec) {
-        if (rec.length === 0)
-            return "";
-        var tags = rec.tags;
-        var rs = "";
-        for (var i = tags.length - 1; i >= 0; i--)
-            rs += tags[i].body + " ";
-        return rs;
-    };
-    $scope.dt.type = "output";
+    $scope.dt.getTags = getTags;
+    $scope.dt.type = "all";
     $scope.dt.description = "";
     
     $scope.dt.tab = 1;
@@ -550,8 +552,14 @@ angular.module('Account.controllers', [])
     
     $scope.textType = textType;
     
+    $scope.onClick = function(type) {
+        if (type === "add")
+            $scope.tagManager.addTagByBody();
+        else if ($scope.tagManager.selectedTag)
+            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+    };
+    
     $scope.finishEdit = function() {
-        
         var err_flag = false, err_msg = "";
         $scope.record.amount = parseInt($scope.record.amount);
         $scope.record.unit_price = parseFloat($scope.record.unit_price);
@@ -568,6 +576,21 @@ angular.module('Account.controllers', [])
         if (!err_flag) {
             $scope.record.milli = $scope.record.date.getTime();
             $scope.record.sum = $scope.record.amount * $scope.record.unit_price;
+            for (var i = $scope.record.tags.length - 1; i >= 0; i--) {
+                var tmpTag = $scope.record.tags[i];
+                var involve = false;
+                for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
+                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
+                        involve = true; break;
+                    }
+                }
+                if (!involve) {
+                    tmpTag.id = $scope.tagManager.tags.length;
+                    $scope.tagManager.tags.push(tmpTag);
+                }
+            }
+            
+            localRecordFactory.updateTags($scope.tagManager.tags);
             localRecordFactory.editFromMRec(id, $scope.record);
         } 
 
@@ -589,26 +612,17 @@ angular.module('Account.controllers', [])
                     );
             }
         });
-
     };
     
 })
 
-.controller('mtController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, full_date, time, doDel, lang, type) {
+.controller('mtController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, full_date, time, doDel, lang, type) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
     $scope.dt.tag = {};
-    $scope.dt.getTags = function(rec) {
-        if (rec.length === 0)
-            return "";
-        var tags = rec.tags;
-        var rs = "";
-        for (var i = tags.length - 1; i >= 0; i--)
-            rs += tags[i].body + " ";
-        return rs;
-    };
-    $scope.dt.type = "output";
+    $scope.dt.getTags = getTags;
+    $scope.dt.type = "all";
     $scope.dt.description = "";
     $scope.dt.doFilter = function() {
         $rootScope.$broadcast("loading:show");
@@ -638,22 +652,8 @@ angular.module('Account.controllers', [])
     
     $scope.lang = lang;
     
-    $scope.filtText = "output";
-    $scope.order = "milli";
-    $scope.orderText = "-milli";
-    
     $scope.full_date = full_date;
     $scope.time = time;
-    
-    $scope.getTags = function(rec) {
-        if (rec.length === 0)
-            return "";
-        var tags = rec.tags;
-        var rs = "";
-        for (var i = tags.length - 1; i >= 0; i--)
-            rs += tags[i].body + " ";
-        return rs;
-    };
     
     $scope.toggleDel = function() {
         $scope.showAllDelete = !$scope.showAllDelete;
@@ -683,15 +683,19 @@ angular.module('Account.controllers', [])
     $scope.record.event = rec.event;
     $scope.record.amount = rec.amount;
     $scope.record.unit_price = rec.unit_price;
-    $scope.record.date = new Date();
-    $scope.record.milli = $scope.record.date.getTime;
     
     $scope.tagManager = genTagManager($scope.record.tags);
     
     $scope.textType = textType;
     
+    $scope.onClick = function(type) {
+        if (type === "add")
+            $scope.tagManager.addTagByBody();
+        else if ($scope.tagManager.selectedTag)
+            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+    };
+    
     $scope.finishEdit = function() {
-        
         var err_flag = false, err_msg = "";
         $scope.record.amount = parseInt($scope.record.amount);
         $scope.record.unit_price = parseFloat($scope.record.unit_price);
@@ -706,6 +710,7 @@ angular.module('Account.controllers', [])
         }
         
         if (!err_flag) {
+            $scope.record.date = new Date();
             $scope.record.milli = $scope.record.date.getTime();
             $scope.record.sum = $scope.record.amount * $scope.record.unit_price;
             localRecordFactory.editFromMtRec(id, $scope.record);
@@ -728,7 +733,6 @@ angular.module('Account.controllers', [])
                     );
             }
         });
-        
     };
     $scope.loadTemplate = function() {
         var tmp;
@@ -768,6 +772,13 @@ angular.module('Account.controllers', [])
     
     $scope.lang = lang;
     
+    $scope.onClick = function(type) {
+        if (type === "add")
+            $scope.tagManager.addTagByBody();
+        else if ($scope.tagManager.selectedTag)
+            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+    };
+    
     $scope.finishLoadTemplate = function() {
         var tmp, type;
         if ($scope.tmpOutput.triggered) {
@@ -777,6 +788,7 @@ angular.module('Account.controllers', [])
             tmp = $scope.tmpIncome;
             type = "income";
         }
+        
         doMoneyTemplateAdd(type, tmp, $scope.mRecords, function(info) {
             info.sum = info.amount * info.unit_price;
             for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
@@ -784,12 +796,11 @@ angular.module('Account.controllers', [])
                 info.tags.push($scope.tagManager.current_tags[i]);
             }
             $scope.mRecords.push(info);
-            localRecordFactory.updateMRecords($scope.mRecords);
-            for (var i = 0; i < $scope.tagManager.current_tags.length; i++) {
+            for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
                 var tmpTag = $scope.tagManager.current_tags[i];
                 var involve = false;
-                for (var i = $scope.tagManager.tags.length - 1; i >= 0; i--) {
-                    if ($scope.tagManager.tags[i].body === tmpTag.body) {
+                for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
+                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
                         involve = true; break;
                     }
                 }
@@ -798,15 +809,16 @@ angular.module('Account.controllers', [])
                     $scope.tagManager.tags.push(tmpTag);
                 }
             }
+            
             localRecordFactory.updateTags($scope.tagManager.tags);
+            localRecordFactory.updateMRecords($scope.mRecords);
             $ionicHistory.goBack();
         });
-
     };
     
 })
 
-.controller('mgController', function($rootScope, $scope, $ionicLoading, $timeout, localRecordFactory, userFactory, genTagManager, getAndFiltOiRecordsWithTags, init_data, lang) {
+.controller('mgController', function($rootScope, $scope, $ionicLoading, $timeout, localRecordFactory, userFactory, genTagManager, filtOiRecordsWithTags, init_data, lang) {
     
     $scope.options = {
         legend: {
@@ -816,6 +828,13 @@ angular.module('Account.controllers', [])
     
     $scope.dt = {};
     $scope.dt.tagManager = genTagManager([]);
+    $scope.dt.onClick = function(type) {
+        if (type === "add")
+            $scope.dt.tagManager.addTagByBody();
+        else if ($scope.dt.tagManager.selectedTag)
+            $scope.dt.tagManager.delAllTagById($scope.dt.tagManager.selectedTag.id);
+    };
+    
     $scope.dt.refresh_sep = function() {
         $rootScope.$broadcast("loading:show");
         
@@ -824,10 +843,10 @@ angular.module('Account.controllers', [])
             $scope.localInfo = userFactory.getLocalInfo();
             var mr = localRecordFactory.getMrRecords($scope.dt.date);
             
-            getAndFiltOiRecordsWithTags(mr.mrd, $scope.dt.tagManager.current_tags);
-            getAndFiltOiRecordsWithTags(mr.mrw, $scope.dt.tagManager.current_tags);
-            getAndFiltOiRecordsWithTags(mr.mrm, $scope.dt.tagManager.current_tags);
-            getAndFiltOiRecordsWithTags(mr.mry, $scope.dt.tagManager.current_tags);
+            filtOiRecordsWithTags(mr.mrd, $scope.dt.tagManager.current_tags);
+            filtOiRecordsWithTags(mr.mrw, $scope.dt.tagManager.current_tags);
+            filtOiRecordsWithTags(mr.mrm, $scope.dt.tagManager.current_tags);
+            filtOiRecordsWithTags(mr.mry, $scope.dt.tagManager.current_tags);
 
             $scope.tab = 1;
             $scope.filtText = "sep";
@@ -882,7 +901,7 @@ angular.module('Account.controllers', [])
             $scope.localInfo = userFactory.getLocalInfo();
             var moi = localRecordFactory.getMoiRecords();
             
-            getAndFiltOiRecordsWithTags(moi, $scope.dt.tagManager.current_tags);
+            filtOiRecordsWithTags(moi, $scope.dt.tagManager.current_tags);
 
             $scope.tab = 2;
             $scope.filtText = "sum";

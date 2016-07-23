@@ -1,4 +1,4 @@
-<ion-view view-title="{{lang(localInfo.lang).tc.a}}">
+<ion-view view-title="{{lang(localInfo.lang).tc.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
@@ -6,8 +6,8 @@
     </ion-nav-buttons>
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
-            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).tc.b}} </a></li>
-            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).tc.c}} </a></li>
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).tc.task}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).tc.desire}} </a></li>
         </ul>
     </div>
     <ion-content>
@@ -15,10 +15,10 @@
             <ion-item collection-repeat="rec in tRecords | filter: {type: filtText}" href="#/app/tc/{{rec.id}}">
                 <h1 class="title">{{rec.event}}</h1>
                 <p>{{textType(rec.type)}}：{{rec.points}}</p>
-                <p>{{doneType(rec.type)}}{{lang(localInfo.lang).tc.d}}：{{rec.amount}}</p>
-                <p>{{lang(localInfo.lang).tc.e}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <p>{{doneType(rec.type)}}{{lang(localInfo.lang).tc.time}}：{{rec.amount}}</p>
+                <p>{{lang(localInfo.lang).tc.updateTime}}：{{full_date(rec)}} {{time(rec)}}</p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.type, rec.id)"> </ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).tc.f}}</span></ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).tc.delete}}</span></ion-option-button>
             </ion-item>
         </ion-list>
         <br> <br> <br>

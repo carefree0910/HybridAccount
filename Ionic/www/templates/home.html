@@ -1,48 +1,49 @@
-<ion-view view-title="{{lang(localInfo.lang).home.a}}">
+<ion-view view-title="{{lang(localInfo.lang).home.viewTitle}}">
     <ion-content>
         <div class="card">
             <div class="item item-divider">
-                {{lang(localInfo.lang).home.b}}
+                {{lang(localInfo.lang).home.mTitle}}
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label inline-title">{{lang(localInfo.lang).home.c}}</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.expenditure}}</span>
                     <span class="inline-content">{{output(records) | currency}}</span>
                 </label>
                 <label class="item item-input">
-                    <span class="input-label inline-title">{{lang(localInfo.lang).home.d}}</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.income}}</span>
                     <span class="inline-content">{{income(records) | currency}}</span>
                 </label>
             </div>
         </div>
         <div class="card">
             <div class="item item-divider">
-                {{lang(localInfo.lang).home.e}}
+                {{lang(localInfo.lang).home.tTitle}}
             </div>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label inline-title">{{lang(localInfo.lang).home.f}}</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.ptLeft}}</span>
                     <span class="inline-content">{{formatNumber(records.tPoints, 2)}}</span>
                 </label>
                 <label class="item item-text-wrap">
-                    <span class="input-label inline-title">{{lang(localInfo.lang).home.g}}</span>
+                    <span class="input-label inline-title">{{lang(localInfo.lang).home.latestMemo}}</span>
                     <div class="item" ng-repeat="rec in records.tRecords | filter: {type: 'memo'} | latestFilter track by $index"><small>{{rec.event}}</small></div>
                 </label>
             </div>
         </div>
         <div class="card">
             <div class="item item-divider">
-                {{lang(localInfo.lang).home.h}}
+                {{lang(localInfo.lang).home.userInfo}}
             </div>
             <div class="list list-inset">
                 <label class="item item-avatar">
                     <img ng-src={{localInfo.icon}}>
-                    <p class="title">{{lang(localInfo.lang).home.i}}</p>
+                    <p class="title">{{lang(localInfo.lang).home.username}}</p>
                     <p class="content">{{localInfo.username}}</p>
-                    <p class="title">{{lang(localInfo.lang).home.j}}</p> 
+                    <p class="title">{{lang(localInfo.lang).home.yIncome}}</p> 
                     <p class="content">{{localInfo.income}}</p>
                 </label>
             </div>
         </div>
+        <br> <br> <br>
     </ion-content>
 </ion-view>

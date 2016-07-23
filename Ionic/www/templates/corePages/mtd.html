@@ -1,4 +1,4 @@
-<ion-view view-title="{{lang(localInfo.lang).mtd.a}}">
+<ion-view view-title="{{lang(localInfo.lang).mtd.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-compose-outline" ng-click="finishLoadTemplate()"></button>
@@ -6,53 +6,58 @@
     </ion-nav-buttons>
     <ion-content>
         <form ng-show="tmpOutput.triggered === true" class="card" ng-submit="finishLoadTemplate()">
-            <div class="item item-divider"> {{lang(localInfo.lang).mtd.b}} </div>
+            <button ng-show="false"></button>
+            <div class="item item-divider"> {{lang(localInfo.lang).mtd.recOutput}} </div>
             <div class="list list-inset">
-                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.c}} </span>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.unitPrice}} </span>
                     <input type="text" ng-model="tmpOutput.unit_price"> </label>
-                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.d}} </span>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.quantity}} </span>
                     <input type="text" ng-model="tmpOutput.amount"> </label>
-                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.e}} </span>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.oEvent}} </span>
                     <input type="text" ng-model="tmpOutput.event"> </label>
             </div>
             <div class="list">
                 <div class="item item-text-wrap">
-                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mtd.f}} </small></span>
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mtd.placeholder1}} </small></span>
                     <span ng-repeat="tag in tagManager.current_tags track by $index">
                         <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
-            <button ng-show="false"></button>
         </form>
         <form ng-show="tmpIncome.triggered === true" class="card" ng-submit="finishLoadTemplate()">
-            <div class="item item-divider"> {{lang(localInfo.lang).mtd.g}} </div>
+            <button ng-show="false"></button>
+            <div class="item item-divider"> {{lang(localInfo.lang).mtd.recIncome}} </div>
             <div class="list list-inset">
-                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.h}} </span>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.amount}} </span>
                     <input type="text" ng-model="tmpIncome.unit_price"> </label>
-                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.i}} </span>
+                <label class="item item-input item-text-wrap"> <span class="input-label"> {{lang(localInfo.lang).mtd.iEvent}} </span>
                     <input type="text" ng-model="tmpIncome.event"> </label>
             </div>
             <div class="list">
                 <div class="item item-text-wrap">
-                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mtd.j}} </small></span>
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mtd.placeholder1}} </small></span>
                     <span ng-repeat="tag in tagManager.current_tags track by $index">
                         <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
-            <button ng-show="false"></button>
         </form>
         <form class="card" ng-submit="tagManager.addTag()">
-            <label class="item item-input">
-                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mtd.k}}" /> 
-                <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
-            </label>
             <button ng-show="false"></button>
+            <div class="item item-input">
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mtd.placeholder2}}" /> 
+                <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
+                <span class="tag-enter-span"></span>
+            </div>
+            <div class="item item-input item-select">
+                <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="onClick('add')"></button>
+                <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="onClick('del')"></button>
+                <select ng-model="tagManager.selectedTag" ng-options="tag.body for tag in tagManager.tags">
+                    <option value=""> {{lang(localInfo.lang).mtd.placeholder3}} </option>
+                </select>
+            </div>
         </form>
-        <div class="item item-divider"> {{lang(localInfo.lang).mtd.l}} </div>
-        <div class="item" ng-repeat="tag in tagManager.tags track by $index" ng-click="tagManager.addTagById(tag.id)">
-            {{tag.body}}
-        </div>
+        <br> <br> <br>
     </ion-content>
 </ion-view>

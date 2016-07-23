@@ -1,4 +1,4 @@
-<ion-view view-title="{{lang(localInfo.lang).tm.a}}">
+<ion-view view-title="{{lang(localInfo.lang).tm.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-minus-outline" ng-click="toggleDel()"></button>
@@ -8,10 +8,11 @@
         <ion-list show-delete="showAllDelete">
             <ion-item collection-repeat="rec in tRecords | filter: {type: 'memo'}" href="#/app/tm/{{rec.id}}">
                 <h1 class="title">{{rec.event}}</h1>
-                <p>{{lang(localInfo.lang).tm.b}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <p>{{lang(localInfo.lang).tm.time}}：{{full_date(rec)}} {{time(rec)}}</p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.type, rec.id)"> </ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).tm.c}}</span></ion-option-button>
+                <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).tm.delete}}</span></ion-option-button>
             </ion-item>
         </ion-list>
+        <br> <br> <br>
     </ion-content>
 </ion-view>

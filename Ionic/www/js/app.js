@@ -19,7 +19,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
     $rootScope.$on("loading:show", function() {
         var lang = languageFactory.lang(userFactory.getLocalInfo().lang);
         $ionicLoading.show({
-            template: '<ion-spinner></ion-spinner> ' + lang.loading.a + ' ...'
+            template: '<ion-spinner></ion-spinner> ' + lang.loading.loading + ' ...'
         });
     });
     $rootScope.$on("loading:hide", function() {
@@ -43,7 +43,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                 ionic.Platform.exitApp();
             } else {
                 $rootScope.backButtonPressedOnceToExit = true;
-                $cordovaToast.showShortCenter(lang.exit.a);
+                $cordovaToast.showShortCenter(lang.exit.exit);
                 setTimeout(function() {
                     $rootScope.backButtonPressedOnceToExit = false;
                 }, 2000);
@@ -52,7 +52,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             $ionicHistory.goBack();
         } else {
             $rootScope.backButtonPressedOnceToExit = true;
-            $cordovaToast.showShortCenter(lang.exit.a);
+            $cordovaToast.showShortCenter(lang.exit.exit);
             setTimeout(function() {
                 $rootScope.backButtonPressedOnceToExit = false;
             }, 2000);
@@ -146,6 +146,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     lang: ['languageFactory', function(lFac) {
                         return lFac.lang;
                     }],
+                    getTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.getTags;
+                    }],
                     moneyType: ['textManageFactory', function(tmFac) {
                         return tmFac.moneyType;
                     }],
@@ -202,6 +205,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     }],
                     checkTagInvolve: ['recordManageFactory', function(rmFac) {
                         return rmFac.checkTagInvolve;
+                    }],
+                    getTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.getTags;
                     }],
                     time: ['formatFactory', function(fFac) {
                         return fFac.time;
@@ -263,6 +269,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     checkTagInvolve: ['recordManageFactory', function(rmFac) {
                         return rmFac.checkTagInvolve;
                     }],
+                    getTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.getTags;
+                    }],
                     full_date: ['formatFactory', function(fFac) {
                         return fFac.full_date;
                     }],
@@ -290,6 +299,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     }],
                     checkTagInvolve: ['recordManageFactory', function(rmFac) {
                         return rmFac.checkTagInvolve;
+                    }],
+                    getTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.getTags;
                     }],
                     full_date: ['formatFactory', function(fFac) {
                         return fFac.full_date;
@@ -378,8 +390,8 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     genTagManager: ['recordManageFactory', function(rmFac) {
                         return rmFac.genTagManager;
                     }],
-                    getAndFiltOiRecordsWithTags: ['recordManageFactory', function(rmFac) {
-                        return rmFac.getAndFiltOiRecordsWithTags;
+                    filtOiRecordsWithTags: ['recordManageFactory', function(rmFac) {
+                        return rmFac.filtOiRecordsWithTags;
                     }],
                     init_data: ['graphManageFactory', function(gFac) {
                         return gFac.init_data;

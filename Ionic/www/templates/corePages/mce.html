@@ -1,4 +1,4 @@
-<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mce.a}}">
+<ion-view cache-view="false" view-title="{{lang(localInfo.lang).mce.viewTitle}}">
     <ion-nav-buttons side="secondary">
         <div class="buttons">
             <button class="button button-icon icon ion-ios-compose-outline" ng-click="finishEdit()"></button>
@@ -6,17 +6,18 @@
     </ion-nav-buttons>
     <ion-content>
         <form class="card" ng-submit="finishEdit()">
+            <button ng-show="false"></button>
             <div class="list list-inset">
                 <label class="item item-input">
-                    <span class="input-label bold"> {{lang(localInfo.lang).mce.b}} </span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mce.date}} </span>
                     <input type="date" ng-model="record.date" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label bold"> {{lang(localInfo.lang).mce.c}} </span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mce.time}} </span>
                     <input type="time" ng-model="record.date" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label bold"> {{lang(localInfo.lang).mce.d}} </span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mce.event}} </span>
                     <input type="text" ng-model="record.event" />
                 </label>
                 <label class="item item-input">
@@ -24,30 +25,34 @@
                     <input type="text" ng-model="record.unit_price" />
                 </label>
                 <label class="item item-input" ng-show="{{record.type === 'output'}}">
-                    <span class="input-label bold"> {{lang(localInfo.lang).mce.e}} </span>
+                    <span class="input-label bold"> {{lang(localInfo.lang).mce.amount}} </span>
                     <input type="text" ng-model="record.amount" />
                 </label>
             </div>
             <div class="list">
                 <div class="item item-text-wrap">
-                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mce.f}} </small></span>
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mce.placeholder1}} </small></span>
                     <span ng-repeat="tag in tagManager.current_tags track by $index">
                         <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
-            <button ng-show="false"></button>
         </form>
         <form class="card" ng-submit="tagManager.addTag()">
-            <label class="item item-input">
-                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mce.g}}" /> 
-                <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
-            </label>
             <button ng-show="false"></button>
+            <div class="item item-input">
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mce.placeholder2}}" /> 
+                <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
+                <span class="tag-enter-span"></span>
+            </div>
+            <div class="item item-input item-select">
+                <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="onClick('add')"></button>
+                <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="onClick('del')"></button>
+                <select ng-model="tagManager.selectedTag" ng-options="tag.body for tag in tagManager.tags">
+                    <option value=""> {{lang(localInfo.lang).mce.placeholder3}} </option>
+                </select>
+            </div>
         </form>
-        <div class="item item-divider"> {{lang(localInfo.lang).mce.h}} </div>
-        <div class="item" ng-repeat="tag in tagManager.tags track by $index" ng-click="tagManager.addTagById(tag.id)">
-            {{tag.body}}
-        </div>
+        <br> <br> <br>
     </ion-content>
 </ion-view>
