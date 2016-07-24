@@ -209,6 +209,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     getTags: ['recordManageFactory', function(rmFac) {
                         return rmFac.getTags;
                     }],
+                    full_date: ['formatFactory', function(fFac) {
+                        return fFac.full_date;
+                    }],
                     time: ['formatFactory', function(fFac) {
                         return fFac.time;
                     }],
@@ -271,12 +274,6 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     }],
                     getTags: ['recordManageFactory', function(rmFac) {
                         return rmFac.getTags;
-                    }],
-                    full_date: ['formatFactory', function(fFac) {
-                        return fFac.full_date;
-                    }],
-                    time: ['formatFactory', function(fFac) {
-                        return fFac.time;
                     }],
                     doDel: ['recordManageFactory', function(rmFac) {
                         return rmFac.doDel;

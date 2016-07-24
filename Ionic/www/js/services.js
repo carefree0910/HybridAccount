@@ -752,14 +752,14 @@ angular.module('Account.services', ['ngResource'])
         $ionicPlatform.ready(function() {
             if (!err_flag) {
                 $cordovaToast
-                    .showLongBottom(lang.rmFac.toast("success", "记录", err_msg))
+                    .showLongBottom(lang.rmFac.toast("success", "record", err_msg))
                     .then(
                         function (success) {}, 
                         function (error) {}
                     );
             } else {
                 $cordovaToast
-                    .show(lang.rmFac.toast("failed", "记录", err_msg), 'long', 'center')
+                    .show(lang.rmFac.toast("failed", "record", err_msg), 'long', 'center')
                     .then(
                         function (success) {}, 
                         function (error) {}
@@ -1152,8 +1152,6 @@ angular.module('Account.services', ['ngResource'])
             "tag": "标签",
             "date": "日期",
             "event": "事件描述",
-            "unitPrice": "单价",
-            "quantity": "数量",
             "amount": "数额",
             "time": "具体时间",
             "delete": "删除"
@@ -1206,10 +1204,7 @@ angular.module('Account.services', ['ngResource'])
             "filter": "过滤器",
             "tag": "标签",
             "event": "事件描述",
-            "unitPrice": "单价",
-            "quantity": "数量",
             "amount": "数额",
-            "updateTime": "更新时间",
             "delete": "删除"
         },
         "mte": {
@@ -1301,12 +1296,14 @@ angular.module('Account.services', ['ngResource'])
             "mTitle": "今日财务统计",
             "sumOutput": "总支出数额",
             "sumIncome": "总收入数额",
+            "output": "支出",
+            "income": "收入",
+            "amount": "数额",
             "mDetail": "今日财务记录",
             "tTitle": "今日事件统计",
             "sumPtGet": "总得点",
             "sumPtLost": "总失点",
             "tDetail": "今日事件记录",
-            "amount": "数额",
             "time": "具体时间",
             "today": "今日",
             "todayAmount": "次数",
@@ -1438,9 +1435,17 @@ angular.module('Account.services', ['ngResource'])
                     taskType = "欲望";
                 else
                     taskType = "备忘";
+                if (msg === "delete")
+                    msg = "删除";
+                else
+                    msg = "归档";
                 return "你确定要" + msg + "这个" + taskType + "吗 ?";
             },
             "taskToast": function(msg) {
+                if (msg === "delete")
+                    msg = "删除";
+                else
+                    msg = "归档";
                 return msg + "成功 !";
             },
             "aTaskPop": "确认删除 ?",
@@ -1463,6 +1468,10 @@ angular.module('Account.services', ['ngResource'])
                 return "\n请输入正确的";
             },
             "toast": function(type, msg, err_msg) {
+                if (msg === "save")
+                    msg = "保存";
+                else
+                    msg = "记录";
                 if (type === "success")
                     return msg + "成功 !";
                 return msg + "失败 !" + err_msg;
@@ -1523,8 +1532,6 @@ angular.module('Account.services', ['ngResource'])
             "tag": "Tag",
             "date": "Date",
             "event": "Description",
-            "unitPrice": "Unit-Price",
-            "quantity": "Quantity",
             "amount": "Amount",
             "time": "Time",
             "delete": "Delete"
@@ -1577,10 +1584,7 @@ angular.module('Account.services', ['ngResource'])
             "filter": "Filter",
             "tag": "Tag",
             "event": "Description",
-            "unitPrice": "Unit-Price",
-            "quantity": "Quantity",
             "amount": "Amount",
-            "updateTime": "Update Time",
             "delete": "Delete"
         },
         "mte": {
@@ -1672,12 +1676,14 @@ angular.module('Account.services', ['ngResource'])
             "mTitle": "Today's Financial Summerization",
             "sumOutput": "Total Expenditure",
             "sumIncome": "Total Income",
+            "output": "Expenditure",
+            "income": "Income",
+            "amount": "Amount",
             "mDetail": "Details",
             "tTitle": "Today's Event Summerization",
             "sumPtGet": "Total pt. Gained",
             "sumPtLost": "Total pt. Lost",
             "tDetail": "Details",
-            "amount": "",
             "time": "Time",
             "today": "",
             "todayAmount": "",
@@ -1808,14 +1814,14 @@ angular.module('Account.services', ['ngResource'])
                     taskType = "Desire";
                 else
                     taskType = "Memo";
-                if (msg === "删除")
+                if (msg === "delete")
                     msg = "Deleting";
                 else
                     msg = "Archiving";
                 return "Confirm " + msg + " this " + taskType + " ?";
             },
             "taskToast": function(msg) {
-                if (msg === "删除")
+                if (msg === "delete")
                     msg = "Deleted";
                 else
                     msg = "Archived";
@@ -1842,7 +1848,7 @@ angular.module('Account.services', ['ngResource'])
             },
             "toast": function(type, msg, err_msg) {
                 var sMsg, fMsg;
-                if (msg === "保存") {
+                if (msg === "save") {
                     sMsg = "Saved Successfully !";
                     fMsg = "Saved Failed !"
                 } else {

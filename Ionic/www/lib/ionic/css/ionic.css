@@ -6788,6 +6788,14 @@ button.item.item-button-right {
 .badge.badge-dark {
   background-color: #444;
   color: #fff; }
+.tabs .tab-item .badge.badge-nav,
+.badge.badge-nav {
+  background-color: #fff1d7;
+  color: black; }
+.tabs .tab-item .badge.badge-header,
+.badge.badge-header {
+  background-color: tan;
+  color: white; }
 
 .button .badge {
   position: relative;
@@ -9771,3 +9779,5 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+/*# sourceMappingURL=ionic.css.map */

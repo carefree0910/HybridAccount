@@ -53,6 +53,12 @@
   &.badge-dark {
     @include badge-style($badge-dark-bg, $badge-dark-text);
   }
+  &.badge-nav {
+    @include badge-style($badge-nav-bg, $badge-nav-text);
+  }
+  &.badge-header {
+    @include badge-style($badge-header-bg, $badge-header-text);
+  }
 }
 
 // Quick fix for labels/badges in buttons

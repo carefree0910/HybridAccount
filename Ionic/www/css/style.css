@@ -56,13 +56,13 @@
     line-height: 16px;
 }
 
-.o-badge {
+.output-badge {
     background-color: #ff8f7d;
     color: white;
     z-index: 1;
     display: inline-block;
     padding: 3px 8px;
-    min-width: 10px;
+    width: 7em;
     border-radius: 10px;
     vertical-align: baseline;
     text-align: center;
@@ -72,13 +72,29 @@
     line-height: 16px;
 }
 
-.i-badge {
+.income-badge {
     background-color: #6fe38e;
     color: white;
     z-index: 1;
     display: inline-block;
     padding: 3px 8px;
-    min-width: 10px;
+    width: 7em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.title-badge {
+    background-color: transparent;
+    color: darkgray;
+    z-index: 1;
+    display: inline-block;
+    padding: 1em 0 0 0;
+    width: 7em;
     border-radius: 10px;
     vertical-align: baseline;
     text-align: center;

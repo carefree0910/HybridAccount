@@ -405,7 +405,7 @@ angular.module('Account.controllers', [])
     };
     
     $scope.doAdd = function(type) {
-        doMoneyFormAdd(type, $scope.forms, $scope.mRecords, "记录", function(info) {
+        doMoneyFormAdd(type, $scope.forms, $scope.mRecords, "record", function(info) {
             info.sum = info.amount * info.unit_price;
             for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
                 $scope.tagManager.current_tags[i].id = info.tags.length;
@@ -432,7 +432,7 @@ angular.module('Account.controllers', [])
         });
     };
     $scope.saveTemplate = function(type) {
-        doMoneyFormAdd(type, $scope.forms, $scope.mtRecords, "保存", function(info) {
+        doMoneyFormAdd(type, $scope.forms, $scope.mtRecords, "save", function(info) {
             info.sum = info.amount * info.unit_price;
             for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
                 $scope.tagManager.current_tags[i].id = info.tags.length;
@@ -445,7 +445,7 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mcController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, time, doDel, lang) {
+.controller('mcController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, full_date, time, doDel, lang) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
@@ -519,10 +519,12 @@ angular.module('Account.controllers', [])
     $scope.$on('refresh:/app/mc', $scope.dt.refresh);
     
     $scope.lang = lang;
+    
+    $scope.full_date = full_date;
     $scope.time = time;
     
     $scope.doDel = function(id) {
-        doDel("money", "", id, "删除", function() {
+        doDel("money", "", id, "delete", function() {
             $scope.showAllDelete = false;
             $scope.dt.refresh();
         });
@@ -616,7 +618,7 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mtController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, full_date, time, doDel, lang, type) {
+.controller('mtController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, doDel, lang, type) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
@@ -648,18 +650,13 @@ angular.module('Account.controllers', [])
     $scope.$on('$ionicView.beforeEnter', $scope.dt.refresh);
     $scope.$on('refresh:/app/mt', $scope.dt.refresh);
     
-    $scope.showAllDelete = false;
-    
     $scope.lang = lang;
-    
-    $scope.full_date = full_date;
-    $scope.time = time;
     
     $scope.toggleDel = function() {
         $scope.showAllDelete = !$scope.showAllDelete;
     };
     $scope.doDel = function(id, filtText) {
-        doDel("templates", "", id, "删除", function() {});
+        doDel("templates", "", id, "delete", function() {});
         $scope.showAllDelete = false;
     };
     
@@ -1103,7 +1100,7 @@ angular.module('Account.controllers', [])
         $scope.showAllDelete = !$scope.showAllDelete;
     };
     $scope.doDel = function(type, id) {
-        doDel("task", type, id, "删除", function() {});
+        doDel("task", type, id, "delete", function() {});
         $scope.showAllDelete = false;
     };
     
@@ -1202,7 +1199,7 @@ angular.module('Account.controllers', [])
     $scope.finishArchive = function() {
         rec.date = new Date();
         rec.milli = rec.date.getTime();
-        doDel("task", rec.type, rec.id, "归档", function() {
+        doDel("task", rec.type, rec.id, "archive", function() {
             rec.id = tARecords.length;
             tARecords.push(rec);
             localRecordFactory.updateTARecords(tARecords);
@@ -1233,7 +1230,7 @@ angular.module('Account.controllers', [])
         $scope.showAllDelete = !$scope.showAllDelete;
     };
     $scope.doDel = function(type, id) {
-        doDel("task", type, id, "删除", function() {});
+        doDel("task", type, id, "delete", function() {});
         $scope.showAllDelete = false;
     };
     
@@ -1309,7 +1306,7 @@ angular.module('Account.controllers', [])
         $scope.showAllDelete = !$scope.showAllDelete;
     };
     $scope.doDel = function(id) {
-        doDel("aTask", "", id, "删除", function() {});
+        doDel("aTask", "", id, "delete", function() {});
         $scope.showAllDelete = false;
     }
     
