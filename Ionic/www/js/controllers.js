@@ -356,16 +356,12 @@ angular.module('Account.controllers', [])
         if (type != "desire")
             return "t-long-task-badge";
         return "t-long-desire-badge";
-    }
-    $scope.doneTimes = function(done_times) {
-        var rs = "";
-        for (var i = done_times.length - 1; i >= 0; i--) {
-            var date = new Date();
-            date.setTime(done_times[i]);
-            rs += $filter('date') (date, 'HH:mm') + " ";
-        }
-        return rs;
     };
+    $scope.transformDoneTime = function(done_time) {
+        var date = new Date();
+        date.setTime(done_time);
+        return $scope.time(date);
+    }
     
 })
 

@@ -47,7 +47,7 @@
                     &nbsp; <span>{{rec.points}} * {{rec.amount}}</span>
                     <br>
                     <span class="t-title-badge">{{doneType(rec.type)}} {{lang(localInfo.lang).recent.todayTime}}</span>
-                    &nbsp; <span>{{doneTimes(rec.done_times)}}</span>
+                    &nbsp; <span class="tag-badge" ng-repeat="done_time in rec.done_times">{{transformDoneTime(done_time)}}</span>
                 </div>
             </ion-item>
             
