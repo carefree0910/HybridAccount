@@ -352,11 +352,16 @@ angular.module('Account.controllers', [])
     
     $scope.time = time;
     
-    $scope.doneTimes = function(rec) {
+    $scope.badge_class = function(type) {
+        if (type != "desire")
+            return "t-long-task-badge";
+        return "t-long-desire-badge";
+    }
+    $scope.doneTimes = function(done_times) {
         var rs = "";
-        for (var i = rec.done_times.length - 1; i >= 0; i--) {
+        for (var i = done_times.length - 1; i >= 0; i--) {
             var date = new Date();
-            date.setTime(rec.done_times[i]);
+            date.setTime(done_times[i]);
             rs += $filter('date') (date, 'HH:mm') + " ";
         }
         return rs;
@@ -449,26 +454,21 @@ angular.module('Account.controllers', [])
     
     $scope.dt = {};
     $scope.dt.rs = [];
+    $scope.dt.tab = 1;
     $scope.dt.date = new Date();
     $scope.dt.tag = {};
     $scope.dt.getTags = getTags;
     $scope.dt.type = "all";
     $scope.dt.description = "";
     
-    $scope.dt.tab = 1;
-    $scope.dt.filtText = "focus";
-    
     $scope.dt.select = function(setTab) {
         $scope.dt.tab = setTab;
-        if (setTab === 1) {
-            $scope.dt.filtText = "focus";
+        if (setTab === 1)
             $scope.dt.doFocusFilter();
-        } else if (setTab === 2) {
-            $scope.dt.filtText = "all";
+        else if (setTab === 2)
             $scope.dt.doAllFilter();
-        } else {
+        else
             console.log("Error: No implementation in mcController of tab: ", setTab);
-        }
     };
     $scope.dt.isSelected = function(checkTab) {
         return (checkTab === $scope.dt.tab);
@@ -486,8 +486,9 @@ angular.module('Account.controllers', [])
                     $scope.dt.rs.push(mrd[i]);
             }
             
+            $scope.dt.filtText = "focus";
             $rootScope.$broadcast("loading:hide");
-        }, 300);
+        }, 500);
     };
     $scope.dt.doAllFilter = function() {
         $rootScope.$broadcast("loading:show");
@@ -501,11 +502,12 @@ angular.module('Account.controllers', [])
                     $scope.dt.rs.push(mr[i]);
             }
             
+            $scope.dt.filtText = "all";
             $rootScope.$broadcast("loading:hide");
-        }, 300);
+        }, 500);
     };
     $scope.dt.doFilter = function() {
-        if ($scope.dt.filtText === "focus")
+        if ($scope.dt.filtText != "all")
             $scope.dt.doFocusFilter();
         else
             $scope.dt.doAllFilter();
@@ -627,20 +629,14 @@ angular.module('Account.controllers', [])
     $scope.dt.type = "all";
     $scope.dt.description = "";
     $scope.dt.doFilter = function() {
-        $rootScope.$broadcast("loading:show");
-        
-        $timeout(function() {
-            $scope.localInfo = userFactory.getLocalInfo();
-            var mt = localRecordFactory.getMtRecords();
+        $scope.localInfo = userFactory.getLocalInfo();
+        var mt = localRecordFactory.getMtRecords();
 
-            $scope.dt.rs.length = 0;
-            for (var i = mt.length - 1; i >= 0; i--) {
-                if (mt[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mt[i].tags)))
-                    $scope.dt.rs.push(mt[i]);
-            }
-            
-            $rootScope.$broadcast("loading:hide");
-        }, 300);
+        $scope.dt.rs.length = 0;
+        for (var i = mt.length - 1; i >= 0; i--) {
+            if (mt[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mt[i].tags)))
+                $scope.dt.rs.push(mt[i]);
+        }
     };
     $scope.dt.refresh = function() {
         $scope.localInfo = userFactory.getLocalInfo();
@@ -824,6 +820,7 @@ angular.module('Account.controllers', [])
     };
     
     $scope.dt = {};
+    $scope.dt.tab = 1;
     $scope.dt.tagManager = genTagManager([]);
     $scope.dt.onClick = function(type) {
         if (type === "add")
@@ -836,7 +833,6 @@ angular.module('Account.controllers', [])
         $rootScope.$broadcast("loading:show");
         
         $timeout(function() {
-            $scope.dt.date = new Date();
             $scope.localInfo = userFactory.getLocalInfo();
             var mr = localRecordFactory.getMrRecords($scope.dt.date);
             
@@ -844,9 +840,6 @@ angular.module('Account.controllers', [])
             filtOiRecordsWithTags(mr.mrw, $scope.dt.tagManager.current_tags);
             filtOiRecordsWithTags(mr.mrm, $scope.dt.tagManager.current_tags);
             filtOiRecordsWithTags(mr.mry, $scope.dt.tagManager.current_tags);
-
-            $scope.tab = 1;
-            $scope.filtText = "sep";
             
             var dData = init_data(mr.mrd.o, mr.mrd.i, "day");
             var wData = init_data(mr.mrw.o, mr.mrw.i, "week");
@@ -888,6 +881,7 @@ angular.module('Account.controllers', [])
                 options: $scope.options
             });
             
+            $scope.dt.filtText = "sep";
             $rootScope.$broadcast("loading:hide");
         }, 500);
     };
@@ -899,9 +893,6 @@ angular.module('Account.controllers', [])
             var moi = localRecordFactory.getMoiRecords();
             
             filtOiRecordsWithTags(moi, $scope.dt.tagManager.current_tags);
-
-            $scope.tab = 2;
-            $scope.filtText = "sum";
             
             var dData = init_data(moi.o, moi.i, "day");
             var wData = init_data(moi.o, moi.i, "week");
@@ -943,28 +934,37 @@ angular.module('Account.controllers', [])
                 options: $scope.options
             });
             
+            $scope.dt.filtText = "sum";
             $rootScope.$broadcast("loading:hide");
         }, 500);
     };
+    $scope.dt.refresh = function(refreshDate, refreshTagManager) {
+        if (refreshDate)
+            $scope.dt.date = new Date();
+        
+        if ($scope.dt.filtText != "sum")
+            $scope.dt.refresh_sep();
+        else
+            $scope.dt.refresh_sum();
+        
+        if (refreshTagManager)
+            $scope.dt.tagManager = genTagManager([]);
+    };
     
-    $scope.$on('$ionicView.beforeEnter', $scope.dt.refresh_sep);
-    $scope.$on('refresh:/app/mg', function() {
-        $scope.dt.refresh_sep();
-        $scope.dt.tagManager = genTagManager([]);
-    });
+    $scope.$on('$ionicView.beforeEnter', function() { $scope.dt.refresh(true, false); });
+    $scope.$on('refresh:/app/mg', function() { $scope.dt.refresh(true, true); });
     
     $scope.select = function(setTab) {
-        $scope.tab = setTab;
-        if (setTab === 1) {
+        $scope.dt.tab = setTab;
+        if (setTab === 1)
             $scope.dt.refresh_sep();
-        } else if (setTab === 2) {
+        else if (setTab === 2)
             $scope.dt.refresh_sum();
-        } else {
+        else
             console.log("Error: No implementation in mgController of tab: ", setTab);
-        }
     };
     $scope.isSelected = function(checkTab) {
-        return (checkTab === $scope.tab);
+        return (checkTab === $scope.dt.tab);
     };
     
     $scope.lang = lang;
@@ -1059,7 +1059,7 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('tcController', function($scope, localRecordFactory, userFactory, doneType, textType, full_date, time, doDel, lang) {
+.controller('tcController', function($scope, localRecordFactory, userFactory, doneType, textType, doDel, lang) {
     
     var refresh = function() {
         $scope.localInfo = userFactory.getLocalInfo();
@@ -1079,9 +1079,6 @@ angular.module('Account.controllers', [])
     $scope.doneType = doneType;
     $scope.textType = textType;
     
-    $scope.full_date = full_date;
-    $scope.time = time;
-    
     $scope.select = function(setTab) {
         $scope.tab = setTab;
         if (setTab === 1) {
@@ -1094,6 +1091,12 @@ angular.module('Account.controllers', [])
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.tab);
+    };
+    
+    $scope.badge_class = function(type) {
+        if (type != "desire")
+            return "t-short-task-badge";
+        return "t-short-desire-badge";
     };
     
     $scope.toggleDel = function() {

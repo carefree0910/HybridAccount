@@ -557,10 +557,9 @@ angular.module('Account.services', ['ngResource'])
         
         return tagManager;
     };
-    rmFac.getTags = function(rec) {
-        if (rec.length === 0)
+    rmFac.getTags = function(tags) {
+        if (!tags || tags.length === 0)
             return "";
-        var tags = rec.tags;
         var rs = "";
         for (var i = tags.length - 1; i >= 0; i--)
             rs += tags[i].body + " ";
@@ -784,28 +783,28 @@ angular.module('Account.services', ['ngResource'])
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
-                graph.data[graph.labels.indexOf(fFac.hour(rec))] += rec.sum;
+                graph.data[graph.labels.indexOf(fFac.hour(rec.date))] += rec.sum;
             }
         } else if (type === "week") {
             graph.labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             graph.data = [0, 0, 0, 0, 0, 0, 0];
             for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
-                graph.data[graph.labels.indexOf(fFac.day(rec))] += rec.sum;
+                graph.data[graph.labels.indexOf(fFac.day(rec.date))] += rec.sum;
             }
         } else if (type === "month") {
             graph.labels = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
-                graph.data[graph.labels.indexOf(fFac.date(rec))] += rec.sum;
+                graph.data[graph.labels.indexOf(fFac.date(rec.date))] += rec.sum;
             }
         } else if (type === "year") {
             graph.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             graph.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = records.length - 1; i >= 0; i--) {
                 var rec = records[i];
-                graph.data[graph.labels.indexOf(fFac.month(rec))] += rec.sum;
+                graph.data[graph.labels.indexOf(fFac.month(rec.date))] += rec.sum;
             }
         }
         fFac.formatListNumber(graph.data, 2);
@@ -892,11 +891,11 @@ angular.module('Account.services', ['ngResource'])
         return x.milli - y.milli; 
     };
     
-    fFac.full_date = function(rec) {
-        return $filter('date') (rec.date, 'yyyy-MM-dd');
+    fFac.full_date = function(date) {
+        return $filter('date') (date, 'yyyy-MM-dd');
     };
-    fFac.time = function(rec) { 
-        return $filter('date') (rec.date, 'HH:mm');
+    fFac.time = function(date) { 
+        return $filter('date') (date, 'HH:mm');
     };
     fFac.showDateAndTime = function(milli) {
         var date = new Date();
@@ -904,17 +903,17 @@ angular.module('Account.services', ['ngResource'])
         return $filter('date') (date, 'yyyy-MM-dd HH:mm:ss');
     };
     
-    fFac.month = function(rec) {
-        return $filter('date') (rec.date, 'MMM');
+    fFac.month = function(date) {
+        return $filter('date') (date, 'MMM');
     };
-    fFac.date = function(rec) {
-        return $filter('date') (rec.date, 'dd');
+    fFac.date = function(date) {
+        return $filter('date') (date, 'dd');
     };
-    fFac.day = function(rec) {
-        return $filter('date') (rec.date, 'EEE');
+    fFac.day = function(date) {
+        return $filter('date') (date, 'EEE');
     };
-    fFac.hour = function(rec) {
-        return $filter('date') (rec.date, 'HH');
+    fFac.hour = function(date) {
+        return $filter('date') (date, 'HH');
     };
     
     return fFac;
@@ -1170,7 +1169,7 @@ angular.module('Account.services', ['ngResource'])
             "viewTitle": "统计记录",
             "focus": "聚焦",
             "addUp": "加总",
-            "setting": "设置",
+            "filter": "过滤器",
             "date": "日期",
             "placeholder1": "暂无标签限制...",
             "placeholder2": "选择标签...",
@@ -1550,7 +1549,7 @@ angular.module('Account.services', ['ngResource'])
             "viewTitle": "Analytics",
             "focus": "Focus",
             "addUp": "Adding Up",
-            "setting": "Setting",
+            "filter": "Filter",
             "date": "Date",
             "placeholder1": "No tags specified yet...",
             "placeholder2": "Select a tag...",

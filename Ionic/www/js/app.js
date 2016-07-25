@@ -11,7 +11,8 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-        $timeout(function () {
+        
+        $timeout(function() {
             $cordovaSplashscreen.hide();
         }, 0);
     });
@@ -434,12 +435,6 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     }],
                     textType: ['textManageFactory', function(tmFac) {
                         return tmFac.taskTextType;
-                    }],
-                    full_date: ['formatFactory', function(fFac) {
-                        return fFac.full_date;
-                    }],
-                    time: ['formatFactory', function(fFac) {
-                        return fFac.time;
                     }],
                     doDel: ['recordManageFactory', function(rmFac) {
                         return rmFac.doDel;

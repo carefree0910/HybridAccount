@@ -14,9 +14,8 @@
         <ion-list show-delete="showAllDelete">
             <ion-item collection-repeat="rec in tRecords | filter: {type: filtText}" href="#/app/tc/{{rec.id}}">
                 <h1 class="title">{{rec.event}}</h1>
-                <p>{{textType(rec.type)}}：{{rec.points}}</p>
-                <p>{{doneType(rec.type)}}{{lang(localInfo.lang).tc.time}}：{{rec.amount}}</p>
-                <p>{{lang(localInfo.lang).tc.updateTime}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <span ng-class="[badge_class(rec.type)]">{{textType(rec.type)}}</span>
+                &nbsp; <span>{{rec.points}} * {{rec.amount}}</span>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.type, rec.id)"> </ion-delete-button>
                 <ion-option-button class="button-assertive" ng-click="doDel(rec.type, rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).tc.delete}}</span></ion-option-button>
             </ion-item>

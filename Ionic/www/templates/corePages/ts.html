@@ -16,7 +16,7 @@
                 <h1 class="title">{{rec.event}}</h1>
                 <p>{{textType(rec.type)}}：{{rec.points}}</p>
                 <p>{{doneType(rec.type)}}{{lang(localInfo.lang).ts.time}}：{{rec.amount}}</p>
-                <p>{{lang(localInfo.lang).ts.archiveTime}}：{{full_date(rec)}} {{time(rec)}}</p>
+                <p>{{lang(localInfo.lang).ts.archiveTime}}：{{full_date(rec.date)}} {{time(rec.date)}}</p>
                 <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
                 <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).ts.delete}}</span></ion-option-button>
             </ion-item>

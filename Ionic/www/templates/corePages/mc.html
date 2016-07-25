@@ -31,7 +31,7 @@
                     <span class="input-label bold"> {{lang(localInfo.lang).mc.tag}} </span>
                     <input type="text" ng-model="dt.tag.body" />
                 </label>
-                <label class="item item-input" ng-show="dt.isSelected(1)">
+                <label class="item item-input" ng-show="dt.filtText != 'all'">
                     <span class="input-label bold"> {{lang(localInfo.lang).mc.date}} </span>
                     <input type="date" ng-model="dt.date" />
                 </label>
@@ -41,18 +41,20 @@
                 </label>
             </div>
         </form>
-        <ion-list show-delete="showAllDelete">
-            <ion-item collection-repeat="rec in dt.rs | moneyRecordsFilter: dt.type | orderBy: milli : true" href="#/app/mc/{{rec.id}}">
+        <ion-list>
+            <ion-item collection-repeat="rec in dt.rs | moneyRecordsFilter: dt.type" href="#/app/mc/{{rec.id}}">
                 <h1 class="title">{{rec.event}}</h1>
-                <span class="badge badge-header">{{dt.getTags(rec)}}</span>
-                <span class="o-badge" ng-show="rec.type === 'output' && dt.type === 'all'"> {{lang(localInfo.lang).mc.output}} </span>
-                <span class="i-badge" ng-show="rec.type === 'income' && dt.type === 'all'"> {{lang(localInfo.lang).mc.income}} </span>
-                <p ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.unitPrice}}：{{rec.unit_price | currency}} </p>
-                <p ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.quantity}}：{{rec.amount}} </p>
-                <p ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.amount}}：{{rec.unit_price | currency}} </p>
-                <p> {{lang(localInfo.lang).mc.time}}：{{time(rec)}} </p>
-                <p ng-show="rec.type === 'income' && dt.type === 'all'"><br></p>
-                <ion-delete-button class="ion-minus-circled" ng-click="doDel(rec.id)"> </ion-delete-button>
+                <span ng-show="!rec.event"><br></span>
+                <span class="badge badge-header">{{dt.getTags(rec.tags)}}</span>
+                <span class="output-badge" ng-show="rec.type === 'output' && dt.type === 'all'"> {{lang(localInfo.lang).mc.output}} </span>
+                <span class="income-badge" ng-show="rec.type === 'income' && dt.type === 'all'"> {{lang(localInfo.lang).mc.income}} </span>
+                <br>
+                <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.amount}} </span>
+                <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
+                <span class="m-title-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.amount}} </span>
+                <span ng-show="rec.type === 'income'">{{rec.unit_price | currency}}<br></span>
+                <span class="m-title-badge"> {{lang(localInfo.lang).mc.time}} </span>
+                <span><span ng-show="dt.filtText === 'all'">{{full_date(rec.date)}} </span>{{time(rec.date)}}</span>
                 <ion-option-button class="button-assertive" ng-click="doDel(rec.id)"><span><i class="icon ion-trash-a"></i> {{lang(localInfo.lang).mc.delete}} </span></ion-option-button>
             </ion-item>
         </ion-list>

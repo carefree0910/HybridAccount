@@ -24,31 +24,30 @@
             <div ng-show="typeText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.tDetail}} </div>
             
             <ion-item ng-show="typeText === 'money'" ng-repeat="rec in mrdRecords" class="item-text-wrap">
-                <div ng-show="typeText === 'money'">
+                <div>
                     <h1 class="title">{{rec.event}}</h1>
-                    <span class="badge badge-header">{{getTags(rec)}}</span>
-                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.amount}}：{{rec.sum | currency}}</p>
-                    <p>{{lang(localInfo.lang).recent.time}}：{{time(rec)}}</p>
-                </div>
-                <div ng-show="typeText === 'task'">
-                    <h1 class="title">{{rec.event}}</h1>
-                    <p>{{textType(rec.type)}}：{{rec.points}}</p>
-                    <p>{{lang(localInfo.lang).recent.today}}{{doneType(rec.type)}}{{lang(localInfo.lang).recent.o}}：{{rec.amount}}</p>
-                    <p>{{doneType(rec.type)}} {{lang(localInfo.lang).recent.p}}：{{doneTimes(rec)}}</p>
+                    <span ng-show="!rec.event"><br></span>
+                    <span class="badge badge-header">{{getTags(rec.tags)}}</span>
+                    <span class="output-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).recent.output}} </span>
+                    <span class="income-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).recent.income}} </span>
+                    <br>
+                    <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).recent.amount}} </span>
+                    <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
+                    <span class="m-title-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).recent.amount}} </span>
+                    <span ng-show="rec.type === 'income'">{{rec.unit_price | currency}}<br></span>
+                    <span class="m-title-badge"> {{lang(localInfo.lang).recent.time}} </span>
+                    <span>{{time(rec.date)}}</span>
                 </div>
             </ion-item>
             
             <ion-item ng-show="typeText === 'task'" ng-repeat="rec in trRecords" class="item-text-wrap">
-                <div ng-show="typeText === 'money'">
+                <div>
                     <h1 class="title">{{rec.event}}</h1>
-                    <p>{{moneyType(rec.type)}}{{lang(localInfo.lang).recent.l}}：{{rec.sum}}</p>
-                    <p>{{lang(localInfo.lang).recent.m}}：{{time(rec)}}</p>
-                </div>
-                <div ng-show="typeText === 'task'">
-                    <h1 class="title">{{rec.event}}</h1>
-                    <p>{{textType(rec.type)}}：{{rec.points}}</p>
-                    <p>{{lang(localInfo.lang).recent.today}}{{doneType(rec.type)}}{{lang(localInfo.lang).recent.todayAmount}}：{{rec.amount}}</p>
-                    <p>{{doneType(rec.type)}} {{lang(localInfo.lang).recent.todayTime}}：{{doneTimes(rec)}}</p>
+                    <span ng-class="[badge_class(rec.type)]">{{textType(rec.type)}}</span>
+                    &nbsp; <span>{{rec.points}} * {{rec.amount}}</span>
+                    <br>
+                    <span class="t-title-badge">{{doneType(rec.type)}} {{lang(localInfo.lang).recent.todayTime}}</span>
+                    &nbsp; <span>{{doneTimes(rec.done_times)}}</span>
                 </div>
             </ion-item>
             
