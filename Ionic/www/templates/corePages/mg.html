@@ -34,17 +34,14 @@
                 <div class="item item-text-wrap">
                     <span ng-show="dt.tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mg.placeholder1}} </small></span>
                     <span ng-repeat="tag in dt.tagManager.current_tags track by $index">
-                        <a class="tag-badge" ng-click="dt.tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
+                        <a class="tag-badge" ng-click="dt.tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
             <div class="item item-input item-select">
                 <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="dt.onClick('add')"></button>
                 <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="dt.onClick('del')"></button>
-                <select ng-model="dt.tagManager.selectedTag.id">
-                    <option value=""> {{lang(localInfo.lang).mg.placeholder2}} </option>
-                    <option ng-repeat="tag in dt.tagManager.tags track by $index" ng-value="tag.id"> {{tag.body}} </option>
-                </select>
+                <select ng-model="dt.tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in dt.tagManager.tags"></select>
             </div>
         </div>
         <div ng-show="dt.dLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.filtText)}}</div>

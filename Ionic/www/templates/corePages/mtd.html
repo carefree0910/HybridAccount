@@ -20,7 +20,7 @@
                 <div class="item item-text-wrap">
                     <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mtd.placeholder1}} </small></span>
                     <span ng-repeat="tag in tagManager.current_tags track by $index">
-                        <a class="tag-badge" ng-click="tagManager.delTagById(tag.id)">{{tag.body}} &times; </a>
+                        <a class="tag-badge" ng-click="tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
                     </span>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </form>
-        <form class="card" ng-submit="tagManager.addTag()">
+        <form class="card" ng-submit="tagManager.addCurrentTagByEnter()">
             <button ng-show="false"></button>
             <div class="item item-input">
                 <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mtd.placeholder2}}" /> 
@@ -53,10 +53,7 @@
             <div class="item item-input item-select">
                 <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="onClick('add')"></button>
                 <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="onClick('del')"></button>
-                <select ng-model="tagManager.selectedTag.id">
-                    <option value=""> {{lang(localInfo.lang).ma.placeholder3}} </option>
-                    <option ng-repeat="tag in tagManager.tags track by $index" ng-value="tag.id"> {{tag.body}} </option>
-                </select>
+                <select ng-model="tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in tagManager.tags"></select>
             </div>
         </form>
         <br> <br> <br>

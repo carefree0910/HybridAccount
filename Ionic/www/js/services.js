@@ -500,11 +500,20 @@ angular.module('Account.services', ['ngResource'])
         var tagManager = {};
         
         tagManager.tags = localRecordFactory.getTags();
-        tagManager.selectedTag = "";
+        tagManager.selectedTagId = 0;
         tagManager.current_tag = {};
         tagManager.current_tags = current_tags;
         
-        tagManager.addTag = function() {
+        tagManager.addCurrentTagById = function(id) {
+            var involve = rmFac.checkTagInvolve(tagManager.tags[id].body, tagManager.current_tags);
+            if (!involve) {
+                var tmpTag = {};
+                tmpTag.id = tagManager.current_tags.length;
+                tmpTag.body = tagManager.tags[id].body;
+                tagManager.current_tags.push(tmpTag);
+            }
+        };
+        tagManager.addCurrentTagByEnter = function() {
             if (tagManager.current_tag.body) {
                 var involve = rmFac.checkTagInvolve(tagManager.current_tag.body, tagManager.current_tags);
                 if (!involve) {
@@ -514,16 +523,8 @@ angular.module('Account.services', ['ngResource'])
                 tagManager.current_tag = {};
             }
         };
-        tagManager.addTagById = function(id) {
-            var involve = rmFac.checkTagInvolve(tagManager.tags[id].body, tagManager.current_tags);
-            if (!involve) {
-                var tmpTag = {};
-                tmpTag.id = tagManager.current_tags.length;
-                tmpTag.body = tagManager.tags[id].body;
-                tagManager.current_tags.push(tmpTag);
-            }
-        };
-        tagManager.delTagById = function(id) {
+        
+        tagManager.delCurrentTagById = function(id) {
             localRecordFactory.delById(id, tagManager.current_tags);
         };
         tagManager.delAllTagById = function(id) {
@@ -541,6 +542,7 @@ angular.module('Account.services', ['ngResource'])
                     localRecordFactory.delById(idx, tmpTags);
             }
             localRecordFactory.updateMRecords(mRecords);
+            tagManager.selectedTagId = 0;
         };
         
         return tagManager;
@@ -581,12 +583,9 @@ angular.module('Account.services', ['ngResource'])
         rmFac.filtRecordsWithTags(tags, oiRecords.i);
         return oiRecords;
     };
-    rmFac.sumEachTagWithOiRecords = function(oiRecords, currentTags, allTags) {
+    rmFac.sumEachTagWithOiRecords = function(oiRecords, currentTags) {
         var rs = {};
         rs.o = []; rs.i = [];
-        
-        if (currentTags.length === 0)
-            currentTags = allTags;
         
         for (var i = currentTags.length - 1; i >= 0; i--) {
             rs.o[currentTags[i].body] = 0; rs.i[currentTags[i].body] = 0;
@@ -896,7 +895,7 @@ angular.module('Account.services', ['ngResource'])
         data.datasets[1].data = iGraph.data;
         return data;
     };
-    gFac.init_bar_data = function(records, currentTags, allTags, type) {
+    gFac.init_bar_data = function(records, currentTags, type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         var title, backgroundColor, borderColor;
         if (type === "output") {
@@ -919,8 +918,6 @@ angular.module('Account.services', ['ngResource'])
                 data: [],
             }]
         };
-        if (currentTags.length === 0)
-            currentTags = allTags;
         for (var i = currentTags.length - 1; i >= 0; i--) {
             var tagBody = currentTags[i].body;
             data.labels.push(tagBody);

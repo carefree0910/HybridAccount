@@ -418,11 +418,13 @@ angular.module('Account.controllers', [])
     };
     
     $scope.onClick = function(type) {
-        var id = $scope.tagManager.selectedTag.id;
-        if (type === "add")
-            $scope.tagManager.addTagById(id);
-        else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById(id);
+        var id = $scope.tagManager.selectedTagId;
+        if (!isNaN(id)) {
+            if (type === "add")
+                $scope.tagManager.addCurrentTagById(id);
+            else
+                $scope.tagManager.delAllTagById(id);
+        }
     };
     
     $scope.doAdd = function(type) {
@@ -569,11 +571,13 @@ angular.module('Account.controllers', [])
     $scope.textType = textType;
     
     $scope.onClick = function(type) {
-        var id = $scope.tagManager.selectedTag.id;
-        if (type === "add")
-            $scope.tagManager.addTagById(id);
-        else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById(id);
+        var id = $scope.tagManager.selectedTagId;
+        if (!isNaN(id)) {
+            if (type === "add")
+                $scope.tagManager.addCurrentTagById(id);
+            else if ($scope.tagManager.selectedTag)
+                $scope.tagManager.delAllTagById(id);
+        }
     };
     
     $scope.finishEdit = function() {
@@ -697,11 +701,13 @@ angular.module('Account.controllers', [])
     $scope.textType = textType;
     
     $scope.onClick = function(type) {
-        var id = $scope.tagManager.selectedTag.id;
-        if (type === "add")
-            $scope.tagManager.addTagById(id);
-        else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById(id);
+        var id = $scope.tagManager.selectedTagId;
+        if (!isNaN(id)) {
+            if (type === "add")
+                $scope.tagManager.addCurrentTagById(id);
+            else if ($scope.tagManager.selectedTag)
+                $scope.tagManager.delAllTagById(id);
+        }
     };
     
     $scope.finishEdit = function() {
@@ -782,11 +788,13 @@ angular.module('Account.controllers', [])
     $scope.lang = lang;
     
     $scope.onClick = function(type) {
-        var id = $scope.tagManager.selectedTag.id;
-        if (type === "add")
-            $scope.tagManager.addTagById(id);
-        else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById(id);
+        var id = $scope.tagManager.selectedTagId;
+        if (!isNaN(id)) {
+            if (type === "add")
+                $scope.tagManager.addCurrentTagById(id);
+            else if ($scope.tagManager.selectedTag)
+                $scope.tagManager.delAllTagById(id);
+        }
     };
     
     $scope.finishLoadTemplate = function() {
@@ -838,11 +846,13 @@ angular.module('Account.controllers', [])
     $scope.dt.type = "line";
     $scope.dt.tagManager = genTagManager([]);
     $scope.dt.onClick = function(type) {
-        var id = $scope.dt.tagManager.selectedTag.id;
-        if (type === "add")
-            $scope.dt.tagManager.addTagById(id);
-        else if ($scope.dt.tagManager.selectedTag)
-            $scope.dt.tagManager.delAllTagById(id);
+        var id = $scope.dt.tagManager.selectedTagId;
+        if (!isNaN(id)) {
+            if (type === "add")
+                $scope.dt.tagManager.addCurrentTagById(id);
+            else
+                $scope.dt.tagManager.delAllTagById(id);
+        }
     };
     
     $scope.dt.dLabelShow = true;
@@ -860,6 +870,20 @@ angular.module('Account.controllers', [])
             display: true
         }
     };
+    $scope.dt.barOptions = function(amount) {
+        var percentage;
+        if (amount <= 6)
+            percentage = 2 * amount / 15;
+        else
+            percentage = 0.8;
+        return {
+            scales: {
+                yAxes: [{
+                    categoryPercentage: percentage
+                }]
+            }
+        };
+    };
     
     $scope.dt.setDisplayStatusOfLine = function() {
         $scope.dt.dLabelShow = true;
@@ -872,6 +896,18 @@ angular.module('Account.controllers', [])
         $scope.dt.mCanvasShow = true;
         $scope.dt.yCanvasShow = true;
     };
+    $scope.dt.setDisplayStatusOfBar = function() {
+        $scope.dt.dLabelShow = true;
+        $scope.dt.wLabelShow = false;
+        $scope.dt.mLabelShow = false;
+        $scope.dt.yLabelShow = false;
+
+        $scope.dt.dCanvasShow = true;
+        $scope.dt.wCanvasShow = true;
+        $scope.dt.mCanvasShow = false;
+        $scope.dt.yCanvasShow = false;
+    };
+    
     $scope.dt.draw_line_sep = function() {
         var mr = localRecordFactory.getMrRecords($scope.dt.date);
 
@@ -965,25 +1001,16 @@ angular.module('Account.controllers', [])
         });
     };
     
-    $scope.dt.setDisplayStatusOfBar = function() {
-        $scope.dt.dLabelShow = true;
-        $scope.dt.wLabelShow = false;
-        $scope.dt.mLabelShow = false;
-        $scope.dt.yLabelShow = false;
-
-        $scope.dt.dCanvasShow = true;
-        $scope.dt.wCanvasShow = true;
-        $scope.dt.mCanvasShow = false;
-        $scope.dt.yCanvasShow = false;
-    };
-    $scope.dt.draw_bar_sep = function() {        
-        var allTags = $scope.dt.tagManager.tags;
+    $scope.dt.draw_bar_sep = function() {
         var currentTags = $scope.dt.tagManager.current_tags;
         var mrd = localRecordFactory.getMrRecords($scope.dt.date).mrd;
         
-        var rs = sumEachTagWithOiRecords(mrd, currentTags, allTags);
-        var oData = init_bar_data(rs.o, currentTags, allTags, "output");
-        var iData = init_bar_data(rs.i, currentTags, allTags, "income");
+        if (currentTags.length === 0)
+            currentTags = $scope.dt.tagManager.tags;
+        
+        var rs = sumEachTagWithOiRecords(mrd, currentTags);
+        var oData = init_bar_data(rs.o, currentTags, "output");
+        var iData = init_bar_data(rs.i, currentTags, "income");
         
         var dctx = document.getElementById("day");
         var wctx = document.getElementById("week");
@@ -1001,21 +1028,25 @@ angular.module('Account.controllers', [])
         
         var oGraph = new Chart(new_dctx, {
             type: 'horizontalBar',
-            data: oData
+            data: oData,
+            options: $scope.dt.barOptions(currentTags.length)
         });
         var iGraph = new Chart(new_wctx, {
             type: 'horizontalBar',
-            data: iData
+            data: iData,
+            options: $scope.dt.barOptions(currentTags.length)
         });
     };
     $scope.dt.draw_bar_sum = function() {
-        var allTags = $scope.dt.tagManager.tags;
         var currentTags = $scope.dt.tagManager.current_tags;
         var moi = localRecordFactory.getMoiRecords();
         
-        var rs = sumEachTagWithOiRecords(moi, currentTags, allTags);
-        var oData = init_bar_data(rs.o, currentTags, allTags, "output");
-        var iData = init_bar_data(rs.i, currentTags, allTags, "income");
+        if (currentTags.length === 0)
+            currentTags = $scope.dt.tagManager.tags;
+        
+        var rs = sumEachTagWithOiRecords(moi, currentTags);
+        var oData = init_bar_data(rs.o, currentTags, "output");
+        var iData = init_bar_data(rs.i, currentTags, "income");
         
         var dctx = document.getElementById("day");
         var wctx = document.getElementById("week");
@@ -1033,35 +1064,48 @@ angular.module('Account.controllers', [])
         
         var oGraph = new Chart(new_dctx, {
             type: 'horizontalBar',
-            data: oData
+            data: oData,
+            options: $scope.dt.barOptions(currentTags.length)
         });
         var iGraph = new Chart(new_wctx, {
             type: 'horizontalBar',
-            data: iData
+            data: iData,
+            options: $scope.dt.barOptions(currentTags.length)
         });
     };
     
     $scope.dt.refresh_sep = function() {
         $rootScope.$broadcast("loading:show");
         
+        if ($scope.dt.type === "line")
+            $scope.dt.setDisplayStatusOfLine();
+        else if ($scope.dt.type === "bar")
+            $scope.dt.setDisplayStatusOfBar();
+        else
+            console.log("Error. No implementation for " + $scope.dt.type + " in mg_sep");
+        
         $timeout(function() {
             $scope.localInfo = userFactory.getLocalInfo();
             
-            if ($scope.dt.type === "line") {
-                $scope.dt.setDisplayStatusOfLine();
-                $timeout($scope.dt.draw_line_sep, 0);
-            } else if ($scope.dt.type === "bar") {
-                $scope.dt.setDisplayStatusOfBar();
-                $timeout($scope.dt.draw_bar_sep, 0);
-            } else
+            if ($scope.dt.type === "line")
+                $scope.dt.draw_line_sep();
+            else if ($scope.dt.type === "bar")
+                $scope.dt.draw_bar_sep();
+            else
                 console.log("Error. No implementation for " + $scope.dt.type + " in mg_sep");
             
-            $scope.dt.filtText = "sep";
             $rootScope.$broadcast("loading:hide");
         }, 500);
     };
     $scope.dt.refresh_sum = function() {
         $rootScope.$broadcast("loading:show");
+        
+        if ($scope.dt.type === "line")
+            $scope.dt.setDisplayStatusOfLine();
+        else if ($scope.dt.type === "bar")
+            $scope.dt.setDisplayStatusOfBar();
+        else
+            console.log("Error. No implementation for " + $scope.dt.type + " in mg_sep");
         
         $timeout(function() {
             $scope.localInfo = userFactory.getLocalInfo();
@@ -1073,7 +1117,6 @@ angular.module('Account.controllers', [])
             else
                 console.log("Error. No implementation for " + $scope.dt.type + " in mg_sum");
             
-            $scope.dt.filtText = "sum";
             $rootScope.$broadcast("loading:hide");
         }, 500);
     };
@@ -1081,7 +1124,7 @@ angular.module('Account.controllers', [])
         if (refreshDate)
             $scope.dt.date = new Date();
         
-        if ($scope.dt.filtText != "sum")
+        if ($scope.dt.tab != 2)
             $scope.dt.refresh_sep();
         else
             $scope.dt.refresh_sum();
@@ -1095,12 +1138,7 @@ angular.module('Account.controllers', [])
     
     $scope.select = function(setTab) {
         $scope.dt.tab = setTab;
-        if (setTab === 1)
-            $scope.dt.refresh_sep();
-        else if (setTab === 2)
-            $scope.dt.refresh_sum();
-        else
-            console.log("Error: No implementation in mgController of tab: ", setTab);
+        $scope.dt.refresh(false, false);
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.dt.tab);
