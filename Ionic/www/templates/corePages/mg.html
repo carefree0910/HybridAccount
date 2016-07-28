@@ -12,6 +12,15 @@
     </div>
     <ion-content>
         <div class="card">
+            <div class="item item-input item-select">
+                <span class="input-label bold"> Type </span>
+                <select ng-model="dt.type">
+                    <option value="line"> Line Chart </option>
+                    <option value="bar"> Bar Chart </option>
+                </select>
+            </div>
+        </div>
+        <div class="card">
             <div class="item item-divider">
                  {{lang(localInfo.lang).mg.filter}} 
             </div>
@@ -32,19 +41,20 @@
             <div class="item item-input item-select">
                 <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="dt.onClick('add')"></button>
                 <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="dt.onClick('del')"></button>
-                <select ng-model="dt.tagManager.selectedTag" ng-options="tag.body for tag in dt.tagManager.tags">
+                <select ng-model="dt.tagManager.selectedTag.id">
                     <option value=""> {{lang(localInfo.lang).mg.placeholder2}} </option>
+                    <option ng-repeat="tag in dt.tagManager.tags track by $index" ng-value="tag.id"> {{tag.body}} </option>
                 </select>
             </div>
         </div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.filtText)}}</div>
-        <div><canvas class="chart" id="day" height="250"></canvas></div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.wType(dt.filtText)}}</div>
-        <div><canvas class="chart" id="week" height="250"></canvas></div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.mType(dt.filtText)}}</div>
-        <div><canvas class="chart" id="month" height="250"></canvas></div>
-        <div class="item item-divider">{{lang(localInfo.lang).mg.yType(dt.filtText)}}</div>
-        <div><canvas class="chart" id="year" height="250"></canvas></div>
+        <div ng-show="dt.dLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.filtText)}}</div>
+        <div ng-show="dt.dCanvasShow"><canvas class="chart" id="day" height="250"></canvas></div>
+        <div ng-show="dt.wLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.wType(dt.filtText)}}</div>
+        <div ng-show="dt.wCanvasShow"><canvas class="chart" id="week" height="250"></canvas></div>
+        <div ng-show="dt.mLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.mType(dt.filtText)}}</div>
+        <div ng-show="dt.mCanvasShow"><canvas class="chart" id="month" height="250"></canvas></div>
+        <div ng-show="dt.yLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.yType(dt.filtText)}}</div>
+        <div ng-show="dt.yCanvasShow"><canvas class="chart" id="year" height="250"></canvas></div>
         <br> <br> <br>
     </ion-content>
 </ion-view>

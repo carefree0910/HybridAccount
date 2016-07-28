@@ -73,7 +73,7 @@
 }
 
 .income-badge {
-    background-color: #6fe38e;
+    background-color: #4bd26f;
     color: white;
     z-index: 1;
     display: inline-block;
@@ -105,7 +105,7 @@
 }
 
 .t-short-task-badge {
-    background-color: #6fe38e;
+    background-color: #4bd26f;
     color: white;
     z-index: 1;
     display: inline-block;
@@ -137,7 +137,7 @@
 }
 
 .t-long-task-badge {
-    background-color: #6fe38e;
+    background-color: #4bd26f;
     color: white;
     z-index: 1;
     display: inline-block;

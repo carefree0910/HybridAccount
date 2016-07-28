@@ -523,18 +523,6 @@ angular.module('Account.services', ['ngResource'])
                 tagManager.current_tags.push(tmpTag);
             }
         };
-        tagManager.addTagByBody = function() {
-            if (tagManager.selectedTag) {
-                var involve = rmFac.checkTagInvolve(tagManager.selectedTag.body, tagManager.current_tags);
-                if (!involve) {
-                    var tmpTag = {};
-                    tmpTag.id = tagManager.current_tags.length;
-                    tmpTag.body = tagManager.selectedTag.body;
-                    tagManager.current_tags.push(tmpTag);
-                }
-                tagManager.selectedTag = "";
-            }
-        };
         tagManager.delTagById = function(id) {
             localRecordFactory.delById(id, tagManager.current_tags);
         };
@@ -593,6 +581,43 @@ angular.module('Account.services', ['ngResource'])
         rmFac.filtRecordsWithTags(tags, oiRecords.i);
         return oiRecords;
     };
+    rmFac.sumEachTagWithOiRecords = function(oiRecords, currentTags, allTags) {
+        var rs = {};
+        rs.o = []; rs.i = [];
+        
+        if (currentTags.length === 0)
+            currentTags = allTags;
+        
+        for (var i = currentTags.length - 1; i >= 0; i--) {
+            rs.o[currentTags[i].body] = 0; rs.i[currentTags[i].body] = 0;
+        }
+        
+        var oRec = oiRecords.o, iRec = oiRecords.i;
+        for (var i = oRec.length - 1; i >= 0; i--) {
+            var tmpTags = oRec[i].tags;
+            for (var j = currentTags.length - 1; j >= 0; j--) {
+                for (var k = tmpTags.length - 1; k >= 0; k--) {
+                    if (tmpTags[k].body === currentTags[j].body) {
+                        rs.o[currentTags[j].body] += oRec[i].sum;
+                        break;
+                    }
+                }
+            }
+        }
+        for (var i = iRec.length - 1; i >= 0; i--) {
+            var tmpTags = iRec[i].tags;
+            for (var j = currentTags.length - 1; j >= 0; j--) {
+                for (var k = tmpTags.length - 1; k >= 0; k--) {
+                    if (tmpTags[k].body === currentTags[j].body) {
+                        rs.i[currentTags[j].body] += iRec[i].sum;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return rs;
+    }
     
     rmFac.injectBasicTRecInfo = function(org, tar) {
         tar.id = org.id;
@@ -774,7 +799,7 @@ angular.module('Account.services', ['ngResource'])
 .factory('graphManageFactory', ['formatFactory', 'languageFactory', 'userFactory', function(fFac, lFac, uFac) {
     var gFac = {};
     
-    var get_graph = function(records, type) {
+    var get_line_graph = function(records, type) {
         var graph = {};
         graph.data = [];
         graph.labels = [];
@@ -811,7 +836,7 @@ angular.module('Account.services', ['ngResource'])
         return graph;
     };
     
-    gFac.init_data = function(oRecords, iRecords, type) {
+    gFac.init_line_data = function(oRecords, iRecords, type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         var data = {
             labels: [],
@@ -859,8 +884,8 @@ angular.module('Account.services', ['ngResource'])
             ]
         };
         
-        var oGraph = get_graph(oRecords, type);
-        var iGraph = get_graph(iRecords, type);;
+        var oGraph = get_line_graph(oRecords, type);
+        var iGraph = get_line_graph(iRecords, type);;
         
         if (oGraph.labels.length >= iGraph.labels)
             data.labels = oGraph.labels;
@@ -869,6 +894,40 @@ angular.module('Account.services', ['ngResource'])
         
         data.datasets[0].data = oGraph.data;
         data.datasets[1].data = iGraph.data;
+        return data;
+    };
+    gFac.init_bar_data = function(records, currentTags, allTags, type) {
+        var lang = lFac.lang(uFac.getLocalInfo().lang);
+        var title, backgroundColor, borderColor;
+        if (type === "output") {
+            title = lang.gmFac.oTitle;
+            backgroundColor = "rgba(255, 177, 165, 0.5)";
+            borderColor = "rgba(255, 143, 125, 1)";
+        } else {
+            title = lang.gmFac.iTitle;
+            backgroundColor = "rgba(156, 241, 178, 0.5)";
+            borderColor = "rgba(111, 227, 142, 1)";
+        }
+        
+        var data = {
+            labels: [],
+            datasets: [{
+                label: title,
+                backgroundColor: [],
+                borderColor: [],
+                borderWidth: 1,
+                data: [],
+            }]
+        };
+        if (currentTags.length === 0)
+            currentTags = allTags;
+        for (var i = currentTags.length - 1; i >= 0; i--) {
+            var tagBody = currentTags[i].body;
+            data.labels.push(tagBody);
+            data.datasets[0].backgroundColor.push(backgroundColor); data.datasets[0].borderColor.push(borderColor);
+            data.datasets[0].data.push(records[tagBody]);
+        }
+        
         return data;
     };
     

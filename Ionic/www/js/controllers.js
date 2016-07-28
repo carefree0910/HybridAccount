@@ -1,6 +1,6 @@
 angular.module('Account.controllers', [])
 
-.controller('AppCtrl', function($state, $rootScope, $resource, baseURL, $scope, $location, $ionicModal, $timeout, $localStorage, $ionicPlatform, $ionicPopover, $cordovaCamera, $cordovaImagePicker, $cordovaToast, localRecordFactory, cloudRecordFactory, userFactory, authFactory, localInfo, loginData, records, regToastType, loginToastType, settingToastType, uploadToastType, downloadToastType, lang) {
+.controller('AppCtrl', function($state, $rootScope, $resource, baseURL, $scope, $location, $ionicModal, $localStorage, $ionicPlatform, $ionicPopover, $cordovaCamera, $cordovaImagePicker, $cordovaToast, localRecordFactory, cloudRecordFactory, userFactory, authFactory, localInfo, loginData, records, regToastType, loginToastType, settingToastType, uploadToastType, downloadToastType, lang) {
 
     $scope.loggedIn = false;
     $scope.registration = {};
@@ -8,6 +8,17 @@ angular.module('Account.controllers', [])
     $scope.localInfo = localInfo;
     $scope.tmpInfo = { "lang": localInfo.lang };
     $scope.lang = lang;
+    
+    /*$scope.debug = function() {
+        var mRecords = localRecordFactory.getMRecords();
+        for (var i = mRecords.length - 1; i >= 0; i--) {
+            var rec = mRecords[i];
+            var tags = rec.tags;
+            for (var j = tags.length - 1; j >= 0; j--) {
+                tags[j].id = j;
+            }
+        }
+    };*/
     
     if (authFactory.isAuthenticated()) {
         $scope.loggedIn = true;
@@ -243,7 +254,7 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('homeController', function($scope, $timeout, formatNumber, localRecordFactory, userFactory, lang) {
+.controller('homeController', function($scope, formatNumber, localRecordFactory, userFactory, lang) {
     
     var refresh = function() {
         $scope.records = localRecordFactory.getAllRecords();
@@ -277,73 +288,69 @@ angular.module('Account.controllers', [])
 
 })
 
-.controller('recentController', function($filter, $rootScope, $scope, $timeout, localRecordFactory, userFactory, getTags, moneyType, taskType, doneType, textType, time, formatNumber, lang) {
+.controller('recentController', function($filter, $rootScope, $scope, localRecordFactory, userFactory, getTags, moneyType, taskType, doneType, textType, time, formatNumber, lang) {
     
     var refresh = function() {
-        $rootScope.$broadcast("loading:show");
-        $timeout(function() {
-            $scope.localInfo = userFactory.getLocalInfo();
-            $scope.getTags = getTags;
-            
-            var mrRecords = localRecordFactory.getMrRecords();
-            $scope.mrdRecords = mrRecords.mrd.o.concat(mrRecords.mrd.i);
-            $scope.trRecords = localRecordFactory.getTrRecords();
-            
-            $scope.sumOutput = function(typeText) {
-                if (typeText === "money") {
-                    var amount = 0;
-                    for (var i = $scope.mrdRecords.length - 1; i >= 0; i--) {
-                        var rec = $scope.mrdRecords[i];
-                        if (rec.type === "output")
-                            amount += rec.sum;
-                    }
-                    return amount;
+        $scope.localInfo = userFactory.getLocalInfo();
+        $scope.getTags = getTags;
+
+        var mrRecords = localRecordFactory.getMrRecords();
+        $scope.mrdRecords = mrRecords.mrd.o.concat(mrRecords.mrd.i);
+        $scope.trRecords = localRecordFactory.getTrRecords();
+
+        $scope.sumOutput = function(typeText) {
+            if (typeText === "money") {
+                var amount = 0;
+                for (var i = $scope.mrdRecords.length - 1; i >= 0; i--) {
+                    var rec = $scope.mrdRecords[i];
+                    if (rec.type === "output")
+                        amount += rec.sum;
                 }
-            };
-            $scope.sumIncome = function(typeText) {
-                if (typeText === "money") {
-                    var amount = 0;
-                    for (var i = $scope.mrdRecords.length - 1; i >= 0; i--) {
-                        var rec = $scope.mrdRecords[i];
-                        if (rec.type === "income")
-                            amount += rec.sum;
-                    }
-                    return amount;
+                return amount;
+            }
+        };
+        $scope.sumIncome = function(typeText) {
+            if (typeText === "money") {
+                var amount = 0;
+                for (var i = $scope.mrdRecords.length - 1; i >= 0; i--) {
+                    var rec = $scope.mrdRecords[i];
+                    if (rec.type === "income")
+                        amount += rec.sum;
                 }
-            };
-            $scope.sumTask = function(typeText) {
-                if (typeText === "task") {
-                    var points = 0;
-                    for (var i = $scope.trRecords.length - 1; i >= 0; i--) {
-                        var rec = $scope.trRecords[i];
-                        if (rec.type === "task")
-                            points += rec.points * rec.amount;
-                    }
-                    return formatNumber(points, 2);
+                return amount;
+            }
+        };
+        $scope.sumTask = function(typeText) {
+            if (typeText === "task") {
+                var points = 0;
+                for (var i = $scope.trRecords.length - 1; i >= 0; i--) {
+                    var rec = $scope.trRecords[i];
+                    if (rec.type === "task")
+                        points += rec.points * rec.amount;
                 }
-            };
-            $scope.sumDesire = function(typeText) {
-                if (typeText === "task") {
-                    var points = 0;
-                    for (var i = $scope.trRecords.length - 1; i >= 0; i--) {
-                        var rec = $scope.trRecords[i];
-                        if (rec.type === "desire")
-                            points += rec.points * rec.amount;
-                    }
-                    return formatNumber(points, 2);
+                return formatNumber(points, 2);
+            }
+        };
+        $scope.sumDesire = function(typeText) {
+            if (typeText === "task") {
+                var points = 0;
+                for (var i = $scope.trRecords.length - 1; i >= 0; i--) {
+                    var rec = $scope.trRecords[i];
+                    if (rec.type === "desire")
+                        points += rec.points * rec.amount;
                 }
-            };
-            
-            $rootScope.$broadcast("loading:hide");
-        }, 500);
+                return formatNumber(points, 2);
+            }
+        };
     };
     
     $scope.$on('$ionicView.beforeEnter', refresh);
     $scope.$on('refresh:/app/recent', refresh);
     
-    $scope.lang = lang;
+    $scope.tab = 1;
+    $scope.filtText = "money";
     
-    $scope.typeText = "money";
+    $scope.lang = lang;
     
     $scope.moneyType = moneyType;
     $scope.taskType = taskType;
@@ -351,6 +358,19 @@ angular.module('Account.controllers', [])
     $scope.textType = textType;
     
     $scope.time = time;
+    
+    $scope.select = function(setTab) {
+        $scope.tab = setTab;
+        if (setTab === 1)
+            $scope.filtText = "money";
+        else if (setTab === 2)
+            $scope.filtText = "task";
+        else
+            console.log("Error: No implementation in recentController of tab: ", setTab);
+    };
+    $scope.isSelected = function(checkTab) {
+        return (checkTab === $scope.tab);
+    };
     
     $scope.badge_class = function(type) {
         if (type != "desire")
@@ -386,23 +406,23 @@ angular.module('Account.controllers', [])
     
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        if (setTab === 1) {
+        if (setTab === 1)
             $scope.filtText = "output";
-        } else if (setTab === 2) {
+        else if (setTab === 2)
             $scope.filtText = "income";
-        } else {
+        else
             console.log("Error: No implementation in maController of tab: ", setTab);
-        }
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.tab);
     };
     
     $scope.onClick = function(type) {
+        var id = $scope.tagManager.selectedTag.id;
         if (type === "add")
-            $scope.tagManager.addTagByBody();
+            $scope.tagManager.addTagById(id);
         else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+            $scope.tagManager.delAllTagById(id);
     };
     
     $scope.doAdd = function(type) {
@@ -413,22 +433,26 @@ angular.module('Account.controllers', [])
                 info.tags.push($scope.tagManager.current_tags[i]);
             }
             $scope.mRecords.push(info);
-            localRecordFactory.updateMRecords($scope.mRecords);
+            
             for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
-                var tmpTag = $scope.tagManager.current_tags[i];
+                var curTag = $scope.tagManager.current_tags[i];
                 var involve = false;
                 for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
-                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
+                    if ($scope.tagManager.tags[j].body === curTag.body) {
                         involve = true; break;
                     }
                 }
                 if (!involve) {
+                    var tmpTag = {};
                     tmpTag.id = $scope.tagManager.tags.length;
+                    tmpTag.body = curTag.body;
                     $scope.tagManager.tags.push(tmpTag);
                 }
             }
             $scope.tagManager.current_tag = {};
             $scope.tagManager.current_tags = [];
+            
+            localRecordFactory.updateMRecords($scope.mRecords);
             localRecordFactory.updateTags($scope.tagManager.tags);
         });
     };
@@ -446,7 +470,7 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mcController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, full_date, time, doDel, lang) {
+.controller('mcController', function($rootScope, $scope, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, full_date, time, doDel, lang) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
@@ -471,36 +495,28 @@ angular.module('Account.controllers', [])
     };
     
     $scope.dt.doFocusFilter = function() {
-        $rootScope.$broadcast("loading:show");
-        $timeout(function() {
-            $scope.localInfo = userFactory.getLocalInfo();
-            var mrd = localRecordFactory.getDateRecords($scope.dt.date);
+        $scope.localInfo = userFactory.getLocalInfo();
+        var mrd = localRecordFactory.getDateRecords($scope.dt.date);
 
-            $scope.dt.rs.length = 0;
-            for (var i = mrd.length - 1; i >= 0; i--) {
-                if (mrd[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mrd[i].tags)))
-                    $scope.dt.rs.push(mrd[i]);
-            }
-            
-            $scope.dt.filtText = "focus";
-            $rootScope.$broadcast("loading:hide");
-        }, 500);
+        $scope.dt.rs.length = 0;
+        for (var i = mrd.length - 1; i >= 0; i--) {
+            if (mrd[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mrd[i].tags)))
+                $scope.dt.rs.push(mrd[i]);
+        }
+
+        $scope.dt.filtText = "focus";
     };
     $scope.dt.doAllFilter = function() {
-        $rootScope.$broadcast("loading:show");
-        $timeout(function() {
-            $scope.localInfo = userFactory.getLocalInfo();
-            var mr = localRecordFactory.getMRecords();
+        $scope.localInfo = userFactory.getLocalInfo();
+        var mr = localRecordFactory.getMRecords();
 
-            $scope.dt.rs.length = 0;
-            for (var i = mr.length - 1; i >= 0; i--) {
-                if (mr[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mr[i].tags)))
-                    $scope.dt.rs.push(mr[i]);
-            }
-            
-            $scope.dt.filtText = "all";
-            $rootScope.$broadcast("loading:hide");
-        }, 500);
+        $scope.dt.rs.length = 0;
+        for (var i = mr.length - 1; i >= 0; i--) {
+            if (mr[i].event.indexOf($scope.dt.description) >= 0 && (!$scope.dt.tag.body || checkTagInvolve($scope.dt.tag, mr[i].tags)))
+                $scope.dt.rs.push(mr[i]);
+        }
+
+        $scope.dt.filtText = "all";
     };
     $scope.dt.doFilter = function() {
         if ($scope.dt.filtText != "all")
@@ -553,10 +569,11 @@ angular.module('Account.controllers', [])
     $scope.textType = textType;
     
     $scope.onClick = function(type) {
+        var id = $scope.tagManager.selectedTag.id;
         if (type === "add")
-            $scope.tagManager.addTagByBody();
+            $scope.tagManager.addTagById(id);
         else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+            $scope.tagManager.delAllTagById(id);
     };
     
     $scope.finishEdit = function() {
@@ -577,15 +594,17 @@ angular.module('Account.controllers', [])
             $scope.record.milli = $scope.record.date.getTime();
             $scope.record.sum = $scope.record.amount * $scope.record.unit_price;
             for (var i = $scope.record.tags.length - 1; i >= 0; i--) {
-                var tmpTag = $scope.record.tags[i];
+                var recTag = $scope.record.tags[i];
                 var involve = false;
                 for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
-                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
+                    if ($scope.tagManager.tags[j].body === recTag.body) {
                         involve = true; break;
                     }
                 }
                 if (!involve) {
+                    var tmpTag = {};
                     tmpTag.id = $scope.tagManager.tags.length;
+                    tmpTag.body = recTag.body;
                     $scope.tagManager.tags.push(tmpTag);
                 }
             }
@@ -616,13 +635,13 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mtController', function($rootScope, $scope, $timeout, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, doDel, lang, type) {
+.controller('mtController', function($rootScope, $scope, $filter, localRecordFactory, cloudRecordFactory, userFactory, checkTagInvolve, getTags, doDel, lang, type) {
     
     $scope.dt = {};
     $scope.dt.rs = [];
     $scope.dt.tag = {};
     $scope.dt.getTags = getTags;
-    $scope.dt.type = "all";
+    $scope.dt.type = type;
     $scope.dt.description = "";
     $scope.dt.doFilter = function() {
         $scope.localInfo = userFactory.getLocalInfo();
@@ -678,10 +697,11 @@ angular.module('Account.controllers', [])
     $scope.textType = textType;
     
     $scope.onClick = function(type) {
+        var id = $scope.tagManager.selectedTag.id;
         if (type === "add")
-            $scope.tagManager.addTagByBody();
+            $scope.tagManager.addTagById(id);
         else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+            $scope.tagManager.delAllTagById(id);
     };
     
     $scope.finishEdit = function() {
@@ -762,10 +782,11 @@ angular.module('Account.controllers', [])
     $scope.lang = lang;
     
     $scope.onClick = function(type) {
+        var id = $scope.tagManager.selectedTag.id;
         if (type === "add")
-            $scope.tagManager.addTagByBody();
+            $scope.tagManager.addTagById(id);
         else if ($scope.tagManager.selectedTag)
-            $scope.tagManager.delAllTagById($scope.tagManager.selectedTag.id);
+            $scope.tagManager.delAllTagById(id);
     };
     
     $scope.finishLoadTemplate = function() {
@@ -785,16 +806,19 @@ angular.module('Account.controllers', [])
                 info.tags.push($scope.tagManager.current_tags[i]);
             }
             $scope.mRecords.push(info);
+            
             for (var i = $scope.tagManager.current_tags.length - 1; i >= 0; i--) {
-                var tmpTag = $scope.tagManager.current_tags[i];
+                var curTag = $scope.tagManager.current_tags[i];
                 var involve = false;
                 for (var j = $scope.tagManager.tags.length - 1; j >= 0; j--) {
-                    if ($scope.tagManager.tags[j].body === tmpTag.body) {
+                    if ($scope.tagManager.tags[j].body === curTag.body) {
                         involve = true; break;
                     }
                 }
                 if (!involve) {
+                    var tmpTag = {};
                     tmpTag.id = $scope.tagManager.tags.length;
+                    tmpTag.body = curTag.body;
                     $scope.tagManager.tags.push(tmpTag);
                 }
             }
@@ -807,22 +831,214 @@ angular.module('Account.controllers', [])
     
 })
 
-.controller('mgController', function($rootScope, $scope, $ionicLoading, $timeout, localRecordFactory, userFactory, genTagManager, filtOiRecordsWithTags, init_data, lang) {
+.controller('mgController', function($rootScope, $scope, $ionicLoading, $timeout, localRecordFactory, userFactory, genTagManager, filtOiRecordsWithTags, sumEachTagWithOiRecords, init_line_data, init_bar_data, lang) {
     
-    $scope.options = {
+    $scope.dt = {};
+    $scope.dt.tab = 1;
+    $scope.dt.type = "line";
+    $scope.dt.tagManager = genTagManager([]);
+    $scope.dt.onClick = function(type) {
+        var id = $scope.dt.tagManager.selectedTag.id;
+        if (type === "add")
+            $scope.dt.tagManager.addTagById(id);
+        else if ($scope.dt.tagManager.selectedTag)
+            $scope.dt.tagManager.delAllTagById(id);
+    };
+    
+    $scope.dt.dLabelShow = true;
+    $scope.dt.wLabelShow = true;
+    $scope.dt.mLabelShow = true;
+    $scope.dt.yLabelShow = true;
+    
+    $scope.dt.dCanvasShow = true;
+    $scope.dt.wCanvasShow = true;
+    $scope.dt.mCanvasShow = true;
+    $scope.dt.yCanvasShow = true;
+    
+    $scope.dt.lineOptions = {
         legend: {
             display: true
         }
     };
     
-    $scope.dt = {};
-    $scope.dt.tab = 1;
-    $scope.dt.tagManager = genTagManager([]);
-    $scope.dt.onClick = function(type) {
-        if (type === "add")
-            $scope.dt.tagManager.addTagByBody();
-        else if ($scope.dt.tagManager.selectedTag)
-            $scope.dt.tagManager.delAllTagById($scope.dt.tagManager.selectedTag.id);
+    $scope.dt.setDisplayStatusOfLine = function() {
+        $scope.dt.dLabelShow = true;
+        $scope.dt.wLabelShow = true;
+        $scope.dt.mLabelShow = true;
+        $scope.dt.yLabelShow = true;
+
+        $scope.dt.dCanvasShow = true;
+        $scope.dt.wCanvasShow = true;
+        $scope.dt.mCanvasShow = true;
+        $scope.dt.yCanvasShow = true;
+    };
+    $scope.dt.draw_line_sep = function() {
+        var mr = localRecordFactory.getMrRecords($scope.dt.date);
+
+        filtOiRecordsWithTags(mr.mrd, $scope.dt.tagManager.current_tags);
+        filtOiRecordsWithTags(mr.mrw, $scope.dt.tagManager.current_tags);
+        filtOiRecordsWithTags(mr.mrm, $scope.dt.tagManager.current_tags);
+        filtOiRecordsWithTags(mr.mry, $scope.dt.tagManager.current_tags);
+
+        var dData = init_line_data(mr.mrd.o, mr.mrd.i, "day");
+        var wData = init_line_data(mr.mrw.o, mr.mrw.i, "week");
+        var mData = init_line_data(mr.mrm.o, mr.mrm.i, "month");
+        var yData = init_line_data(mr.mry.o, mr.mry.i, "year");
+
+        var dctx = document.getElementById("day");
+        var wctx = document.getElementById("week");
+        var mctx = document.getElementById("month");
+        var yctx = document.getElementById("year");
+
+        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+        dp.replaceChild(new_dctx, dctx);
+        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+        wp.replaceChild(new_wctx, wctx);
+        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+        mp.replaceChild(new_mctx, mctx);
+        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+        yp.replaceChild(new_yctx, yctx);
+
+        var day = new Chart(new_dctx, {
+            type: 'line',
+            data: dData,
+            options: $scope.dt.lineOptions
+        });
+        var week = new Chart(new_wctx, {
+            type: 'line',
+            data: wData,
+            options: $scope.dt.lineOptions
+        });
+        var month = new Chart(new_mctx, {
+            type: 'line',
+            data: mData,
+            options: $scope.dt.lineOptions
+        });
+        var year = new Chart(new_yctx, {
+            type: 'line',
+            data: yData,
+            options: $scope.dt.lineOptions
+        });
+    };
+    $scope.dt.draw_line_sum = function() {
+        var moi = localRecordFactory.getMoiRecords();
+        filtOiRecordsWithTags(moi, $scope.dt.tagManager.current_tags);
+
+        var dData = init_line_data(moi.o, moi.i, "day");
+        var wData = init_line_data(moi.o, moi.i, "week");
+        var mData = init_line_data(moi.o, moi.i, "month");
+        var yData = init_line_data(moi.o, moi.i, "year");
+
+        var dctx = document.getElementById("day");
+        var wctx = document.getElementById("week");
+        var mctx = document.getElementById("month");
+        var yctx = document.getElementById("year");
+
+        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+        dp.replaceChild(new_dctx, dctx);
+        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+        wp.replaceChild(new_wctx, wctx);
+        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+        mp.replaceChild(new_mctx, mctx);
+        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+        yp.replaceChild(new_yctx, yctx);
+
+        var day = new Chart(new_dctx, {
+            type: 'line',
+            data: dData,
+            options: $scope.dt.lineOptions
+        });
+        var week = new Chart(new_wctx, {
+            type: 'line',
+            data: wData,
+            options: $scope.dt.lineOptions
+        });
+        var month = new Chart(new_mctx, {
+            type: 'line',
+            data: mData,
+            options: $scope.dt.lineOptions
+        });
+        var year = new Chart(new_yctx, {
+            type: 'line',
+            data: yData,
+            options: $scope.dt.lineOptions
+        });
+    };
+    
+    $scope.dt.setDisplayStatusOfBar = function() {
+        $scope.dt.dLabelShow = true;
+        $scope.dt.wLabelShow = false;
+        $scope.dt.mLabelShow = false;
+        $scope.dt.yLabelShow = false;
+
+        $scope.dt.dCanvasShow = true;
+        $scope.dt.wCanvasShow = true;
+        $scope.dt.mCanvasShow = false;
+        $scope.dt.yCanvasShow = false;
+    };
+    $scope.dt.draw_bar_sep = function() {        
+        var allTags = $scope.dt.tagManager.tags;
+        var currentTags = $scope.dt.tagManager.current_tags;
+        var mrd = localRecordFactory.getMrRecords($scope.dt.date).mrd;
+        
+        var rs = sumEachTagWithOiRecords(mrd, currentTags, allTags);
+        var oData = init_bar_data(rs.o, currentTags, allTags, "output");
+        var iData = init_bar_data(rs.i, currentTags, allTags, "income");
+        
+        var dctx = document.getElementById("day");
+        var wctx = document.getElementById("week");
+        var mctx = document.getElementById("month");
+        var yctx = document.getElementById("year");
+
+        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+        dp.replaceChild(new_dctx, dctx);
+        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+        wp.replaceChild(new_wctx, wctx);
+        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+        mp.replaceChild(new_mctx, mctx);
+        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+        yp.replaceChild(new_yctx, yctx);
+        
+        var oGraph = new Chart(new_dctx, {
+            type: 'horizontalBar',
+            data: oData
+        });
+        var iGraph = new Chart(new_wctx, {
+            type: 'horizontalBar',
+            data: iData
+        });
+    };
+    $scope.dt.draw_bar_sum = function() {
+        var allTags = $scope.dt.tagManager.tags;
+        var currentTags = $scope.dt.tagManager.current_tags;
+        var moi = localRecordFactory.getMoiRecords();
+        
+        var rs = sumEachTagWithOiRecords(moi, currentTags, allTags);
+        var oData = init_bar_data(rs.o, currentTags, allTags, "output");
+        var iData = init_bar_data(rs.i, currentTags, allTags, "income");
+        
+        var dctx = document.getElementById("day");
+        var wctx = document.getElementById("week");
+        var mctx = document.getElementById("month");
+        var yctx = document.getElementById("year");
+
+        var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
+        dp.replaceChild(new_dctx, dctx);
+        var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
+        wp.replaceChild(new_wctx, wctx);
+        var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
+        mp.replaceChild(new_mctx, mctx);
+        var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
+        yp.replaceChild(new_yctx, yctx);
+        
+        var oGraph = new Chart(new_dctx, {
+            type: 'horizontalBar',
+            data: oData
+        });
+        var iGraph = new Chart(new_wctx, {
+            type: 'horizontalBar',
+            data: iData
+        });
     };
     
     $scope.dt.refresh_sep = function() {
@@ -830,52 +1046,15 @@ angular.module('Account.controllers', [])
         
         $timeout(function() {
             $scope.localInfo = userFactory.getLocalInfo();
-            var mr = localRecordFactory.getMrRecords($scope.dt.date);
             
-            filtOiRecordsWithTags(mr.mrd, $scope.dt.tagManager.current_tags);
-            filtOiRecordsWithTags(mr.mrw, $scope.dt.tagManager.current_tags);
-            filtOiRecordsWithTags(mr.mrm, $scope.dt.tagManager.current_tags);
-            filtOiRecordsWithTags(mr.mry, $scope.dt.tagManager.current_tags);
-            
-            var dData = init_data(mr.mrd.o, mr.mrd.i, "day");
-            var wData = init_data(mr.mrw.o, mr.mrw.i, "week");
-            var mData = init_data(mr.mrm.o, mr.mrm.i, "month");
-            var yData = init_data(mr.mry.o, mr.mry.i, "year");
-
-            var dctx = document.getElementById("day");
-            var wctx = document.getElementById("week");
-            var mctx = document.getElementById("month");
-            var yctx = document.getElementById("year");
-
-            var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
-            dp.replaceChild(new_dctx, dctx);
-            var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
-            wp.replaceChild(new_wctx, wctx);
-            var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
-            mp.replaceChild(new_mctx, mctx);
-            var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
-            yp.replaceChild(new_yctx, yctx);
-
-            var day = new Chart(new_dctx, {
-                type: 'line',
-                data: dData,
-                options: $scope.options
-            });
-            var week = new Chart(new_wctx, {
-                type: 'line',
-                data: wData,
-                options: $scope.options
-            });
-            var month = new Chart(new_mctx, {
-                type: 'line',
-                data: mData,
-                options: $scope.options
-            });
-            var year = new Chart(new_yctx, {
-                type: 'line',
-                data: yData,
-                options: $scope.options
-            });
+            if ($scope.dt.type === "line") {
+                $scope.dt.setDisplayStatusOfLine();
+                $timeout($scope.dt.draw_line_sep, 0);
+            } else if ($scope.dt.type === "bar") {
+                $scope.dt.setDisplayStatusOfBar();
+                $timeout($scope.dt.draw_bar_sep, 0);
+            } else
+                console.log("Error. No implementation for " + $scope.dt.type + " in mg_sep");
             
             $scope.dt.filtText = "sep";
             $rootScope.$broadcast("loading:hide");
@@ -886,49 +1065,13 @@ angular.module('Account.controllers', [])
         
         $timeout(function() {
             $scope.localInfo = userFactory.getLocalInfo();
-            var moi = localRecordFactory.getMoiRecords();
             
-            filtOiRecordsWithTags(moi, $scope.dt.tagManager.current_tags);
-            
-            var dData = init_data(moi.o, moi.i, "day");
-            var wData = init_data(moi.o, moi.i, "week");
-            var mData = init_data(moi.o, moi.i, "month");
-            var yData = init_data(moi.o, moi.i, "year");
-
-            var dctx = document.getElementById("day");
-            var wctx = document.getElementById("week");
-            var mctx = document.getElementById("month");
-            var yctx = document.getElementById("year");
-
-            var dp = dctx.parentNode, new_dctx = dctx.cloneNode();
-            dp.replaceChild(new_dctx, dctx);
-            var wp = wctx.parentNode, new_wctx = wctx.cloneNode();
-            wp.replaceChild(new_wctx, wctx);
-            var mp = mctx.parentNode, new_mctx = mctx.cloneNode();
-            mp.replaceChild(new_mctx, mctx);
-            var yp = yctx.parentNode, new_yctx = yctx.cloneNode();
-            yp.replaceChild(new_yctx, yctx);
-
-            var day = new Chart(new_dctx, {
-                type: 'line',
-                data: dData,
-                options: $scope.options
-            });
-            var week = new Chart(new_wctx, {
-                type: 'line',
-                data: wData,
-                options: $scope.options
-            });
-            var month = new Chart(new_mctx, {
-                type: 'line',
-                data: mData,
-                options: $scope.options
-            });
-            var year = new Chart(new_yctx, {
-                type: 'line',
-                data: yData,
-                options: $scope.options
-            });
+            if ($scope.dt.type === "line")
+                $scope.dt.draw_line_sum();
+            else if ($scope.dt.type === "bar")
+                $scope.dt.draw_bar_sum();
+            else
+                console.log("Error. No implementation for " + $scope.dt.type + " in mg_sum");
             
             $scope.dt.filtText = "sum";
             $rootScope.$broadcast("loading:hide");
@@ -985,15 +1128,14 @@ angular.module('Account.controllers', [])
     
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        if (setTab === 1) {
+        if (setTab === 1)
             $scope.filtText = "task";
-        } else if (setTab === 2) {
+        else if (setTab === 2)
             $scope.filtText = "desire";
-        } else if (setTab === 3) {
+        else if (setTab === 3)
             $scope.filtText = "memo";
-        } else {
+        else
             console.log("Error: No implementation in taController of tab: ", setTab);
-        }
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.tab);
@@ -1077,13 +1219,12 @@ angular.module('Account.controllers', [])
     
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        if (setTab === 1) {
+        if (setTab === 1)
             $scope.filtText = "task";
-        } else if (setTab === 2) {
+        else if (setTab === 2)
             $scope.filtText = "desire";
-        } else {
+        else
             console.log("Error: No implementation in tcController of tab: ", setTab);
-        }
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.tab);
@@ -1289,13 +1430,12 @@ angular.module('Account.controllers', [])
     
     $scope.select = function(setTab) {
         $scope.tab = setTab;
-        if (setTab === 1) {
+        if (setTab === 1)
             $scope.filtText = "task";
-        } else if (setTab === 2) {
+        else if (setTab === 2)
             $scope.filtText = "desire";
-        } else {
+        else
             console.log("Error: No implementation in tcController of tab: ", setTab);
-        }
     };
     $scope.isSelected = function(checkTab) {
         return (checkTab === $scope.tab);

@@ -1,29 +1,31 @@
 <ion-view view-title="{{lang(localInfo.lang).recent.viewTitle}}">
+    <div class="tabs-striped tabs-color-header">
+        <ul class="tabs">
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).recent.mAccount}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).recent.tAccount}} </a></li>
+        </ul>
+    </div>
     <ion-content>
-        <div class="row">
-            <ion-radio class="col center" ng-model="typeText" value="money">{{lang(localInfo.lang).recent.mAccount}}</ion-radio>
-            <ion-radio class="col center" ng-model="typeText" value="task">{{lang(localInfo.lang).recent.tAccount}}</ion-radio>
-        </div>
         <ion-list>
-            <div ng-show="typeText === 'money'" class="card">
+            <div ng-show="filtText === 'money'" class="card">
                 <div class="item item-divider"> {{lang(localInfo.lang).recent.mTitle}} </div>
                 <div class="list list-inset">
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumOutput}}</span> <span class="inline-content">{{sumOutput(typeText) | currency}}</span> </label>
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumIncome}}</span> <span class="inline-content">{{sumIncome(typeText) | currency}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumOutput}}</span> <span class="inline-content">{{sumOutput(filtText) | currency}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumIncome}}</span> <span class="inline-content">{{sumIncome(filtText) | currency}}</span> </label>
                 </div>
             </div>
-            <div ng-show="typeText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.mDetail}} </div>
+            <div ng-show="filtText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.mDetail}} </div>
             
-            <div ng-show="typeText === 'task'" class="card">
+            <div ng-show="filtText === 'task'" class="card">
                 <div class="item item-divider"> {{lang(localInfo.lang).recent.tTitle}} </div>
                 <div class="list list-inset">
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumPtGet}}</span> <span class="inline-content">{{sumTask(typeText)}}</span> </label>
-                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumPtLost}}</span> <span class="inline-content">{{sumDesire(typeText)}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumPtGet}}</span> <span class="inline-content">{{sumTask(filtText)}}</span> </label>
+                    <label class="item item-input"> <span class="input-label inline-title">{{lang(localInfo.lang).recent.sumPtLost}}</span> <span class="inline-content">{{sumDesire(filtText)}}</span> </label>
                 </div>
             </div>
-            <div ng-show="typeText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.tDetail}} </div>
+            <div ng-show="filtText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.tDetail}} </div>
             
-            <ion-item ng-show="typeText === 'money'" ng-repeat="rec in mrdRecords" class="item-text-wrap">
+            <ion-item ng-show="filtText === 'money'" ng-repeat="rec in mrdRecords" class="item-text-wrap">
                 <div>
                     <h1 class="title">{{rec.event}}</h1>
                     <span ng-show="!rec.event"><br></span>
@@ -40,7 +42,7 @@
                 </div>
             </ion-item>
             
-            <ion-item ng-show="typeText === 'task'" ng-repeat="rec in trRecords" class="item-text-wrap">
+            <ion-item ng-show="filtText === 'task'" ng-repeat="rec in trRecords" class="item-text-wrap">
                 <div>
                     <h1 class="title">{{rec.event}}</h1>
                     <span ng-class="[badge_class(rec.type)]">{{textType(rec.type)}}</span>

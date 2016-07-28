@@ -53,8 +53,9 @@
             <div class="item item-input item-select">
                 <button type="button" class="button button-light icon ion-arrow-up-c tag-button" ng-click="onClick('add')"></button>
                 <button type="button" class="button button-light icon ion-trash-a tag-button" ng-click="onClick('del')"></button>
-                <select ng-model="tagManager.selectedTag" ng-options="tag.body for tag in tagManager.tags">
-                    <option value=""> {{lang(localInfo.lang).mtd.placeholder3}} </option>
+                <select ng-model="tagManager.selectedTag.id">
+                    <option value=""> {{lang(localInfo.lang).ma.placeholder3}} </option>
+                    <option ng-repeat="tag in tagManager.tags track by $index" ng-value="tag.id"> {{tag.body}} </option>
                 </select>
             </div>
         </form>

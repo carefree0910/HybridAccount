@@ -391,8 +391,14 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
                     filtOiRecordsWithTags: ['recordManageFactory', function(rmFac) {
                         return rmFac.filtOiRecordsWithTags;
                     }],
-                    init_data: ['graphManageFactory', function(gFac) {
-                        return gFac.init_data;
+                    sumEachTagWithOiRecords: ['recordManageFactory', function(rmFac) {
+                        return rmFac.sumEachTagWithOiRecords;
+                    }],
+                    init_line_data: ['graphManageFactory', function(gFac) {
+                        return gFac.init_line_data;
+                    }],
+                    init_bar_data: ['graphManageFactory', function(gFac) {
+                        return gFac.init_bar_data;
                     }]
                 }
             }

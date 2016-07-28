@@ -46,8 +46,8 @@
                 <h1 class="title">{{rec.event}}</h1>
                 <span ng-show="!rec.event"><br></span>
                 <span class="badge badge-header">{{dt.getTags(rec.tags)}}</span>
-                <span class="output-badge" ng-show="rec.type === 'output' && dt.type === 'all'"> {{lang(localInfo.lang).mc.output}} </span>
-                <span class="income-badge" ng-show="rec.type === 'income' && dt.type === 'all'"> {{lang(localInfo.lang).mc.income}} </span>
+                <span class="output-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.output}} </span>
+                <span class="income-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.income}} </span>
                 <br>
                 <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.amount}} </span>
                 <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
