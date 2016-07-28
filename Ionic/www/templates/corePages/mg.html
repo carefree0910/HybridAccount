@@ -44,13 +44,13 @@
                 <select ng-model="dt.tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in dt.tagManager.tags"></select>
             </div>
         </div>
-        <div ng-show="dt.dLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.filtText)}}</div>
+        <div ng-show="dt.dLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.tab)}}</div>
         <div ng-show="dt.dCanvasShow"><canvas class="chart" id="day" height="250"></canvas></div>
-        <div ng-show="dt.wLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.wType(dt.filtText)}}</div>
+        <div ng-show="dt.wLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.wType(dt.tab)}}</div>
         <div ng-show="dt.wCanvasShow"><canvas class="chart" id="week" height="250"></canvas></div>
-        <div ng-show="dt.mLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.mType(dt.filtText)}}</div>
+        <div ng-show="dt.mLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.mType(dt.tab)}}</div>
         <div ng-show="dt.mCanvasShow"><canvas class="chart" id="month" height="250"></canvas></div>
-        <div ng-show="dt.yLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.yType(dt.filtText)}}</div>
+        <div ng-show="dt.yLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.yType(dt.tab)}}</div>
         <div ng-show="dt.yCanvasShow"><canvas class="chart" id="year" height="250"></canvas></div>
         <br> <br> <br>
     </ion-content>

@@ -1229,23 +1229,23 @@ angular.module('Account.services', ['ngResource'])
             "date": "日期",
             "placeholder1": "暂无标签限制...",
             "placeholder2": "选择标签...",
-            "dType": function(filtText) {
-                if (filtText === "sep")
+            "dType": function(tab) {
+                if (tab === 1)
                     return "当日记录统计";
                 return "每日记录加总";
             },
-            "wType": function(filtText) {
-                if (filtText === "sep")
+            "wType": function(tab) {
+                if (tab === 1)
                     return "当周记录统计";
                 return "每周记录加总";
             },
-            "mType": function(filtText) {
-                if (filtText === "sep")
+            "mType": function(tab) {
+                if (tab === 1)
                     return "当月记录统计";
                 return "每月记录加总";
             },
-            "yType": function(filtText) {
-                if (filtText === "sep")
+            "yType": function(tab) {
+                if (tab === 1)
                     return "当年记录统计";
                 return "每年记录加总";
             }
@@ -1609,23 +1609,23 @@ angular.module('Account.services', ['ngResource'])
             "date": "Date",
             "placeholder1": "No tags specified yet...",
             "placeholder2": "Select a tag...",
-            "dType": function(filtText) {
-                if (filtText === "sep")
+            "dType": function(tab) {
+                if (tab === 1)
                     return "Analytics for that Day";
                 return "Adding up each Day's Records";
             },
-            "wType": function(filtText) {
-                if (filtText === "sep")
+            "wType": function(tab) {
+                if (tab === 1)
                     return "Analytics for that Week";
                 return "Adding up each Week's Records";
             },
-            "mType": function(filtText) {
-                if (filtText === "sep")
+            "mType": function(tab) {
+                if (tab === 1)
                     return "Analytics for that Month";
                 return "Adding up each Month's Records";
             },
-            "yType": function(filtText) {
-                if (filtText === "sep")
+            "yType": function(tab) {
+                if (tab === 1)
                     return "Analytics for that Year";
                 return "Adding up each Year's Records";
             }
