@@ -7,7 +7,7 @@ Ionic + Mongoose
 
   1）下载 MongoDB
   
-  2）在 ./MongoDB 下执行 mongod --dbpath-data
+  2）在 ./MongoDB 下执行 mongod --dbpath data
   
   3）在 ./Server 下执行 npm install 和 npm start
   
