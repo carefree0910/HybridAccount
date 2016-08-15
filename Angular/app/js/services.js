@@ -2,7 +2,7 @@
 
 angular.module('Account.services', ['ngResource'])
 
-.constant("baseURL", "https://192.168.100.107:3443/")
+.constant("baseURL", "https://(your ip):3443/")
 // .constant("baseURL", "https://localhost:3443/")
 .constant("default_lang", "en")
 

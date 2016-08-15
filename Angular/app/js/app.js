@@ -273,17 +273,6 @@ angular.module('Account', ['ionic', 'ui.router','ngDialog', 'chart.js', 'Account
         }
     })
 
-    .state('app.help', {
-        url: 'help',
-        views: {
-            'content@': {
-                templateUrl: 'views/help.html',
-                controller: 'helpController',
-                resolve: {}
-            }
-        }
-    })
-
     ;
 
     $urlRouterProvider.otherwise('/');
