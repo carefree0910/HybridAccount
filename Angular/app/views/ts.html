@@ -1,0 +1,53 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Archived Events</h4>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).ts.task}} </a></li>
+                            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).ts.desire}} </a></li>
+                        </ul>
+                        <div class="card">
+                            <div ng-repeat="rec in tARecords | filter: {type: filtText} track by $index">
+                                <div class="event-title-wrapper">
+                                    <span class="event-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="t-title-badge"> {{textType(rec.type)}} </span>
+                                                <span> {{rec.points}} * {{rec.amount}}<br></span>
+                                                <span class="t-title-badge"> {{lang(localInfo.lang).ts.archiveTime}} </span>
+                                                <span>{{full_date(rec.date)}} {{time(rec.date)}}</span>
+                                            </td>
+                                            <td class="td-actions text-right">
+                                                <div class="side-btn-style">
+                                                    <button type="button" rel="tooltip" title="Show Achievements' Detail" class="btn btn-primary btn-simple btn-xs" ng-click="onDetail(rec.id)">
+                                                        <i class="fa fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs" ng-click="doDel(rec.id)">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <span ng-show="showPlaceholder(filtText)" class="item placehold"><small> No archived {{filtText}} yet... </small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

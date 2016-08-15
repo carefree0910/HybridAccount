@@ -1,0 +1,99 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Add Financial Record</h4>
+                        <p class="category">Record your expenditure and income</p>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" ng-class="{active:isMSelected(1)}"><a href="" ng-click="mSelect(1)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).ma.output}} </a></li>
+                            <li role="presentation" ng-class="{active:isMSelected(2)}"><a href="" ng-click="mSelect(2)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).ma.income}} </a></li>
+                        </ul>
+                        <form ng-repeat="form in mForms" ng-show="form.type === mFiltText" class="card" ng-submit="doMAdd(form.type)">
+                            <button ng-show="false"> </button>
+                            <div class="row item item-divider">
+                                <div class="col-xs-10 form-title">
+                                    <div>{{form.title}}</div>
+                                </div>
+                                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                                    <a href="" class="fa fa-pencil-square-o form-confirm-btn-color" ng-click="doMAdd(mFiltText)"></a>
+                                </div>
+                            </div>
+                            <div ng-repeat="content in form.contents" class="list list-inset">
+                                <label class="item item-input item-text-wrap"> <span class="input-label">{{content.title}}</span>
+                                    <input type="text" ng-model="content.body" /> </label>
+                            </div>
+                            <div class="list">
+                                <div class="item item-text-wrap">
+                                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).ma.placeholder1}} </small></span>
+                                        <span ng-repeat="tag in tagManager.current_tags track by $index">
+                                            <a href="" class="tag-badge" ng-click="tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
+                                        </span>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="multi_buttons button-bar">
+                            <button class="button button-block btn-success btn-fill" ng-click="saveTemplate(mFiltText)"> {{lang(localInfo.lang).ma.save}} </button>
+                            <a class="button button-block btn-primary btn-fill" ui-sref="app.mt"> {{lang(localInfo.lang).ma.load}} </a>
+                        </div>
+                        <form class="card" ng-submit="tagManager.addCurrentTagByEnter()">
+                            <div class="item item-input">
+                                <span class="tag-input-span"></span>
+                                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).ma.placeholder2}}" />
+                                <button class="btn button button-light fa fa-plus" type="submit"></button>
+                                <span class="tag-enter-span"></span>
+                            </div>
+                            <div class="item item-input item-select">
+                                <button type="button" class="btn button button-light fa fa-arrow-up" ng-click="onClick('add')"></button>
+                                <button type="button" class="btn button button-light fa fa-trash" ng-click="onClick('del')"></button>
+                                <select ng-model="tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in tagManager.tags"></select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Add Event</h4>
+                        <p class="category">Manage your time</p>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" ng-class="{active:isTSelected(1)}"><a href="" ng-click="tSelect(1)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).ta.task}} </a></li>
+                            <li role="presentation" ng-class="{active:isTSelected(2)}"><a href="" ng-click="tSelect(2)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).ta.desire}} </a></li>
+                            <li role="presentation" ng-class="{active:isTSelected(3)}"><a href="" ng-click="tSelect(3)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).ta.memo}} </a></li>
+                        </ul>
+                        <form ng-repeat="form in tForms" class="card" ng-show="form.type === tFiltText" ng-submit="doTAdd(form.type)">
+                            <button ng-show="false"></button>
+                            <div class="row item item-divider">
+                                <div class="col-xs-10 form-title">
+                                    <div>{{form.title}}</div>
+                                </div>
+                                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                                    <a href="" class="fa fa-pencil-square-o form-confirm-btn-color" ng-click="doTAdd(tFiltText)"></a>
+                                </div>
+                            </div>
+                            <div ng-show="tFiltText != 'memo'" ng-repeat="content in form.contents" class="list list-inset">
+                                <label class="item item-input item-text-wrap">
+                                    <span class="input-label">{{content.title}}</span>
+                                    <input type="text" ng-model="content.body">
+                                </label>
+                            </div>
+                            <div ng-show="tFiltText === 'memo'" ng-repeat="content in form.contents" class="list list-inset">
+                                <textarea class="memo" class="item item-text-wrap" ng-model="content.body"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

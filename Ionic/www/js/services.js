@@ -2,8 +2,9 @@
 
 angular.module('Account.services', ['ngResource'])
 
-.constant("baseURL", "https://10.2.75.150:3443/")
+.constant("baseURL", "https://(your ip):3443/")
 // .constant("baseURL", "https://localhost:3443/")
+.constant("default_lang", "en")
 
 .filter('latestFilter', function() {
     return function(records) {
@@ -52,7 +53,7 @@ angular.module('Account.services', ['ngResource'])
 
 .factory('cloudRecordFactory', function($resource, baseURL) {
     var recFac = {};
-    
+
     recFac.upload_info = function(info) {
         $resource(baseURL + "users/info", null, { 'update': { method: 'PUT'} }).update(info, function(res) {
             console.log(res.body);
@@ -60,7 +61,7 @@ angular.module('Account.services', ['ngResource'])
             console.log(res.data.err)
         });
     };
-    
+
     recFac.upload_mRec = function(rec) {
         $resource(baseURL + "records/m", null, { 'update': { method: 'PUT'} }).update(rec, function(res) {
             console.log(res.body);
@@ -103,7 +104,7 @@ angular.module('Account.services', ['ngResource'])
             console.log(res.data.err)
         });
     };
-    
+
     recFac.upload_allRec = function(records) {
         $resource(baseURL + "records/all", null, { 'update': { method: 'PUT'} }).update(records, function(res) {
             console.log(res.body);
@@ -111,28 +112,28 @@ angular.module('Account.services', ['ngResource'])
             console.log(res.data.err)
         });
     };
-    
+
     return recFac;
 })
 
 .factory('localRecordFactory', ['$localStorage', 'cloudRecordFactory', 'formatFactory', function($localStorage, cRecFac, fFac) {
     var recFac = {};
     var records = {};
-    
+
     records.mRecords = $localStorage.getObject('mRecords', '[]');
     records.tRecords = $localStorage.getObject('tRecords', '[]');
     records.tARecords = $localStorage.getObject('tARecords', '[]');
     records.tPoints = parseFloat($localStorage.get('tPoints', 0));
-    
+
     records.mtRecords = $localStorage.getObject('mtRecords', '[]');
     records.trRecords = $localStorage.getObject('trRecords', '[]');
-    
+
     records.tags = $localStorage.getObject('tags', '[]');
-    
+
     recFac.getAllRecords = function() {
         return records;
     };
-    
+
     recFac.getMRecords = function() {
         return records.mRecords;
     };
@@ -145,12 +146,12 @@ angular.module('Account.services', ['ngResource'])
     recFac.getPoints = function() {
         return records.tPoints;
     };
-    
+
     recFac.getDateRecords = function(date) {
         if (!date)
             date = new Date();
         var mRecords = recFac.getMRecords();
-        
+
         var rs = [];
         for (var i = mRecords.length - 1; i >= 0; i--) {
             var rec = mRecords[i];
@@ -158,9 +159,9 @@ angular.module('Account.services', ['ngResource'])
             if (pDate.getDate() === date.getDate() && pDate.getMonth() === date.getMonth() && pDate.getFullYear() === date.getFullYear())
                 rs.push(rec);
         }
-        
+
         return rs;
-    }
+    };
     recFac.getMrRecords = function(date) {
         if (!date)
             date = new Date();
@@ -201,35 +202,36 @@ angular.module('Account.services', ['ngResource'])
                 }
             }
         }
-        
+
         return mr;
     };
     recFac.getMoiRecords = function() {
         var rs = {};
         rs.o = []; rs.i = [];
         var mRecords = recFac.getMRecords();
-        
+
         for (var i = mRecords.length - 1; i >= 0; i--) {
             if (mRecords[i].type === "output")
                 rs.o.push(mRecords[i]);
             else
                 rs.i.push(mRecords[i]);
         }
-        
-        return rs;  
+
+        return rs;
     };
-    
+
     recFac.getMtRecords = function() {
         return records.mtRecords;
     };
     recFac.getTrRecords = function() {
+        recFac.updateTrRecords();
         return records.trRecords;
     };
-    
+
     recFac.getTags = function() {
         return records.tags;
     };
-    
+
     recFac.updateMRecords = function(mRec) {
         records.mRecords = mRec;
         $localStorage.storeObject('mRecords', mRec);
@@ -253,43 +255,46 @@ angular.module('Account.services', ['ngResource'])
     recFac.updateTrRecords = function(rec) {
         var date = new Date;
         var milli = date.getTime();
-        
+
         var trRecords = records.trRecords;
         if (trRecords.length === 0) {
-            
+
         } else {
             var pDate = new Date();
             pDate.setTime(trRecords[0].milli);
-            
+
             if (pDate.getDate() != date.getDate() || pDate.getMonth() != date.getMonth() || pDate.getFullYear() != date.getFullYear())
                 trRecords.length = 0;
         }
-        
+
+        if (rec) {
         var involve_flag = false;
-        for (var i = trRecords.length - 1; i >= 0; i--) {
-            var trRec = trRecords[i];
-            if (trRec.id == rec.id) {
-                involve_flag = true;
-                trRec.date = rec.date;
-                trRec.milli = rec.milli;
-                trRec.amount += 1;
-                trRec.done_times.push(milli);
-                break;
+            for (var i = trRecords.length - 1; i >= 0; i--) {
+                var trRec = trRecords[i];
+                if (trRec.id == rec.id) {
+                    involve_flag = true;
+                    trRec.date = rec.date;
+                    trRec.milli = rec.milli;
+                    trRec.amount += 1;
+                    trRec.done_times.push(milli);
+                    break;
+                }
+            }
+            if (!involve_flag) {
+                rec.amount = 1;
+                rec.done_times = [milli];
+                trRecords.push(rec);
             }
         }
-        if (!involve_flag) {
-            rec.amount = 1;
-            rec.done_times = [milli];
-            trRecords.push(rec);
-        }
+
         $localStorage.storeObject('trRecords', trRecords);
     };
     recFac.updateTags = function(tags) {
         records.tags = tags;
         $localStorage.storeObject('tags', tags);
-    }
-    
-    recFac.delById = function(id, rec, type) {        
+    };
+
+    recFac.delById = function(id, rec, type) {
         for (var i = rec.length - 1; i >= 0; i--) {
             if (i == id) {
                 rec.splice(i, 1);
@@ -302,7 +307,7 @@ angular.module('Account.services', ['ngResource'])
         }
         if (type)
             $localStorage.storeObject(type, rec);
-    }
+    };
     recFac.delFromMRec = function(id) {
         recFac.delById(id, records.mRecords, "mRecords");
     };
@@ -329,7 +334,7 @@ angular.module('Account.services', ['ngResource'])
     recFac.delFromTags = function(id) {
         recFac.delById(id, records.tags, "tags");
     };
-    
+
     recFac.editFromMRec = function(id, rec) {
         records.mRecords[id] = rec;
         $localStorage.storeObject('mRecords', records.mRecords);
@@ -337,7 +342,7 @@ angular.module('Account.services', ['ngResource'])
     recFac.editFromTRec = function(id, rec) {
         records.tRecords[id] = rec;
         $localStorage.storeObject('tRecords', records.tRecords);
-    };  
+    };
     recFac.editFromMtRec = function(id, rec) {
         records.mtRecords[id] = rec;
         $localStorage.storeObject('mtRecords', records.mtRecords);
@@ -346,7 +351,7 @@ angular.module('Account.services', ['ngResource'])
         records.tags[id] = tag;
         $localStorage.storeObject('tags', records.tags);
     };
-    
+
     recFac.tmpOutputTemplate = {
         "triggered": false,
         "tags": [],
@@ -361,13 +366,13 @@ angular.module('Account.services', ['ngResource'])
         "amount": 1,
         "unit_price": 0
     };
-    
+
     return recFac;
 }])
 
 .factory('textManageFactory', ['languageFactory', 'userFactory', function(lFac, uFac) {
     var tmFac = {};
-    
+
     tmFac.moneyTextType = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "output")
@@ -380,7 +385,7 @@ angular.module('Account.services', ['ngResource'])
             return lang.moneyType.output;
         return lang.moneyType.income;
     };
-    
+
     tmFac.taskType = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "task")
@@ -413,7 +418,7 @@ angular.module('Account.services', ['ngResource'])
             return lang.taskArchiveType.task;
         return lang.taskArchiveType.desire;
     };
-    
+
     tmFac.regToastType = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "success")
@@ -444,7 +449,7 @@ angular.module('Account.services', ['ngResource'])
             return lang.downloadToastType.success;
         return lang.downloadToastType.failed;
     };
-    
+
     tmFac.addToastType = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "success")
@@ -457,7 +462,7 @@ angular.module('Account.services', ['ngResource'])
             return lang.modifyToastType.success;
         return lang.modifyToastType.failed;
     };
-    
+
     tmFac.meErrMsg = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "amount")
@@ -475,37 +480,37 @@ angular.module('Account.services', ['ngResource'])
             return lang.tceErrMsg.points;
         return lang.tceErrMsg.amount;
     };
-    
+
     tmFac.tceDoneText = function(type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         if (type === "task")
             return lang.tceDoneText.task;
         return lang.tceDoneText.desire;
     };
-    
+
     return tmFac;
 }])
 
 .factory('recordManageFactory', function($ionicPlatform, $ionicListDelegate, $ionicPopup, $cordovaToast, localRecordFactory, textManageFactory, languageFactory, userFactory) {
     var rmFac = {};
-    
-    rmFac.checkTagInvolve = function(tagBody, tags) {
+
+    rmFac.checkTagInvolve = function(tag, tags) {
         for (var i = tags.length - 1; i >= 0; i--) {
-            if (tags[i].body === tagBody)
+            if (tags[i].body === tag.body)
                 return true;
         }
         return false;
     };
     rmFac.genTagManager = function(current_tags) {
         var tagManager = {};
-        
+
         tagManager.tags = localRecordFactory.getTags();
         tagManager.selectedTagId = 0;
         tagManager.current_tag = {};
         tagManager.current_tags = current_tags;
-        
+
         tagManager.addCurrentTagById = function(id) {
-            var involve = rmFac.checkTagInvolve(tagManager.tags[id].body, tagManager.current_tags);
+            var involve = rmFac.checkTagInvolve(tagManager.tags[id], tagManager.current_tags);
             if (!involve) {
                 var tmpTag = {};
                 tmpTag.id = tagManager.current_tags.length;
@@ -515,7 +520,7 @@ angular.module('Account.services', ['ngResource'])
         };
         tagManager.addCurrentTagByEnter = function() {
             if (tagManager.current_tag.body) {
-                var involve = rmFac.checkTagInvolve(tagManager.current_tag.body, tagManager.current_tags);
+                var involve = rmFac.checkTagInvolve(tagManager.current_tag, tagManager.current_tags);
                 if (!involve) {
                     tagManager.current_tag.id = tagManager.current_tags.length;
                     tagManager.current_tags.push(tagManager.current_tag);
@@ -523,28 +528,29 @@ angular.module('Account.services', ['ngResource'])
                 tagManager.current_tag = {};
             }
         };
-        
+
         tagManager.delCurrentTagById = function(id) {
             localRecordFactory.delById(id, tagManager.current_tags);
         };
         tagManager.delAllTagById = function(id) {
             var tagBody = tagManager.tags[id].body;
-            rmFac.doDel("tags", "", id, tagBody, function() {});
-            var mRecords = localRecordFactory.getMRecords();
-            for (var i = mRecords.length - 1; i >= 0; i--) {
-                var idx = -1, tmpTags = mRecords[i].tags;
-                for (var j = tmpTags.length - 1; j >= 0; j--) {
-                    if (tmpTags[j].body === tagBody) {
-                        idx = j; break;
+            rmFac.doDel("tags", "", id, tagBody, function() {
+                var mRecords = localRecordFactory.getMRecords();
+                for (var i = mRecords.length - 1; i >= 0; i--) {
+                    var idx = -1, tmpTags = mRecords[i].tags;
+                    for (var j = tmpTags.length - 1; j >= 0; j--) {
+                        if (tmpTags[j].body === tagBody) {
+                            idx = j; break;
+                        }
                     }
+                    if (idx >= 0)
+                        localRecordFactory.delById(idx, tmpTags);
                 }
-                if (idx >= 0)
-                    localRecordFactory.delById(idx, tmpTags);
-            }
-            localRecordFactory.updateMRecords(mRecords);
+                localRecordFactory.updateMRecords(mRecords);
+            });
             tagManager.selectedTagId = 0;
         };
-        
+
         return tagManager;
     };
     rmFac.getTags = function(tags) {
@@ -555,7 +561,7 @@ angular.module('Account.services', ['ngResource'])
             rs += tags[i].body + " ";
         return rs;
     };
-    
+
     rmFac.checkSubTagList = function(sub, org) {
         for (var i = sub.length - 1; i >= 0; i--) {
             var involve = false;
@@ -586,11 +592,11 @@ angular.module('Account.services', ['ngResource'])
     rmFac.sumEachTagWithOiRecords = function(oiRecords, currentTags) {
         var rs = {};
         rs.o = []; rs.i = [];
-        
+
         for (var i = currentTags.length - 1; i >= 0; i--) {
             rs.o[currentTags[i].body] = 0; rs.i[currentTags[i].body] = 0;
         }
-        
+
         var oRec = oiRecords.o, iRec = oiRecords.i;
         for (var i = oRec.length - 1; i >= 0; i--) {
             var tmpTags = oRec[i].tags;
@@ -614,10 +620,10 @@ angular.module('Account.services', ['ngResource'])
                 }
             }
         }
-        
+
         return rs;
-    }
-    
+    };
+
     rmFac.injectBasicTRecInfo = function(org, tar) {
         tar.id = org.id;
         tar.type = org.type;
@@ -627,7 +633,7 @@ angular.module('Account.services', ['ngResource'])
         tar.done_times = org.done_times;
     };
     rmFac.doDel = function(category, type, id, msg, next) {
-        
+
         var del_method, pop_msg, toast_msg;
         var lang = languageFactory.lang(userFactory.getLocalInfo().lang);
 
@@ -654,12 +660,12 @@ angular.module('Account.services', ['ngResource'])
         } else {
             console.log("Error, doDel not implemented with " + category + " !");
         }
-        
+
         $ionicListDelegate.closeOptionButtons();
         var confirmPopup = $ionicPopup.confirm({
             template: '<p style="text-align:center;">' + pop_msg + "</p>"
         });
-        confirmPopup.then(function (res) {
+        confirmPopup.then(function(res) {
             if (res) {
                 del_method(id);
                 next();
@@ -667,7 +673,7 @@ angular.module('Account.services', ['ngResource'])
                     $cordovaToast
                         .showLongBottom(toast_msg)
                         .then(
-                            function (success) {}, 
+                            function (success) {},
                             function (error) {}
                         );
                 });
@@ -675,10 +681,10 @@ angular.module('Account.services', ['ngResource'])
                 console.log('Canceled ' + msg);
             }
         });
-        
+
     };
     rmFac.doMoneyFormAdd = function(type, forms, records, msg, next) {
-        
+
         var lang = languageFactory.lang(userFactory.getLocalInfo().lang);
 
         var date = new Date();
@@ -728,24 +734,24 @@ angular.module('Account.services', ['ngResource'])
                 $cordovaToast
                     .showLongBottom(lang.rmFac.toast("success", msg, err_msg))
                     .then(
-                        function (success) {}, 
+                        function (success) {},
                         function (error) {}
                     );
             } else {
                 $cordovaToast
                     .show(lang.rmFac.toast("failed", msg, err_msg), 'long', 'center')
                     .then(
-                        function (success) {}, 
+                        function (success) {},
                         function (error) {}
                     );
             }
         });
-        
+
     };
     rmFac.doMoneyTemplateAdd = function(type, template, records, next) {
-        
+
         var lang = languageFactory.lang(userFactory.getLocalInfo().lang);
-        
+
         var date = new Date();
         var info = {
             "id": records.length,
@@ -766,7 +772,7 @@ angular.module('Account.services', ['ngResource'])
         }
         if (isNaN(info.unit_price)) {
             err_flag = true;
-            err_msg += lang.rmFac.err_msg("unit_price"); + lang.rmFac.err_type(type) + " !";
+            err_msg += lang.rmFac.err_msg("unit_price") + lang.rmFac.err_type(type) + " !";
         }
 
         if (!err_flag)
@@ -777,27 +783,27 @@ angular.module('Account.services', ['ngResource'])
                 $cordovaToast
                     .showLongBottom(lang.rmFac.toast("success", "record", err_msg))
                     .then(
-                        function (success) {}, 
+                        function (success) {},
                         function (error) {}
                     );
             } else {
                 $cordovaToast
                     .show(lang.rmFac.toast("failed", "record", err_msg), 'long', 'center')
                     .then(
-                        function (success) {}, 
+                        function (success) {},
                         function (error) {}
                     );
             }
         });
-        
+
     };
-    
+
     return rmFac;
 })
 
 .factory('graphManageFactory', ['formatFactory', 'languageFactory', 'userFactory', function(fFac, lFac, uFac) {
     var gFac = {};
-    
+
     var get_line_graph = function(records, type) {
         var graph = {};
         graph.data = [];
@@ -834,7 +840,7 @@ angular.module('Account.services', ['ngResource'])
         fFac.formatListNumber(graph.data, 2);
         return graph;
     };
-    
+
     gFac.init_line_data = function(oRecords, iRecords, type) {
         var lang = lFac.lang(uFac.getLocalInfo().lang);
         var data = {
@@ -882,15 +888,15 @@ angular.module('Account.services', ['ngResource'])
                 }
             ]
         };
-        
+
         var oGraph = get_line_graph(oRecords, type);
         var iGraph = get_line_graph(iRecords, type);;
-        
+
         if (oGraph.labels.length >= iGraph.labels)
             data.labels = oGraph.labels;
         else
             data.labels = iGraph.labels;
-        
+
         data.datasets[0].data = oGraph.data;
         data.datasets[1].data = iGraph.data;
         return data;
@@ -907,7 +913,7 @@ angular.module('Account.services', ['ngResource'])
             backgroundColor = "rgba(156, 241, 178, 0.5)";
             borderColor = "rgba(111, 227, 142, 1)";
         }
-        
+
         var data = {
             labels: [],
             datasets: [{
@@ -924,16 +930,16 @@ angular.module('Account.services', ['ngResource'])
             data.datasets[0].backgroundColor.push(backgroundColor); data.datasets[0].borderColor.push(borderColor);
             data.datasets[0].data.push(records[tagBody]);
         }
-        
+
         return data;
     };
-    
+
     return gFac;
 }])
 
 .factory('formatFactory', function($filter) {
     var fFac = {};
-    
+
     fFac.formatNumber = function(num, precision) {
         return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision);
     };
@@ -941,16 +947,16 @@ angular.module('Account.services', ['ngResource'])
         for (var i = lst.length - 1; i >= 0; i--) {
             lst[i] = fFac.formatNumber(lst[i], precision);
         }
-    }
-    
-    fFac.sortByMilli = function(x, y) { 
-        return x.milli - y.milli; 
     };
-    
+
+    fFac.sortByMilli = function(x, y) {
+        return x.milli - y.milli;
+    };
+
     fFac.full_date = function(date) {
         return $filter('date') (date, 'yyyy-MM-dd');
     };
-    fFac.time = function(date) { 
+    fFac.time = function(date) {
         return $filter('date') (date, 'HH:mm');
     };
     fFac.showDateAndTime = function(milli) {
@@ -958,7 +964,7 @@ angular.module('Account.services', ['ngResource'])
         date.setTime(milli);
         return $filter('date') (date, 'yyyy-MM-dd HH:mm:ss');
     };
-    
+
     fFac.month = function(date) {
         return $filter('date') (date, 'MMM');
     };
@@ -971,32 +977,32 @@ angular.module('Account.services', ['ngResource'])
     fFac.hour = function(date) {
         return $filter('date') (date, 'HH');
     };
-    
+
     return fFac;
 })
 
-.factory('userFactory', function($resource, $localStorage) {
+.factory('userFactory', function($resource, $localStorage, default_lang) {
     var userFac = {};
-    
+
     var localInfo = $localStorage.getObject('localInfo', '{}');
     var loginData = $localStorage.getObject('loginData', '{}');
-    
+
     if (!localInfo.lang)
-        localInfo.lang = "zh_cn";
-    
+        localInfo.lang = default_lang;
+
     userFac.getLocalInfo = function() {
         return localInfo;
     };
     userFac.getLoginData = function() {
         return loginData;
     };
-    
+
     return userFac;
 })
 
 .factory('formFactory', function($resource, baseURL, languageFactory) {
     var fFac = {};
-    
+
     fFac.getMForms = function(lang) {
         var lang = languageFactory.lang(lang);
         var rs = [
@@ -1077,18 +1083,18 @@ angular.module('Account.services', ['ngResource'])
         ];
         return rs;
     };
-    
+
     return fFac;
 })
 
 .factory('authFactory', function($resource, $http, $localStorage, $rootScope, baseURL, $ionicPopup, userFactory, languageFactory) {
-    
+
     var authFac = {};
     var TOKEN_KEY = 'Token';
     var isAuthenticated = false;
     var username = '';
     var authToken = undefined;
-    
+
     var loadUserCredentials = function() {
         var credentials = $localStorage.getObject(TOKEN_KEY, '{}');
         if (credentials.username != undefined) {
@@ -1112,8 +1118,8 @@ angular.module('Account.services', ['ngResource'])
         $http.defaults.headers.common['x-access-token'] = authToken;
         $localStorage.remove(TOKEN_KEY);
     };
-     
-    authFac.login = function(loginData) {   
+
+    authFac.login = function(loginData) {
         $resource(baseURL + "users/login").save(loginData, function(res) {
             storeUserCredentials({username: loginData.username, token: res.token});
             $rootScope.$broadcast('login:Successful');
@@ -1133,7 +1139,7 @@ angular.module('Account.services', ['ngResource'])
     authFac.logout = function() {
         $resource(baseURL + "users/logout").get(function(response) {});
         destroyUserCredentials();
-    };   
+    };
     authFac.register = function(registerData) {
         $resource(baseURL + "users/register").save(registerData, function(res) {
             authFac.login({username: registerData.username, password: registerData.password});
@@ -1154,20 +1160,20 @@ angular.module('Account.services', ['ngResource'])
         return isAuthenticated;
     };
     authFac.getUsername = function() {
-        return username;  
+        return username;
     };
-    
+
     loadUserCredentials();
-    
+
     return authFac;
-    
+
 })
 
 .factory('languageFactory', function() {
     var langFac = {};
     // {{lang(localInfo.lang).home.a}}
     langFac.zh_cn = {
-        
+
         "mForm": {
             "outputTitle": "记录支出",
             "outputContent1": "单价",
@@ -1186,7 +1192,7 @@ angular.module('Account.services', ['ngResource'])
             "desireContent2": "失点",
             "memoTitle": "新备忘"
         },
-        
+
         "ma": {
             "viewTitle": "增添财务记录",
             "output": "记录支出",
@@ -1284,7 +1290,7 @@ angular.module('Account.services', ['ngResource'])
             "placeholder2": "输入一个标签...",
             "placeholder3": "选择一个标签..."
         },
-        
+
         "ta": {
             "viewTitle": "增添事件",
             "task": "新任务",
@@ -1326,7 +1332,7 @@ angular.module('Account.services', ['ngResource'])
             "time": "次数",
             "doneTimes": "时间"
         },
-        
+
         "home": {
             "viewTitle": "主页",
             "mTitle": "财务管理综述",
@@ -1400,7 +1406,7 @@ angular.module('Account.services', ['ngResource'])
             "upload": "上传数据",
             "download": "下载数据"
         },
-        
+
         "moneyType": {
             "output": "支出",
             "income": "收入"
@@ -1430,7 +1436,7 @@ angular.module('Account.services', ['ngResource'])
             "task": "归档任务",
             "desire": "归档欲望"
         },
-        
+
         "regToastType": {
             "success": "注册成功 !",
             "failed": "注册失败 !"
@@ -1451,7 +1457,7 @@ angular.module('Account.services', ['ngResource'])
             "success": "下载成功 !",
             "failed": "下载失败 !"
         },
-        
+
         "addToastType": {
             "success": "添加成功 !",
             "failed": "添加失败 !"
@@ -1460,7 +1466,7 @@ angular.module('Account.services', ['ngResource'])
             "success": "修改成功 !",
             "failed": "修改失败 !"
         },
-        
+
         "meErrMsg": {
             "amount": "\n请输入正确的数量 !",
             "unit_price": "\n请输入正确的"
@@ -1472,7 +1478,7 @@ angular.module('Account.services', ['ngResource'])
             "points": "\n请输入正确的点数 !",
             "amount": "\n请输入正确的次数 !"
         },
-        
+
         "tceDoneText": {
             "task": "记录成功 ! 点数 + ",
             "desire": "记录成功 ! 点数 - "
@@ -1537,17 +1543,17 @@ angular.module('Account.services', ['ngResource'])
             "oTitle": "支出",
             "iTitle": "收入"
         },
-        
+
         "loading": {
             "loading": "加载中"
         },
         "exit": {
             "exit": "再按一次退出"
         }
-        
+
     };
     langFac.en = {
-        
+
         "mForm": {
             "outputTitle": "Expenditure",
             "outputContent1": "Unit-Price",
@@ -1566,7 +1572,7 @@ angular.module('Account.services', ['ngResource'])
             "desireContent2": "pt. -",
             "memoTitle": "New Memo"
         },
-        
+
         "ma": {
             "viewTitle": "Add Financial Record",
             "output": "Expenditure Record",
@@ -1664,7 +1670,7 @@ angular.module('Account.services', ['ngResource'])
             "placeholder2": "Enter a tag...",
             "placeholder3": "Select a tag..."
         },
-        
+
         "ta": {
             "viewTitle": "Add Event",
             "task": "New Task",
@@ -1706,13 +1712,13 @@ angular.module('Account.services', ['ngResource'])
             "time": "",
             "doneTimes": " Time(s)"
         },
-        
+
         "home": {
             "viewTitle": "Home",
-            "mTitle": "Financial Summerization",
+            "mTitle": "Financial Summary",
             "expenditure": "Expenditure",
             "income": "Income",
-            "tTitle": "Event Summerization",
+            "tTitle": "Event Summary",
             "ptLeft": "pt. Left",
             "latestMemo": "Latest Memo",
             "userInfo": "User Info",
@@ -1728,14 +1734,14 @@ angular.module('Account.services', ['ngResource'])
             "viewTitle": "Today's Account",
             "mAccount": "Finance",
             "tAccount": "Event",
-            "mTitle": "Today's Financial Summerization",
+            "mTitle": "Today's Financial Summary",
             "sumOutput": "Total Expenditure",
             "sumIncome": "Total Income",
             "output": "Expenditure",
             "income": "Income",
             "amount": "Amount",
             "mDetail": "Details",
-            "tTitle": "Today's Event Summerization",
+            "tTitle": "Today's Event Summary",
             "sumPtGet": "Total pt. Gained",
             "sumPtLost": "Total pt. Lost",
             "tDetail": "Details",
@@ -1780,7 +1786,7 @@ angular.module('Account.services', ['ngResource'])
             "upload": "Upload",
             "download": "Download"
         },
-        
+
         "moneyType": {
             "output": "Amount",
             "income": "Amount"
@@ -1810,7 +1816,7 @@ angular.module('Account.services', ['ngResource'])
             "task": "Archive",
             "desire": "Archive"
         },
-        
+
         "regToastType": {
             "success": "Registration Succeeded !",
             "failed": "Registration Failed !"
@@ -1820,8 +1826,8 @@ angular.module('Account.services', ['ngResource'])
             "failed": "Log In Failed !"
         },
         "settingToastType": {
-            "success": "Setting Completed !",
-            "failed": "Setting Failed !"
+            "success": "Updated !",
+            "failed": "Failed !"
         },
         "uploadToastType": {
             "success": "Upload Completed !",
@@ -1831,7 +1837,7 @@ angular.module('Account.services', ['ngResource'])
             "success": "Download Completed !",
             "failed": "Download Failed !"
         },
-        
+
         "addToastType": {
             "success": "Added !",
             "failed": "Failed !"
@@ -1840,24 +1846,24 @@ angular.module('Account.services', ['ngResource'])
             "success": "Modified !",
             "failed": "Failed !"
         },
-        
+
         "meErrMsg": {
             "amount": "\nPlease provide a validate number for Quantity !",
             "unit_price": "\nPlease provide a validate number for "
         },
         "teErrMsg": {
-            "points": "Please provide a validate number for pt. !"
+            "points": "\nPlease provide a validate number for pt. !"
         },
         "tceErrMsg": {
             "points": "\nPlease provide a validate number for Points !",
             "amount": "\nPlease provide a validate number for Achieved !"
         },
-        
+
         "tceDoneText": {
             "task": "pt. + ",
             "desire": "pt. - "
         },
-        
+
         "rmFac": {
             "moneyPop": "Confirm Deletion ?",
             "moneyToast": "Deleted Successfully !",
@@ -1899,7 +1905,7 @@ angular.module('Account.services', ['ngResource'])
             "err_msg": function(type) {
                 if (type === "amount")
                     return "\nPlease provide a validate number for Quantity !";
-                return "\Please provide a validate number for ";
+                return "\nPlease provide a validate number for ";
             },
             "toast": function(type, msg, err_msg) {
                 var sMsg, fMsg;
@@ -1917,25 +1923,25 @@ angular.module('Account.services', ['ngResource'])
         },
         "gmFac": {
             "oTitle": "Expenditure",
-            "iTitle": "Income",
+            "iTitle": "Income"
         },
-        
+
         "loading": {
             "loading": "Loading"
         },
         "exit": {
             "exit": "Press again to Exit"
         }
-        
+
     };
-    
+
     langFac.lang = function(type) {
         if (type === "zh_cn")
             return langFac.zh_cn;
         if (type === "en")
             return langFac.en;
     };
-    
+
     return langFac;
 })
 

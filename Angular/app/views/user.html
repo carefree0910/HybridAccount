@@ -1,0 +1,71 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Edit Profile</h4> </div>
+                    <div class="content">
+                        <form ng-submit="doSetting()">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control" placeholder="Username" ng-model="tmpInfo.username"> </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label>First Name</label>
+                                        <input type="text" class="form-control" placeholder="First Name" ng-model="tmpInfo.firstName"> </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label>Last Name</label>
+                                        <input type="text" class="form-control" placeholder="Last Name" ng-model="tmpInfo.lastName"> </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 item-select">
+                                    <label>Language</label>
+                                    <select ng-model="tmpInfo.lang">
+                                        <option value="zh_cn">中文</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label>About Me</label>
+                                        <textarea rows="5" class="form-control" placeholder="Here can be your description" ng-model="tmpInfo.description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-info btn-fill pull-right">Update Profile</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-user">
+                    <div class="image">
+                        <img src="img/avatar-background.jpg" alt="..." />
+                    </div>
+                    <div class="content">
+                        <div class="author">
+                            <a href="" ng-click="changeAvatar()"> <img class="avatar border-gray" ng-src="{{getAvatar()}}" alt="..." />
+                                <h4 class="title">{{tmpInfo.firstName + " " + tmpInfo.lastName}}<br />
+                                         <small>{{tmpInfo.username}}</small>
+                                      </h4> </a>
+                            <p class="description text-center">
+                                {{tmpInfo.description}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,6 +41,7 @@ userRouter.route('/register')
 
 userRouter.route('/login')
 .post(function(req, res, next) {
+    console.log("in login")
     passport.authenticate('local', function(err, user, info) {
         if (err) {
             return next(err);

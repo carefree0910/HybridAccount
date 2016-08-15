@@ -1,0 +1,53 @@
+<div class="ngdialog-message">
+    <div>
+        <form class="card" ng-submit="finishEdit()">
+            <button ng-show="false"> </button>
+            <div class="row item item-divider">
+                <div class="col-xs-10 form-title">
+                    <div> {{lang(localInfo.lang).mte.viewTitle}} </div>
+                </div>
+                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                    <a href="" class="fa fa-pencil-square-o form-confirm-btn-color" ng-click="finishEdit()"></a>
+                </div>
+            </div>
+            <div class="list list-inset">
+                <div class="item item-input">
+                    <span class="input-label bold">{{textType(record.type)}}</span>
+                    <input type="text" ng-model="record.unit_price" />
+                </div>
+                <div class="item item-input" ng-show="record.type === 'output'">
+                    <span class="input-label bold"> {{lang(localInfo.lang).mte.amount}} </span>
+                    <input type="text" ng-model="record.amount" />
+                </div>
+                <div class="item item-input">
+                    <span class="input-label bold"> {{lang(localInfo.lang).mte.event}} </span>
+                    <input type="text" ng-model="record.event" />
+                </div>
+            </div>
+            <div class="list">
+                <div class="item item-text-wrap">
+                    <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mte.placeholder1}} </small></span>
+                    <span ng-repeat="tag in tagManager.current_tags track by $index">
+                        <a href="" class="tag-badge" ng-click="tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
+                    </span>
+                </div>
+            </div>
+        </form>
+        <div class="multi_buttons button-bar">
+            <button class="button button-block button-calm" ng-click="loadTemplate()"> {{lang(localInfo.lang).mte.apply}} </button>
+        </div>
+        <form class="card" ng-submit="tagManager.addCurrentTagByEnter()">
+            <div class="item item-input">
+                <span class="tag-input-span"></span>
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mte.placeholder2}}" />
+                <button class="btn button button-light fa fa-plus" type="submit"></button>
+                <span class="tag-enter-span"></span>
+            </div>
+            <div class="item item-input item-select">
+                <button type="button" class="btn button button-light fa fa-arrow-up" ng-click="onClick('add')"></button>
+                <button type="button" class="btn button button-light fa fa-trash" ng-click="onClick('del')"></button>
+                <select ng-model="tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in tagManager.tags"></select>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Check Financial Records</h4>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" ng-class="{active:dt.isSelected(1)}"><a href="" ng-click="dt.select(1)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).mc.focus}} </a></li>
+                            <li role="presentation" ng-class="{active:dt.isSelected(2)}"><a href="" ng-click="dt.select(2)" role="tab" data-toggle="tab"> {{lang(localInfo.lang).mc.all}} </a></li>
+                        </ul>
+                        <div class="card">
+                            <label class="item item-input item-select">
+                                <span class="input-label bold"> Type </span>
+                                <select ng-model="dt.type">
+                                    <option value="all"> {{lang(localInfo.lang).mc.all}} </option>
+                                    <option value="output"> {{lang(localInfo.lang).mc.output}} </option>
+                                    <option value="income"> {{lang(localInfo.lang).mc.income}} </option>
+                                </select>
+                            </label>
+                        </div>
+                        <form class="card" ng-submit="dt.doFilter()">
+                            <button ng-show="false"> </button>
+                            <div class="row item item-divider">
+                                <div class="col-xs-10 form-title">
+                                    <div>{{lang(localInfo.lang).mc.filter}}</div>
+                                </div>
+                                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                                    <a href="" class="fa fa-filter form-confirm-btn-color-dark" ng-click="dt.doFilter()"></a>
+                                </div>
+                            </div>
+                            <div class="list list-inset">
+                                <div class="item item-input">
+                                    <span class="input-label bold"> {{lang(localInfo.lang).mc.tag}} </span>
+                                    <input type="text" ng-model="dt.tag.body" />
+                                </div>
+                                <div class="item item-input" ng-show="dt.filtText != 'all'">
+                                    <span class="input-label bold"> {{lang(localInfo.lang).mc.date}} </span>
+                                    <input type="date" ng-model="dt.date" />
+                                </div>
+                                <div class="item item-input">
+                                    <span class="input-label bold"> {{lang(localInfo.lang).mc.event}} </span>
+                                    <input type="text" ng-model="dt.description" />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="card">
+                            <div ng-repeat="rec in dt.rs | moneyRecordsFilter: dt.type track by $index">
+                                <div class="event-title-wrapper">
+                                    <span class="event-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="badge-title-wrapper">
+                                    <span class="tag-enter-span"> </span>
+                                    <span class="output-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.output}} </span>
+                                    <span class="income-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.income}} </span>
+                                    <span class="badge badge-header">{{dt.getTags(rec.tags)}}</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.amount}} </span>
+                                                <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
+                                                <span class="m-title-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.amount}} </span>
+                                                <span ng-show="rec.type === 'income'">{{rec.unit_price | currency}}<br></span>
+                                                <span class="m-title-badge"> {{lang(localInfo.lang).mc.time}} </span>
+                                                <span><span ng-show="dt.filtText === 'all'">{{full_date(rec.date)}} </span>{{time(rec.date)}}</span>
+                                            </td>
+                                            <td class="td-actions text-right">
+                                                <button type="button" rel="tooltip" title="Edit Memo" class="btn btn-info btn-simple btn-xs" ng-click="onMce(rec.id)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs" ng-click="doDel(rec.id)">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                                <span> </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <span ng-show="dt.showPlaceholder(dt.type, dt.rs)" class="item placehold"><small> No records yet... </small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

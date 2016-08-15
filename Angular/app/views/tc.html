@@ -1,0 +1,72 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Tasks & Desires</h4>
+                    </div>
+                    <div class="content">
+                        <div class="card">
+                            <div ng-repeat="rec in tRecords | taskRecordsFilter: 'task & desire' track by $index">
+                                <div class="tc-title-wrapper">
+                                    <span class="tc-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                &nbsp; <span ng-class="[badge_class(rec.type)]">{{textType(rec.type)}}</span>
+                                                &nbsp; <span>{{rec.points}} * {{rec.amount}}</span>
+                                            </td>
+                                            <td class="td-actions text-right">
+                                                <button type="button" rel="tooltip" title="Achieve {{rec.type}}" class="btn btn-info btn-simple btn-xs" ng-click="finishDone(rec.type, rec.id)">
+                                                    <i class="fa fa-check" ng-class="[check_class(rec.type)]"></i>
+                                                </button>
+                                                <button type="button" rel="tooltip" title="Edit {{rec.type}}" class="btn btn-info btn-simple btn-xs" ng-click="onCEdit(rec.id)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button type="button" rel="tooltip" title="Archive" class="btn btn-primary btn-simple btn-xs" ng-click="finishArchive(rec.id)">
+                                                    <i class="fa fa-folder-open-o"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <span ng-show="showPlaceholder('task & desire')" class="item placehold"><small> No tasks or desires yet... </small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Memo</h4>
+                    </div>
+                    <div class="content">
+                        <div class="row" ng-repeat="rec in tRecords | taskRecordsFilter: 'memo'">
+                            <div class="col-xs-8 col-xs-push-1">
+                                <p>{{rec.event}}</p>
+                            </div>
+                            <div class="col-xs-1 col-xs-push-1">
+                                <button type="button" rel="tooltip" title="Edit Memo" class="btn btn-info btn-simple btn-xs" ng-click="onTme(rec.id)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                            <div class="col-xs-1 col-xs-push-1">
+                                <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs" ng-click="doDel(rec.id)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <span ng-show="showPlaceholder('memo')" class="item placehold"><small> No memo yet... </small></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

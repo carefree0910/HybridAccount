@@ -1,0 +1,85 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Check Templates</h4>
+                    </div>
+                    <div class="content">
+                        <div class="card">
+                            <label class="item item-input item-select">
+                                <span class="input-label bold"> {{lang(localInfo.lang).mt.type}} </span>
+                                <select ng-model="dt.type">
+                                    <option value="all"> {{lang(localInfo.lang).mt.all}} </option>
+                                    <option value="output"> {{lang(localInfo.lang).mt.output}} </option>
+                                    <option value="income"> {{lang(localInfo.lang).mt.income}} </option>
+                                </select>
+                            </label>
+                        </div>
+                        <form class="card" ng-submit="dt.doFilter()">
+                            <button ng-show="false"> </button>
+                            <div class="row item item-divider">
+                                <div class="col-xs-10 form-title">
+                                    <div>{{lang(localInfo.lang).mt.filter}}</div>
+                                </div>
+                                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                                    <a href="" class="fa fa-filter form-confirm-btn-color-dark" ng-click="dt.doFilter()"></a>
+                                </div>
+                            </div>
+                            <div class="list list-inset">
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).mt.tag}}</span>
+                                    <input type="text" ng-model="dt.tag.body" />
+                                </div>
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).mt.event}}</span>
+                                    <input type="text" ng-model="dt.description" />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="card">
+                            <div ng-repeat="rec in dt.rs | moneyRecordsFilter: dt.type track by $index">
+                                <div class="event-title-wrapper">
+                                    <span class="event-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="badge-title-wrapper">
+                                    <span class="tag-enter-span"> </span>
+                                    <span class="output-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mt.output}} </span>
+                                    <span class="income-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mt.income}} </span>
+                                    <span class="badge badge-header">{{dt.getTags(rec.tags)}}</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mt.amount}} </span>
+                                                <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
+                                                <span class="m-title-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mt.amount}} </span>
+                                                <span ng-show="rec.type === 'income'">{{rec.unit_price | currency}}<br></span>
+                                            </td>
+                                            <td class="td-actions text-right">
+                                                <div class="side-btn-style">
+                                                    <button type="button" rel="tooltip" title="Edit Template" class="btn btn-info btn-simple btn-xs" ng-click="onMte(rec.id)">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs" ng-click="doDel(rec.id)">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <span ng-show="dt.showPlaceholder(dt.type, dt.rs)" class="item placehold"><small> No templates yet... </small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

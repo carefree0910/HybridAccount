@@ -75,9 +75,7 @@ if (app.get('env') === 'development') {
             message: err.message,
             error: err
         });
-        console.log("3333333333333333333333333333333333333333333333333");
         console.log(err);
-        console.log("3333333333333333333333333333333333333333333333333");
     });
 }
 

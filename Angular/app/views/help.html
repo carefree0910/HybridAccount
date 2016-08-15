@@ -1,0 +1,82 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Add Financial Record</h4>
+                        <p class="category">Record your expenditure and income</p>
+                    </div>
+                    <div class="content">
+                        <div class="tabs-striped tabs-color-header">
+                            <ul class="tabs">
+                                <li ng-class="{active:isMSelected(1)}" class="tab-item"> <a ng-click="mSelect(1)"> {{lang(localInfo.lang).ma.output}} </a></li>
+                                <li ng-class="{active:isMSelected(2)}" class="tab-item"> <a ng-click="mSelect(2)"> {{lang(localInfo.lang).ma.income}} </a></li>
+                            </ul>
+                        </div>
+                        <ion-content>
+                            <form ng-repeat="form in mForms" ng-show="form.type === mFiltText" class="card" ng-submit="doAdd(form.type)">
+                                <button ng-show="false"></button>
+                                <div class="row item item-divider">
+                                    <div class="col-xs-10">
+                                        <div>{{form.title}}</div>
+                                    </div>
+                                    <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1">
+                                        <a href="" class="fa fa-pencil-square-o" ng-click="doMAdd(mFiltText)"></a>
+                                    </div>
+                                </div>
+                                <div ng-repeat="content in form.contents" class="list list-inset">
+                                    <label class="item item-input item-text-wrap"> <span class="input-label">{{content.title}}</span>
+                                        <input class="form-control" type="text" ng-model="content.body" /> </label>
+                                </div>
+                                <div class="list">
+                                    <div class="item item-text-wrap">
+                                        <span ng-show="tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).ma.placeholder1}} </small></span>
+                                        <span ng-repeat="tag in tagManager.current_tags track by $index">
+                                            <a href="" class="tag-badge" ng-click="tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="multi_buttons button-bar">
+                                <button class="button button-block button-balanced" ng-click="saveTemplate(mFiltText)"> {{lang(localInfo.lang).ma.save}} </button>
+                                <a class="button button-block button-calm" href="#/app/mtp/{{mFiltText}}"> {{lang(localInfo.lang).ma.load}} </a>
+                            </div>
+                            <form class="card" ng-submit="tagManager.addCurrentTagByEnter()">
+                                <div class="item item-input">
+                                    <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).ma.placeholder2}}" />
+                                    <button class="button button-light fa fa-plus tag-button" type="submit"></button>
+                                    <span class="tag-enter-span"></span>
+                                </div>
+                                <div class="item item-input item-select">
+                                    <button type="button" class="button button-light fa fa-arrow-up tag-button" ng-click="onClick('add')"></button>
+                                    <button type="button" class="button button-light fa fa-trash tag-button" ng-click="onClick('del')"></button>
+                                    <select ng-model="tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in tagManager.tags"></select>
+                                </div>
+                            </form>
+                            <br> <br> <br>
+                        </ion-content>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Add Event</h4>
+                        <p class="category">Manage your time</p>
+                    </div>
+                    <div class="content">
+                        <div id="chartHours" class="ct-chart"></div>
+                        <div class="footer">
+                            <div class="legend"> <i class="fa fa-circle text-info"></i> Open <i class="fa fa-circle text-danger"></i> Click <i class="fa fa-circle text-warning"></i> Click Second Time </div>
+                            <hr>
+                            <div class="stats"> <i class="fa fa-history"></i> Updated 3 minutes ago </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

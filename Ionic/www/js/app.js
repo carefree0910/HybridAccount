@@ -1,7 +1,7 @@
 angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controllers', 'Account.services'])
 
 .run(function($ionicPlatform, $rootScope, $location, $ionicLoading, $ionicHistory, $cordovaSplashscreen, $cordovaToast, $timeout, languageFactory, userFactory, localRecordFactory) {
-    
+
     $ionicPlatform.ready(function() {
         if (window.cordova && window.cordova.plugins.Keyboard) {
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -11,7 +11,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-        
+
         $timeout(function() {
             $cordovaSplashscreen.hide();
         }, 0);
@@ -34,11 +34,11 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
         console.log('done');
         $rootScope.$broadcast("loading:hide");
     });
-    
+
     $ionicPlatform.registerBackButtonAction(function(e) {
-        
+
         var lang = languageFactory.lang(userFactory.getLocalInfo().lang);
-        
+
         if ($location.path() == '/app/home') {
             if ($rootScope.backButtonPressedOnceToExit) {
                 ionic.Platform.exitApp();
@@ -60,13 +60,13 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
         }
         e.preventDefault();
         return false;
-        
+
     }, 101);
-    
+
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-    
+
     $ionicConfigProvider.platform.ios.tabs.style('standard');
     $ionicConfigProvider.platform.ios.tabs.position('bottom');
     $ionicConfigProvider.platform.android.tabs.style('standard');
@@ -80,7 +80,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
 
     $ionicConfigProvider.platform.ios.views.transition('ios');
     $ionicConfigProvider.platform.android.views.transition('android');
-    
+
     $stateProvider
 
     .state('app', {
@@ -115,10 +115,10 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }],
             downloadToastType: ['textManageFactory', function(tmFac) {
                 return tmFac.downloadToastType;
-            }],
+            }]
         }
     })
-    
+
     .state('app.home', {
         url: '/home',
         views: {
@@ -136,7 +136,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.recent', {
         url: '/recent',
         views: {
@@ -172,7 +172,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.ma', {
         url: '/ma',
         views: {
@@ -193,7 +193,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mc', {
         url: '/mc',
         views: {
@@ -223,7 +223,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mce', {
         url: '/mc/:id',
         views: {
@@ -259,7 +259,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mt', {
         url: '/mt',
         views: {
@@ -284,7 +284,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mtp', {
         url: '/mtp/:type',
         views: {
@@ -317,7 +317,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mte', {
         url: '/mt/:id',
         views: {
@@ -353,7 +353,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mtd', {
         url: '/mtd',
         views: {
@@ -374,7 +374,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.mg', {
         url: '/mg',
         views: {
@@ -404,7 +404,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.ta', {
         url: '/ta',
         views: {
@@ -425,7 +425,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.tc', {
         url: '/tc',
         views: {
@@ -449,7 +449,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.tce', {
         url: '/tc/:id',
         views: {
@@ -509,7 +509,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.tm', {
         url: '/tm',
         views: {
@@ -533,7 +533,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.tme', {
         url: '/tm/:id',
         views: {
@@ -563,7 +563,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.ts', {
         url: '/ts',
         views: {
@@ -593,7 +593,7 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     .state('app.tsd', {
         url: '/ts/:id',
         views: {
@@ -629,9 +629,9 @@ angular.module('Account', ['ionic', 'ngCordova', 'chart.js', 'Account.controller
             }
         }
     })
-    
+
     ;
 
     $urlRouterProvider.otherwise('/app/home');
-    
+
 });

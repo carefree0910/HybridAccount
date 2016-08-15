@@ -1,9 +1,7 @@
 <ion-view view-title="{{lang(localInfo.lang).recent.viewTitle}}">
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
-            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).recent.mAccount}} </a></li>
-            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).recent.tAccount}} </a></li>
-        </ul>
+            </ul>
     </div>
     <ion-content>
         <ion-list>
@@ -15,7 +13,7 @@
                 </div>
             </div>
             <div ng-show="filtText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.mDetail}} </div>
-            
+
             <div ng-show="filtText === 'task'" class="card">
                 <div class="item item-divider"> {{lang(localInfo.lang).recent.tTitle}} </div>
                 <div class="list list-inset">
@@ -24,7 +22,7 @@
                 </div>
             </div>
             <div ng-show="filtText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.tDetail}} </div>
-            
+
             <ion-item ng-show="filtText === 'money'" ng-repeat="rec in mrdRecords" class="item-text-wrap">
                 <div>
                     <h1 class="title">{{rec.event}}</h1>
@@ -41,7 +39,7 @@
                     <span>{{time(rec.date)}}</span>
                 </div>
             </ion-item>
-            
+
             <ion-item ng-show="filtText === 'task'" ng-repeat="rec in trRecords" class="item-text-wrap">
                 <div>
                     <h1 class="title">{{rec.event}}</h1>
@@ -52,7 +50,7 @@
                     &nbsp; <span class="tag-badge" ng-repeat="done_time in rec.done_times">{{transformDoneTime(done_time)}}</span>
                 </div>
             </ion-item>
-            
+
         </ion-list>
         <br> <br> <br>
     </ion-content>

@@ -6,7 +6,7 @@
                 <label class="item item-input"> <span class="input-label">{{textType}}</span> <span type="text">{{record.points}}</span> </label>
                 <label class="item item-input"> <span class="input-label">{{doneType}}{{lang(localInfo.lang).tsd.time}}</span> <span type="text">{{record.amount}}</span> </label>
                 <label class="item item-input"></label>
-                <ion-list ng-show="{{record.done_times.length != 0}}">
+                <ion-list ng-show="record.done_times.length != 0">
                     <label class="item item-divider"><span class="input-label">{{doneType}}{{lang(localInfo.lang).tsd.doneTimes}}</span></label>
                     <ion-item ng-repeat="milli in record.done_times"> {{showDateAndTime(milli)}} </ion-item>
                 </ion-list>

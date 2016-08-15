@@ -1,0 +1,267 @@
+.popover {
+    height: auto !important;
+}
+
+.popover ion-header-bar {
+    position: relative;
+}
+
+.popover ion-content {
+    top: 0;
+    position: relative;
+}
+
+.popover-inner-content {
+    width: 100%;
+    padding: 5px 20px;
+}
+
+.inline-content {
+    width: 60%;
+    text-align: right;
+}
+
+.tag-input {
+    padding: 1em 0 0 0;
+    font-weight: bold;
+}
+
+.tag-button {
+    text-align: center;
+}
+
+.tag-input-span {
+    width: 2%;
+}
+
+.tag-enter-span {
+    width: 5%;
+}
+
+.tag-badge {
+    background-color: transparent;
+    color: tan;
+    z-index: 1;
+    display: inline-block;
+    padding: 10px 8px;
+    min-width: 10px;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.recent-tag-badge {
+    background-color: transparent;
+    color: tan;
+    z-index: 1;
+    display: inline-block;
+    padding: 0.2em 0;
+    min-width: 10px;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.output-badge {
+    background-color: #ff8f7d;
+    color: white;
+    z-index: 1;
+    display: inline-block;
+    padding: 3px 8px;
+    width: 7em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.income-badge {
+    background-color: #4bd26f;
+    color: white;
+    z-index: 1;
+    display: inline-block;
+    padding: 3px 8px;
+    width: 7em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.m-title-badge {
+    background-color: transparent;
+    color: darkgray;
+    z-index: 1;
+    display: inline-block;
+    padding: 1em 0 0 0;
+    width: 7em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.t-title-badge {
+    background-color: transparent;
+    color: darkgray;
+    z-index: 1;
+    display: inline-block;
+    padding: 1em 0 0 0;
+    width: 8em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.tc-title {
+    color: peru;
+    z-index: 1;
+    padding: 0 0 0.3em 0.4em;
+    vertical-align: baseline;
+    font-weight: bold;
+    font-size: 1.3em;
+    line-height: 1.3em;
+}
+
+.tc-title-wrapper {
+    padding: 0.3em 0.9em;
+}
+
+.event-title {
+    color: peru;
+    display: block;
+    font-weight: bold;
+    font-size: 1.6em;
+    line-height: 1.6em;
+}
+
+.event-title-wrapper {
+    padding: 0.3em 2em 0.3em 1.6em;
+}
+
+.badge-title-wrapper {
+    padding: 0 2em 1em 2em;
+}
+
+.recent-done-times-wrapper {
+    padding: 0 0.8em;
+}
+
+.t-short-task-badge {
+    background-color: #4bd26f;
+    color: white;
+    z-index: 1;
+    display: inline-block;
+    padding: 3px 8px;
+    width: 5em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.t-short-desire-badge {
+    background-color: #ff8f7d;
+    color: white;
+    z-index: 1;
+    display: inline-block;
+    padding: 3px 8px;
+    width: 5em;
+    border-radius: 10px;
+    vertical-align: baseline;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.form-title {
+    padding: 0.2em 0 0 0.5em;
+    font-size: 1.2em;
+}
+
+.form-confirm-btn-style {
+    font-size: 1em;
+    padding: 0.2em 0 0 0;
+}
+
+.form-confirm-btn-color {
+    color: #1DC7EA;
+}
+
+.form-confirm-btn-color-dark {
+    color: #3264A7;
+}
+
+.side-btn-style {
+    padding: 1em 1em 0 0
+}
+
+.achieve-task {
+    color: #2DBE53;
+}
+
+.achieve-desire {
+    color: #FE563C;
+}
+
+.ts-ellipsis-style {
+    padding: 0 1.2em 0 0;
+}
+
+.ts-ellipsis-color {
+    color: #5080C3;
+}
+
+.memo {
+    width: 100%;
+    height: 12em;
+}
+
+.multi_buttons {
+    padding: 0 5%;
+}
+
+.center {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.placehold {
+    width: 100%;
+    color: darkgray;
+    font-weight: bold;
+    text-align: center;
+}
+
+.chart {
+    padding: 5%;
+}

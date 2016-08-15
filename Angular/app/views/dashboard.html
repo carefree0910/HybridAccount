@@ -1,0 +1,105 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">{{lang(localInfo.lang).home.sTitle}}</h4>
+                        <p class="category">Summary of Financial Activities and Event Management</p>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <div class="list list-inset">
+                            <div class="item item-input">
+                                <span class="input-label inline-title">{{lang(localInfo.lang).home.expenditure}}</span>
+                                <span class="inline-content">{{output(records) | currency}}</span>
+                            </div>
+                            <div class="item item-input">
+                                <span class="input-label inline-title">{{lang(localInfo.lang).home.income}}</span>
+                                <span class="inline-content">{{income(records) | currency}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="list list-inset">
+                            <div class="item item-input">
+                                <span class="input-label inline-title">{{lang(localInfo.lang).home.ptLeft}}</span>
+                                <span class="inline-content">{{formatNumber(records.tPoints, 2)}}</span>
+                            </div>
+                            <div class="item item-text-wrap">
+                                <span class="input-label inline-title">{{lang(localInfo.lang).home.latestMemo}}</span>
+                                <div ng-show="showLatestMemoPlaceholder(records.tRecords)" class="item placehold"> No memo yet... </div>
+                                <div class="item" ng-repeat="rec in records.tRecords | filter: {type: 'memo'} | latestFilter track by $index"><small>{{rec.event}}</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Analytics for Financial Record</h4>
+                        <p class="category">Visualize your financial activities</p>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).mg.focus}} </a></li>
+                            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).mg.addUp}} </a></li>
+                        </ul>
+                        <div class="card">
+                            <div class="item item-input item-select">
+                                <span class="input-label bold"> Type </span>
+                                <select ng-model="dt.type">
+                                    <option value="line"> Line Chart </option>
+                                    <option value="bar"> Bar Chart </option>
+                                </select>
+                            </div>
+                        </div>
+                        <form class="card">
+                            <div class="row item item-divider">
+                                <div class="col-xs-10 form-title">
+                                    <div>{{lang(localInfo.lang).mg.filter}}</div>
+                                </div>
+                                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                                    <a href="" rel="tooltip" title="Draw Graphs!" class="fa fa-pencil form-confirm-btn-color-dark" ng-click="dt.refresh(false, false)"></a>
+                                </div>
+                            </div>
+                            <div ng-show="dt.tab != 2" class="list list-inset">
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).mg.date}}</span>
+                                    <input type="date" ng-model="dt.date" />
+                                </div>
+                            </div>
+                            <div class="list">
+                                <div class="item item-text-wrap">
+                                    <span ng-show="dt.tagManager.current_tags.length === 0" class="item placehold"><small> {{lang(localInfo.lang).mg.placeholder1}} </small></span>
+                                    <span ng-repeat="tag in dt.tagManager.current_tags track by $index">
+                                        <a class="tag-badge" ng-click="dt.tagManager.delCurrentTagById(tag.id)">{{tag.body}} &times; </a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="item item-input item-select">
+                                <button type="button" class="btn button button-light fa fa-arrow-up" ng-click="dt.onClick('add')"></button>
+                                <button type="button" class="btn button button-light fa fa-trash" ng-click="dt.onClick('del')"></button>
+                                <select ng-model="dt.tagManager.selectedTagId" ng-options="tag.id as tag.body for tag in dt.tagManager.tags"></select>
+                            </div>
+                        </form>
+                        <div class="card">
+                            <div ng-show="dt.dLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.dType(dt.tab)}}</div>
+                            <div ng-show="dt.dCanvasShow"><canvas class="chart" id="day" height="250"></canvas></div>
+                            <div ng-show="dt.wLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.wType(dt.tab)}}</div>
+                            <div ng-show="dt.wCanvasShow"><canvas class="chart" id="week" height="250"></canvas></div>
+                            <div ng-show="dt.mLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.mType(dt.tab)}}</div>
+                            <div ng-show="dt.mCanvasShow"><canvas class="chart" id="month" height="250"></canvas></div>
+                            <div ng-show="dt.yLabelShow" class="item item-divider">{{lang(localInfo.lang).mg.yType(dt.tab)}}</div>
+                            <div ng-show="dt.yCanvasShow"><canvas class="chart" id="year" height="250"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

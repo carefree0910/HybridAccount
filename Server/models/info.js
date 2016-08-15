@@ -3,9 +3,13 @@ var Schema = mongoose.Schema;
 
 var Info = new Schema({
     username: String,
+    firstName: String,
+    lastName: String,
     income: Number,
     icon: String,
-    lang: String
+    avatar: String,
+    lang: String,
+    description: String
 });
 
 exports.Info = Info;

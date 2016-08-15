@@ -12,7 +12,7 @@
                     <span class="input-label bold">{{textType(record.type)}}</span>
                     <input type="text" ng-model="record.unit_price" />
                 </label>
-                <label class="item item-input" ng-show="{{record.type === 'output'}}">
+                <label class="item item-input" ng-show="record.type === 'output'">
                     <span class="input-label bold"> {{lang(localInfo.lang).mte.amount}} </span>
                     <input type="text" ng-model="record.amount" />
                 </label>
@@ -36,7 +36,7 @@
         <form class="card" ng-submit="tagManager.addCurrentTagByEnter()">
             <button ng-show="false"></button>
             <div class="item item-input">
-                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mte.placeholder2}}" /> 
+                <input class="tag-input" type="text" ng-model="tagManager.current_tag.body" placeholder="{{lang(localInfo.lang).mte.placeholder2}}" />
                 <button class="button button-light icon ion-plus-round tag-button" type="submit"></button>
                 <span class="tag-enter-span"></span>
             </div>

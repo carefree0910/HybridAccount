@@ -1,0 +1,29 @@
+<div class="ngdialog-message">
+    <div>
+        <form class="card" ng-submit="finishEdit()">
+            <button ng-show="false"></button>
+            <div class="row item item-divider">
+                <div class="col-xs-10 form-title">
+                    <div>Edit Event</div>
+                </div>
+                <div class="col-xs-2 col-xs-push-0 col-sm-1 col-sm-push-1 form-confirm-btn-style">
+                    <a href="" class="fa fa-pencil-square-o form-confirm-btn-color" ng-click="finishEdit()"></a>
+                </div>
+            </div>
+            <div class="list list-inset">
+                <div class="item item-input">
+                    <span class="input-label bold"> {{lang(localInfo.lang).tce.event}} </span>
+                    <input type="text" ng-model="record.event" />
+                </div>
+                <div class="item item-input">
+                    <span class="input-label bold"> {{textType(record.type)}} </span>
+                    <input type="text" ng-model="record.points" />
+                </div>
+                <div class="item item-input">
+                    <span class="input-label bold"> {{doneType(record.type)}}{{lang(localInfo.lang).tce.time}} </span>
+                    <input type="text" ng-model="record.amount" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

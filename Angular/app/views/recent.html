@@ -1,0 +1,106 @@
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Today's Account</h4>
+                    </div>
+                    <br>
+                    <div class="content">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).recent.mAccount}} </a></li>
+                            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).recent.tAccount}} </a></li>
+                        </ul>
+                        <div ng-show="filtText === 'money'" class="card">
+                            <div class="item item-divider"> {{lang(localInfo.lang).recent.mTitle}} </div>
+                            <div class="list list-inset">
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).recent.sumOutput}}</span>
+                                    <span class="inline-content">{{sumOutput(filtText) | currency}}</span>
+                                </div>
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).recent.sumIncome}}</span>
+                                    <span class="inline-content">{{sumIncome(filtText) | currency}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-show="filtText === 'task'" class="card">
+                            <div class="item item-divider"> {{lang(localInfo.lang).recent.tTitle}} </div>
+                            <div class="list list-inset">
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).recent.sumPtGet}}</span>
+                                    <span class="inline-content">{{sumTask(filtText)}}</span>
+                                </div>
+                                <div class="item item-input">
+                                    <span class="input-label bold">{{lang(localInfo.lang).recent.sumPtLost}}</span>
+                                    <span class="inline-content">{{sumDesire(filtText)}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div ng-show="filtText === 'money'" class="item item-divider"> {{lang(localInfo.lang).recent.mDetail}} </div>
+                            <div ng-show="filtText === 'task'" class="item item-divider"> {{lang(localInfo.lang).recent.tDetail}} </div>
+
+                            <div ng-show="filtText === 'money'" ng-repeat="rec in mrdRecords track by $index">
+                                <div class="event-title-wrapper">
+                                    <span class="event-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="badge-title-wrapper">
+                                    <span class="tag-enter-span"> </span>
+                                    <span class="output-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.output}} </span>
+                                    <span class="income-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.income}} </span>
+                                    <span class="badge badge-header">{{getTags(rec.tags)}}</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="m-title-badge" ng-show="rec.type === 'output'"> {{lang(localInfo.lang).mc.amount}} </span>
+                                                <span ng-show="rec.type === 'output'">{{rec.unit_price | currency}} <span ng-show="rec.amount > 1"> * {{rec.amount}}</span><br></span>
+                                                <span class="m-title-badge" ng-show="rec.type === 'income'"> {{lang(localInfo.lang).mc.amount}} </span>
+                                                <span ng-show="rec.type === 'income'">{{rec.unit_price | currency}}<br></span>
+                                                <span class="m-title-badge"> {{lang(localInfo.lang).mc.time}} </span>
+                                                <span><span ng-show="dt.filtText === 'all'">{{full_date(rec.date)}} </span>{{time(rec.date)}}</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div ng-show="filtText === 'task'" ng-repeat="rec in trRecords track by $index">
+                                <div class="event-title-wrapper">
+                                    <span class="event-title">{{rec.event}}</span>
+                                    <span ng-show="rec.event.length === 0" class="placehold">No description...</span>
+                                </div>
+                                <div class="badge-title-wrapper">
+                                    <span class="tag-enter-span"> </span>
+                                    <span ng-class="[badge_class(rec.type)]">{{textType(rec.type)}}</span>
+                                    &nbsp; <span>{{rec.points}} * {{rec.amount}}</span>
+                                </div>
+                                <div class="table-full-width">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="recent-done-times-wrapper">
+                                                <span class="tag-badge" ng-repeat="done_time in rec.done_times">{{transformDoneTime(done_time)}}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <span ng-show="filtText === 'money' && mrdRecords.length === 0" class="item placehold">No records yet...</span>
+                            <span ng-show="filtText === 'task' && trRecords.length === 0" class="item placehold">No records yet...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

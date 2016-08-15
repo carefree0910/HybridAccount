@@ -8,15 +8,6 @@ var Verify = require('./verify');
 var recRouter = express.Router();
 recRouter.use(bodyParser.json());
 
-recRouter.route('/')
-
-.get(Verify.verifyOrdinaryUser, function(req, res, next) {
-    User.findById(req.decoded._id, function (err, user) {
-        if (err) return next(err);
-        res.json(user.records);
-    });
-});
-
 recRouter.route('/m')
 
 .put(Verify.verifyOrdinaryUser, function(req, res, next) {
@@ -26,20 +17,6 @@ recRouter.route('/m')
         user.save(function(err, resp) {
             if (err) return next(err);
             console.log('Updated mRecords!');
-            res.json(resp);
-        });
-    });
-});
-
-recRouter.route('/mr')
-
-.put(Verify.verifyOrdinaryUser, function(req, res, next) {
-    User.findById(req.decoded._id, function (err, user) {
-        if (err) return next(err);
-        user.records.mrRecords = req.body;
-        user.save(function(err, resp) {
-            if (err) return next(err);
-            console.log('Updated mrRecords!');
             res.json(resp);
         });
     });
@@ -116,8 +93,16 @@ recRouter.route('/tp')
 });
 
 recRouter.route('/all')
+.all(Verify.verifyOrdinaryUser)
 
-.put(Verify.verifyOrdinaryUser, function(req, res, next) {
+.get(function(req, res, next) {
+    User.findById(req.decoded._id, function (err, user) {
+        if (err) return next(err);
+        res.json(user.records);
+    });
+})
+
+.put(function(req, res, next) {
     User.findById(req.decoded._id, function (err, user) {
         if (err) return next(err);
         user.records = req.body;
