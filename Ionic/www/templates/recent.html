@@ -1,10 +1,13 @@
 <ion-view view-title="{{lang(localInfo.lang).recent.viewTitle}}">
     <div class="tabs-striped tabs-color-header">
         <ul class="tabs">
-            </ul>
+            <li ng-class="{active:isSelected(1)}" class="tab-item"> <a ng-click="select(1)"> {{lang(localInfo.lang).recent.mAccount}} </a></li>
+            <li ng-class="{active:isSelected(2)}" class="tab-item"> <a ng-click="select(2)"> {{lang(localInfo.lang).recent.tAccount}} </a></li>
+        </ul>
     </div>
     <ion-content>
         <ion-list>
+
             <div ng-show="filtText === 'money'" class="card">
                 <div class="item item-divider"> {{lang(localInfo.lang).recent.mTitle}} </div>
                 <div class="list list-inset">
